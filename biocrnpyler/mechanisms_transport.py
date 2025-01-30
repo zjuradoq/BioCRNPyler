@@ -62,6 +62,9 @@ class Membrane_Protein_Integration(Mechanism):
         if complex2 is None:
             complex2= None 
         else: complex2=complex2
+
+        if product.cell is not None:
+            cell=product.cell
             
         return [integral_membrane_protein,  product, complex1, complex2]
     

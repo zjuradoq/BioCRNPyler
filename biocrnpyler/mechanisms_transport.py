@@ -74,8 +74,8 @@ class Membrane_Protein_Integration(Mechanism):
         if part_id is None and component is not None:
             part_id = component.name
     
-        if component is None and (kb1 is None or ku1 is None or kb2 is None or ku2 is None or kcat is None or kex is None):
-            raise ValueError("Must pass in a Component or values for kb1, ku1, kb2, ku2, kcat, and kex.")
+        if component is None and (kb1 is None or ku1 is None or kb2 is None or kcat is None or kex is None):
+            raise ValueError("Must pass in a Component or values for kb1, ku1, kb2, kcat, and kex.")
         
         if kb1 is None:
             kb1 = component.get_parameter("kb1", part_id = part_id, mechanism = self)

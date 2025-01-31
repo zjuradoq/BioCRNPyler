@@ -118,7 +118,6 @@ class IntegralMembraneProtein(Component):
 
     def update_reactions(self):
         mech_ins = self.get_mechanism('membrane_insertion')
-        print(self)
         return mech_ins.update_reactions(self.membrane_protein, self.product, component=self,  part_id=self.name)
 
 class MembraneChannel(Component):
@@ -264,6 +263,10 @@ class MembranePump(Component):
             self.substrate = self.set_species(substrate, compartment=internal_compartment,attributes=attributes)
             self.product= self.set_species(product, compartment=external_compartment,attributes=attributes)
 
+    #ENERGY and WASTE
+        self.energy = self.set_species('ATP',  material_type='small_molecule', compartment=internal_compartment,attributes=attributes)
+        self.waste = self.set_species('ADP',  material_type='small_molecule', compartment=internal_compartment,attributes=attributes)
+
     # PROTEIN
         if type(membrane_pump) == str:
             if ATP is None:
@@ -272,7 +275,6 @@ class MembranePump(Component):
                 ATP = ATP
                 
             if direction is  None:
-                print('None')
                 self.membrane_pump = self.set_species(membrane_pump, material_type='protein', attributes='Passive')
                 self.membrane_pump.ATP= ATP
             else:
@@ -293,7 +295,8 @@ class MembranePump(Component):
                 self.membrane_pump = self.set_species(membrane_pump, material_type='protein', attributes='Exporter')
             elif membrane_pump.attributes[0] == 'Importer':
                 self.membrane_pump = self.set_species(membrane_pump, material_type='protein', attributes='Importer')
-
+                self.energy = self.set_species('ATP',  material_type='small_molecule', compartment=external_compartment,attributes=attributes)
+                self.waste = self.set_species('ADP',  material_type='small_molecule', compartment=external_compartment,attributes=attributes)
                 if substrate is None:
                     self.substrate = None
                 else:
@@ -308,9 +311,6 @@ class MembranePump(Component):
                 self.membrane_pump.ATP= 1
             else: 
                 self.membrane_pump.ATP = ATP
-            
-        self.energy = self.set_species('ATP',  material_type='small_molecule', compartment=internal_compartment,attributes=attributes)
-        self.waste = self.set_species('ADP',  material_type='small_molecule', compartment=internal_compartment,attributes=attributes)
 
         Component.__init__(self=self, name=self.membrane_pump.name, **keywords)
         
@@ -383,7 +383,6 @@ class MembraneSensor(Component):
                                                      attributes=attributes)
     
     # PROTEIN
-        # print(type(membrane_sensor_protein))
         if membrane_sensor_protein is None:
             self.membrane_sensor_protein = None
         else:

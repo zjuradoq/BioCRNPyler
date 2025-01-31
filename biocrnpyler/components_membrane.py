@@ -61,7 +61,7 @@ class IntegralMembraneProtein(Component):
                  product: Union[Species,str, Component],
                  direction:str=None, size=None, compartment='Internal',membrane_compartment='Membrane', cell=None,
                  attributes=None, **keywords):       
-        """Initialize a MembraneChannel object to store membrane channel related information.
+        """Initialize a IntegralMembraneProtein object to store membrane channel related information.
         :param product: name of the membrane channel, reference to an Species or Component
         :param direction: transport direction (str), set to "Passive" by default, undirectional unless specified 
         :param size: number of monomers needed for channel used in Membrane_Protein_Integration(Mechanism)

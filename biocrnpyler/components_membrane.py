@@ -107,7 +107,7 @@ class IntegralMembraneProtein(Component):
         
     #Indicates cell
         self.product.cell= cell
-            Component.__init__(self=self, name=self.membrane_protein.name, **keywords)
+        Component.__init__(self=self, name=self.membrane_protein.name, **keywords)
         
     def get_species(self):
         return self.membrane_protein

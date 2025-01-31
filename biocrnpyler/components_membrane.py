@@ -152,7 +152,6 @@ class MembraneChannel(Component):
             if len(membrane_compartment.split('_')) == 2:
                 cell = membrane_compartment.split('_')[-1]
                 internal_compartment=internal_compartment+'_'+cell
-            # # else:
 
             # if self.integral_membrane_protein.cell is not None:
             #     cell=self.integral_membrane_protein.cell
@@ -255,12 +254,17 @@ class MembranePump(Component):
                 internal_compartment=internal_compartment+'_'+str(cell)
         else:
             self.membrane_pump = self.set_species(membrane_pump)
-            if self.membrane_pump.cell is not None:
-                cell=self.membrane_pump.cell
-                if type(cell) is str:
-                    internal_compartment=internal_compartment+'_'+cell
-                else:
-                    internal_compartment=internal_compartment+'_'+str(cell)
+            membrane_compartment= self.membrane_pump.compartment.name
+
+            if len(membrane_compartment.split('_')) == 2:
+                cell = membrane_compartment.split('_')[-1]
+                internal_compartment=internal_compartment+'_'+cell
+            # if self.membrane_pump.cell is not None:
+            #     cell=self.membrane_pump.cell
+            #     if type(cell) is str:
+            #         internal_compartment=internal_compartment+'_'+cell
+            #     else:
+            #         internal_compartment=internal_compartment+'_'+str(cell)
    
     # SUBSTRATE
         if substrate is None:
@@ -363,12 +367,18 @@ class MembraneSensor(Component):
                 internal_compartment=internal_compartment+'_'+str(cell)
         else:
             self.membrane_sensor_protein = self.set_species(membrane_sensor_protein)
-            if self.membrane_sensor_protein.cell is not None:
-                cell=self.membrane_sensor_protein.cell
-                if type(cell) is str:
-                    internal_compartment=internal_compartment+'_'+cell
-                else:
-                    internal_compartment=internal_compartment+'_'+str(cell)
+            membrane_compartment= self.membrane_sensor_protein.compartment.name
+
+            if len(membrane_compartment.split('_')) == 2:
+                cell = membrane_compartment.split('_')[-1]
+                internal_compartment=internal_compartment+'_'+cell
+
+            # if self.membrane_sensor_protein.cell is not None:
+            #     cell=self.membrane_sensor_protein.cell
+            #     if type(cell) is str:
+            #         internal_compartment=internal_compartment+'_'+cell
+            #     else:
+            #         internal_compartment=internal_compartment+'_'+str(cell)
    
     #RESPONSE PROTEIN
         if response_protein is None:

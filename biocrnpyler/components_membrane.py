@@ -60,7 +60,7 @@ class IntegralMembraneProtein(Component):
     def __init__(self, membrane_protein: Union[Species, str, Component],
                  product: Union[Species,str, Component], direction:str=None, size:int=None, 
                  compartment='Internal', membrane_compartment='Membrane', cell:Union[str,int]=None,
-                 attributes=None, **keywords): 
+                 attributes=None, **keywords):      
         """Initialize a IntegralMembraneProtein object to store membrane channel related information.
         :param product: name of the membrane channel, reference to an Species or Component
         :param direction: transport direction (str), set to "Passive" by default, undirectional unless specified 

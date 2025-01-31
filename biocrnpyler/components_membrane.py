@@ -89,8 +89,7 @@ class IntegralMembraneProtein(Component):
         if product is None:
             if direction is None:
                 self.product = self.set_species(product, material_type= 'protein', compartment=membrane_compartment, attributes=['Passive'])
-                if cell is not None:
-                    self.product.cell= cell
+                self.product.cell= cell
             else:
                 self.product = self.set_species(product, material_type= 'protein', compartment=membrane_compartment, attributes=[direction])
 
@@ -107,8 +106,7 @@ class IntegralMembraneProtein(Component):
             self.membrane_protein.size = size
         
     #Indicates cell
-        if cell is not None:
-            self.product.cell= cell
+        self.product.cell= cell
             Component.__init__(self=self, name=self.membrane_protein.name, **keywords)
         
     def get_species(self):

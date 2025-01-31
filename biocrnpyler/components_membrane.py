@@ -89,7 +89,7 @@ class IntegralMembraneProtein(Component):
         if product is None:
             if direction is None:
                 self.product = self.set_species(product, material_type= 'protein', compartment=membrane_compartment, attributes=['Passive'])
-                self.product.cell= cell
+                # self.product.cell= cell
             else:
                 self.product = self.set_species(product, material_type= 'protein', compartment=membrane_compartment, attributes=[direction])
 
@@ -147,12 +147,19 @@ class MembraneChannel(Component):
                 internal_compartment=internal_compartment+'_'+str(cell)
         else:
             self.integral_membrane_protein = self.set_species(integral_membrane_protein)
-            if self.integral_membrane_protein.cell is not None:
-                cell=self.integral_membrane_protein.cell
-                if type(cell) is str:
-                    internal_compartment=internal_compartment+'_'+cell
-                else:
-                    internal_compartment=internal_compartment+'_'+str(cell)
+            membrane_compartment= self.integral_membrane_protein.compartment.name
+
+            if len(membrane_compartment.split('_')) == 2:
+                cell = membrane_compartment.split('_')[-1]
+                internal_compartment=internal_compartment+'_'+cell
+            # # else:
+
+            # if self.integral_membrane_protein.cell is not None:
+            #     cell=self.integral_membrane_protein.cell
+            #     if type(cell) is str:
+            #         internal_compartment=internal_compartment+'_'+cell
+            #     else:
+            #         internal_compartment=internal_compartment+'_'+str(cell)
 
     #Substrate and product assignments.
         """In the case of membrane components, the substrate is the substance on which the transporter/channel acts without distinction of compartment. 

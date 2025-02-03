@@ -58,7 +58,7 @@ class IntegralMembraneProtein(Component):
     Size is used to indicate number of repeating components to create oligomer. Dimer = 2, Trimers = 3, etc.
     """
     def __init__(self, membrane_protein: Union[Species, str, Component],
-                 product: Union[Species,str, Component], direction:str=None, size:int=None, 
+                 product: Union[Species,str, Component], direction:str=None, size:int=None,
                  compartment='Internal', membrane_compartment='Membrane', cell:Union[str,int]=None, 
                  attributes=None, **keywords):
         """Initialize a IntegralMembraneProtein object to store membrane channel related information.
@@ -130,7 +130,7 @@ class MembraneChannel(Component):
                  substrate: Union[Species, str, Component],
                  direction:str=None, internal_compartment:str='Internal', external_compartment:str='External',
                  cell:Union[str,int]=None, attributes=None, **keywords):
-        """Initialize a Transporter object to store transport membrane related information.
+        """Initialize a MembraneChannel object to store transport membrane related information.
         :param substrate: name of the substrate, reference to an Species or Component
         :param direction: direction of transport based on transporter action
         :param internal_compartment: name of internal compartment 
@@ -236,7 +236,7 @@ class MembranePump(Component):
                  substrate: Union[Species, str, Component],
                  direction:str=None, internal_compartment:str='Internal', external_compartment:str='External',
                  ATP:int=None, cell:Union[int, str]=None, attributes=None, **keywords):
-        """Initialize a Transporter object to store Transport membrane related information.
+        """Initialize a MembranePump object to store Transport membrane related information.
         :param substrate: name of the substrate, reference to an Species or Component
         :param direction: give direction of transport ref to vesicle
         :param internal_compartment: name of internal compartment 
@@ -347,7 +347,7 @@ class MembraneSensor(Component):
                  signal_substrate: Union[Species, str, Component],
                  internal_compartment:str='Internal', external_compartment:str='External',
                  ATP:int=None, cell:Union[int, str]=None, attributes=None, **keywords):
-        """Initialize a Transporter object to store Transport membrane related information.
+        """Initialize a MembraneSensor object to store Transport membrane related information.
         :param membrane_sensor_protein: name of the membrane protein in the TCS, reference to an Species or Component
         :param response_protein: name of the response protein in the TCS, reference to an Species or Component
         :param assigned_substrate: name of the assigned substrate in the TCS, reference to an Species or Component

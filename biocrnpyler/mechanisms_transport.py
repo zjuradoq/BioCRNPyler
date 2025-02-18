@@ -104,9 +104,11 @@ class Membrane_Protein_Integration(Mechanism):
         #     kex = component.get_parameter("kex", part_id = part_id, mechanism = self)
         # else:
         #     kex = kex
-            
+        
+        size=integral_membrane_protein.size
+
         if complex is None:
-            size=integral_membrane_protein.size
+            # size=integral_membrane_protein.size
             if size > 1:
                 complex1=Complex([integral_membrane_protein]*size)
             else: complex1=complex

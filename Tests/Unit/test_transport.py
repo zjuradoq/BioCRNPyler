@@ -7,11 +7,29 @@ from biocrnpyler import Species, Complex, ParameterKey, Component
 #Test Membrane Transport Mechanisms
 from biocrnpyler import Simple_Diffusion, Membrane_Protein_Integration, Simple_Transport, Facilitated_Transport_MM, Primary_Active_Transport_MM
 
+def contains(element, nested_array):
+    """Recursively checks if an element is in a nested list."""
+    return any(
+        contains(element, sublist) if isinstance(sublist, list) else element == sublist
+        for sublist in nested_array
+    )
+
+def total_length(nested_array):
+    """Recursively counts the total number of elements in a nested list."""
+    count = 0
+    for item in nested_array:
+        if isinstance(item, list):
+            count += total_length(item)  # Recursively count sublist elements
+        else:
+            count += 1  # Count individual elements
+    return count
+
 class test_simple_diffusion():
     sd = Simple_Diffusion()
     substrate = Species("DMi")
     product = Species("DMo")
     c_fake = Species("C")
+
     #Test Update Species
     assert len(sd.update_species(substrate, product))==2
     assert substrate in sd.update_species(substrate, product)

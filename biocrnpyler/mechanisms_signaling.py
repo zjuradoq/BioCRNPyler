@@ -30,22 +30,16 @@ class Membrane_Signaling_Pathway_MM(Mechanism):
         if complex_dict is None:
             #Create empty dictionary for complexes
             complex_dict={}
-
             #Complex1
             complex_dict['Activated_MP']=Complex([signal_substrate, membrane_sensor_protein])
-
             #Complex2
             complex_dict['ATP:Activated_MP']=Complex([nATP*[energy], complex_dict['Activated_MP']])
-
             #Complex3
             complex_dict['ADP:Activated_MP:Sub']=Complex([complex_dict['Activated_MP'], nATP*[waste], assigned_substrate])
-
             #Complex4
             complex_dict['Activated_MP:Sub']=Complex([complex_dict['Activated_MP'], assigned_substrate])
-
             #Complex5
             complex_dict['Activated_MP:Sub:RP']=Complex([complex_dict['Activated_MP:Sub'], response_protein])
-
             #Complex6
             complex_dict['Activated_MP:RP:Sub']=Complex([complex_dict['Activated_MP'], response_protein, assigned_substrate])
         
@@ -78,22 +72,16 @@ class Membrane_Signaling_Pathway_MM(Mechanism):
         if complex_dict is None:
             #Create empty dictionary for complexes
             complex_dict={}
-
             #Complex1
             complex_dict['Activated_MP']=Complex([signal_substrate, membrane_sensor_protein])
-
             #Complex2
             complex_dict['ATP:Activated_MP']=Complex([nATP*[energy], complex_dict['Activated_MP']])
-
             #Complex3
             complex_dict['ADP:Activated_MP:Sub']=Complex([complex_dict['Activated_MP'], nATP*[waste], assigned_substrate])
-
             #Complex4
             complex_dict['Activated_MP:Sub']=Complex([complex_dict['Activated_MP'], assigned_substrate])
-
             #Complex5
             complex_dict['Activated_MP:Sub:RP']=Complex([complex_dict['Activated_MP:Sub'], response_protein])
-
             #Complex6
             complex_dict['Activated_MP:RP:Sub']=Complex([complex_dict['Activated_MP'], response_protein, assigned_substrate])
 

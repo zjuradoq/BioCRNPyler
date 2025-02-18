@@ -8,11 +8,11 @@ from biocrnpyler import Species, Complex, ParameterKey, Component
 from biocrnpyler import Membrane_Signaling_Pathway_MM
 
 def contains(element, nested_array):
-        """Recursively checks if an element is in a nested list."""
-        return any(
-            contains(element, sublist) if isinstance(sublist, list) else element == sublist
-            for sublist in nested_array
-        )
+    """Recursively checks if an element is in a nested list."""
+    return any(
+        contains(element, sublist) if isinstance(sublist, list) else element == sublist
+        for sublist in nested_array
+    )
 
 def total_length(nested_array):
     """Recursively counts the total number of elements in a nested list."""
@@ -73,7 +73,7 @@ class test_membrane_signaling_MM():
         ParameterKey(mechanism = "two_component_membrane_signaling", part_id = None, name = "k_phosph"):1e-1, 
         ParameterKey(mechanism = "two_component_membrane_signaling", part_id = None, name = "ku_activeRP"):2e-1, 
         ParameterKey(mechanism = "two_component_membrane_signaling", part_id = None, name = "ku_dephos"):2e-10,}
-    sensor_params=Component("sensor_test",parameters = sensor_param_dict)
+    sensor_params=Component("sensor_params",parameters = sensor_param_dict)
 
     assert len(tcs.update_reactions(MSP, RP, sub_assign, sub_signal, product, energy, waste, component=sensor_params)) == 8
 

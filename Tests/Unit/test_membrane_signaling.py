@@ -47,7 +47,7 @@ class test_membrane_signaling_MM():
     count = 0
     for item in nested_array:
         if isinstance(item, list):
-            count += nested_length(item)  # Recursively count sublist elements
+            count += total_length(item)  # Recursively count sublist elements
         else:
             count += 1  # Count individual elements
     return count
@@ -62,10 +62,21 @@ class test_membrane_signaling_MM():
     assert contains(complex_dict['Activated_MP:RP:Sub'], tcs.update_species(MSP, RP, sub_assign, sub_signal, product, energy, waste))
     
     #Test Update Reactions
-    assert len(tcs.update_reactions(MSP, RP, sub_assign, sub_signal, product, energy, waste, kb_sigMS = 2e-3, ku_sigMS = 2e-10, 
-        kb_autoPhos = 2e-3, ku_autoPhos = 2e-10, ku_waste = 1e-1, kb_phosRP = 2e-3, ku_phosRP = 2e-10, 
-        k_phosph = 1e-1, ku_activeRP = 2e-1,ku_dephos = 2e-10)) == 8
+    #Define sensor parameter dictionary and component
+    sensor_param_dict = {
+        ParameterKey(mechanism = "two_component_membrane_signaling", part_id = None, name = "kb_sigMS"):2e-3, 
+        ParameterKey(mechanism = "two_component_membrane_signaling", part_id = None, name = "ku_sigMS"):2e-10, 
+        ParameterKey(mechanism = "two_component_membrane_signaling", part_id = None, name = "kb_autoPhos"): 2e-3, 
+        ParameterKey(mechanism = "two_component_membrane_signaling", part_id = None, name = "ku_autoPhos"):2e-10,  
+        ParameterKey(mechanism = "two_component_membrane_signaling", part_id = None, name = "k_hydro"):1e-1,
+        ParameterKey(mechanism = "two_component_membrane_signaling", part_id = None, name = "ku_waste"):1e-1, 
+        ParameterKey(mechanism = "two_component_membrane_signaling", part_id = None, name = "kb_phosRP"):2e-3, 
+        ParameterKey(mechanism = "two_component_membrane_signaling", part_id = None, name = "ku_phosRP"): 2e-10, 
+        ParameterKey(mechanism = "two_component_membrane_signaling", part_id = None, name = "k_phosph"):1e-1, 
+        ParameterKey(mechanism = "two_component_membrane_signaling", part_id = None, name = "ku_activeRP"):2e-1, 
+        ParameterKey(mechanism = "two_component_membrane_signaling", part_id = None, name = "ku_dephos"):2e-10,}
+    sensor_params=Component("sensor_test",parameters = ra_param_dict)
 
-    assert len(tcs.update_reactions(MSP, RP, sub_assign, sub_signal, product, energy, waste, kb_sigMS = 2e-3, ku_sigMS = 2e-10,
-        kb_autoPhos = 2e-3, ku_autoPhos = 2e-10, ku_waste = 1e-1, kb_phosRP = 2e-3, ku_phosRP = 2e-10, 
-        k_phosph = 1e-1, ku_activeRP = 2e-1, ku_dephos = 2e-10, complex_species = c_fake,)) == 8
+    assert len(tcs.update_reactions(MSP, RP, sub_assign, sub_signal, product, energy, waste, component=sensor_params)) == 8
+
+    assert len(tcs.update_reactions(MSP, RP, sub_assign, sub_signal, product, energy, waste, component=sensor_params)) == 8

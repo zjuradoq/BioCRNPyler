@@ -225,8 +225,8 @@ class Facilitated_Transport_MM(Mechanism):
 
     #Facilitated membrane protein transport
         # Sub + MC --> Sub:MC
-        kb_subMC = GeneralPropensity(f'k1*{substrate}*{membrane_carrier}*Heaviside({substrate}-{product})-k1*{product}*{membrane_carrier}*Heaviside({substrate}-{product})', propensity_species=[product,substrate,membrane_carrier], propensity_parameters=[k1])
-        binding_rxn1 = Reaction([substrate, membrane_carrier], [complex_dict['sub:MC']], propensity_type = kb_subMC)
+        prop_subMC = GeneralPropensity(f'k1*{substrate}*{membrane_carrier}*Heaviside({substrate}-{product})-k1*{product}*{membrane_carrier}*Heaviside({substrate}-{product})', propensity_species=[product,substrate,membrane_carrier], propensity_parameters=[kb_subMC])
+        binding_rxn1 = Reaction([substrate, membrane_carrier], [complex_dict['sub:MC']], propensity_type = prop_subMC)
                 
         # Sub:MC --> Sub + MC
         unbinding_rxn1 = Reaction.from_massaction(inputs=[complex_dict['sub:MC']],
@@ -370,16 +370,16 @@ class Primary_Active_Transport_MM(Mechanism):
 
     #Active membrane protein transport
         # Sub + MT<--> Sub:MT
-        kb_subMT = GeneralPropensity(f'k1*{substrate}*{membrane_pump}*Heaviside({membrane_pump})', propensity_species=[substrate,membrane_pump], propensity_parameters=[k1])
-        binding_rxn1 = Reaction([substrate, membrane_pump], [complex_dict['Pump:Sub']], propensity_type = kb1_subMP)
+        prop_subMT = GeneralPropensity(f'k1*{substrate}*{membrane_pump}*Heaviside({membrane_pump})', propensity_species=[substrate,membrane_pump], propensity_parameters=[kb_subMT])
+        binding_rxn1 = Reaction([substrate, membrane_pump], [complex_dict['Pump:Sub']], propensity_type = prop_subMT)
          
         unbinding_rxn1 = Reaction.from_massaction(inputs=[complex_dict['Pump:Sub']],
                                                 outputs=[substrate, membrane_pump],
                                                 k_forward=ku_subMT)
         
         # Sub:MT + E <--> Sub:MT:E
-        kb_subMTnATP = GeneralPropensity(f'k2*{complex_dict['Pump:Sub']}*{energy}*Heaviside({complex_dict['Pump:Sub']})', propensity_species=[complex_dict['Pump:Sub'],energy], propensity_parameters=[k2])
-        binding_rxn2 = Reaction([complex_dict['Pump:Sub'], nATP*[energy]], [complex_dict['Pump:Sub:ATP']], propensity_type = kb_subMPnATP)
+        prop_subMTnATP = GeneralPropensity(f'k2*{complex_dict['Pump:Sub']}*{energy}*Heaviside({complex_dict['Pump:Sub']})', propensity_species=[complex_dict['Pump:Sub'],kb_subMPnATP], propensity_parameters=[k2])
+        binding_rxn2 = Reaction([complex_dict['Pump:Sub'], nATP*[energy]], [complex_dict['Pump:Sub:ATP']], propensity_type = prop_subMTnATP)
          
         unbinding_rxn2 = Reaction.from_massaction(inputs=[complex_dict['Pump:Sub:ATP']],
                                                 outputs=[complex_dict['Pump:Sub'], nATP*[energy]],

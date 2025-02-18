@@ -106,7 +106,7 @@ class Membrane_Signaling_Pathway_MM(Mechanism):
 
         # Auto-phosphorylation membrane sensor:
         ## P* + ATP<--> P*:ATP
-        binding_rxn2 = Reaction.from_massaction(inputs=[complex_dict['Activated_MP'], 2*[energy]],
+        binding_rxn2 = Reaction.from_massaction(inputs=[complex_dict['Activated_MP'], nATP*[energy]],
                                             outputs=[complex_dict['ATP:Activated_MP']],
                                             k_forward=kb_autoPhos,
                                             k_reverse=ku_autoPhos)
@@ -116,7 +116,7 @@ class Membrane_Signaling_Pathway_MM(Mechanism):
                                             k_forward=k_hydro)
         ## P*:Pi:ADP--> P*:Pi +ADP
         unbinding_rxn3 = Reaction.from_massaction(inputs=[complex_dict['ADP:Activated_MP:Sub']],
-                                            outputs=[complex_dict['Activated_MP:Sub'], 2*[waste]],
+                                            outputs=[complex_dict['Activated_MP:Sub'], nATP*[waste]],
                                             k_forward=ku_waste)
 
         #Phosphorylation of response protein:

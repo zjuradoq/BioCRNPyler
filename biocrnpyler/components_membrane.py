@@ -153,13 +153,6 @@ class MembraneChannel(Component):
                 cell = membrane_compartment.split('_')[-1]
                 internal_compartment=internal_compartment+'_'+cell
 
-            # if self.integral_membrane_protein.cell is not None:
-            #     cell=self.integral_membrane_protein.cell
-            #     if type(cell) is str:
-            #         internal_compartment=internal_compartment+'_'+cell
-            #     else:
-            #         internal_compartment=internal_compartment+'_'+str(cell)
-
     #Substrate and product assignments.
         """In the case of membrane components, the substrate is the substance on which the transporter/channel acts without distinction of compartment. 
         The substrate and product are the same substance and the substance does not change as a result except for the compartment.
@@ -254,18 +247,13 @@ class MembranePump(Component):
                 internal_compartment=internal_compartment+'_'+str(cell)
         else:
             self.membrane_pump = self.set_species(membrane_pump)
-            membrane_compartment= self.membrane_pump.compartment.name
+            if self.membrane_pump.cell is not None:
+                cell=self.membrane_pump.cell
+                if type(cell) is str:
+                    internal_compartment=internal_compartment+'_'+cell
+                else:
+                    internal_compartment=internal_compartment+'_'+str(cell)
 
-            if len(membrane_compartment.split('_')) == 2:
-                cell = membrane_compartment.split('_')[-1]
-                internal_compartment=internal_compartment+'_'+cell
-            # if self.membrane_pump.cell is not None:
-            #     cell=self.membrane_pump.cell
-            #     if type(cell) is str:
-            #         internal_compartment=internal_compartment+'_'+cell
-            #     else:
-            #         internal_compartment=internal_compartment+'_'+str(cell)
-   
     # SUBSTRATE
         if substrate is None:
             self.substrate = None
@@ -347,7 +335,7 @@ class MembraneSensor(Component):
                  signal_substrate: Union[Species, str, Component],
                  product: Union[Species, str, Component]=None,
                  internal_compartment:str='Internal', external_compartment:str='External',
-                 ATP:int=None, cell:Union[int, str]=None, attributes=None, **keywords):
+                 ATP:int=2, cell:Union[int, str]=None, attributes=None, **keywords):
         """Initialize a MembraneSensor object to store Transport membrane related information.
         :param membrane_sensor_protein: name of the membrane protein in the TCS, reference to an Species or Component
         :param response_protein: name of the response protein in the TCS, reference to an Species or Component
@@ -369,12 +357,26 @@ class MembraneSensor(Component):
                 internal_compartment=internal_compartment+'_'+str(cell)
         else:
             self.membrane_sensor_protein = self.set_species(membrane_sensor_protein)
-            membrane_compartment= self.membrane_sensor_protein.compartment.name
+            if self.membrane_sensor_protein.cell is not None:
+                cell=self.membrane_sensor_protein.cell
+                if type(cell) is str:
+                    internal_compartment=internal_compartment+'_'+cell
+                else:
+                    internal_compartment=internal_compartment+'_'+str(cell)
+                    
+    # #Additional information on the identity of the specific cell/vesicle (if needed).
+    #     if cell is not None:
+    #         if type(cell) is str:
+    #             internal_compartment=internal_compartment+'_'+cell
+    #         else:
+    #             internal_compartment=internal_compartment+'_'+str(cell)
+    #     else:
+    #         self.membrane_sensor_protein = self.set_species(membrane_sensor_protein)
+    #         membrane_compartment= self.membrane_sensor_protein.compartment.name
 
-            if len(membrane_compartment.split('_')) == 2:
-                cell = membrane_compartment.split('_')[-1]
-                internal_compartment=internal_compartment+'_'+cell
-
+    #         if len(membrane_compartment.split('_')) == 2:
+    #             cell = membrane_compartment.split('_')[-1]
+    #             internal_compartment=internal_compartment+'_'+cell
     #RESPONSE PROTEIN
         if response_protein is None:
             self.response_protein = None
@@ -396,6 +398,7 @@ class MembraneSensor(Component):
         else:
             self.assigned_substrate = self.set_species(assigned_substrate, compartment=internal_compartment,
                                                        attributes=attributes)
+    
     #SIGNAL SUBSTRATE
         if signal_substrate is None:
             self.signal_substrate = None

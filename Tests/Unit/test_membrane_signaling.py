@@ -28,7 +28,7 @@ class test_membrane_signaling_MM():
     c_fake = Species("C")
     
     #Test Update Species
-    assert len(tcs.update_species(MSP, RP, sub_assign, sub_signal, product, energy, waste)) == 13
+    assert len(tcs.update_species(MSP, RP, sub_assign, sub_signal, product, energy, waste)) == 7
     assert c1 in tcs.update_species(MSP, RP, sub_assign, sub_signal, product, energy, waste)
     assert c2 in tcs.update_species(MSP, RP, sub_assign, sub_signal, product, energy, waste)
     assert c3 in tcs.update_species(MSP, RP, sub_assign, sub_signal, product, energy, waste)
@@ -40,10 +40,10 @@ class test_membrane_signaling_MM():
     assert c_fake in tcs.update_species(MSP, RP, sub_assign, sub_signal, product, energy, waste, complex = c_fake)
     
     #Test Update Reactions
-    assert len(tcs.update_reactions(MSP, RP, sub_assign, sub_signal, product, energy, waste, kb1 = 2e-3, ku1 = 2e-10, 
-        kb2 = 2e-3, ku2 = 2e-10, k_hydro = 1e-1, ku3 = 2e-1, kb4 = 2e-3, ku4 = 2e-10, 
-        k_phosph = 1e-1, ku5 = 2e-1,ku6 = 2e-10)) == 8
+    assert len(tcs.update_reactions(MSP, RP, sub_assign, sub_signal, product, energy, waste, kb_sigMS = 2e-3, ku_sigMS = 2e-10, 
+        kb_autoPhos = 2e-3, ku_autoPhos = 2e-10, ku_waste = 1e-1, kb_phosRP = 2e-3, ku_phosRP = 2e-10, 
+        k_phosph = 1e-1, ku_activeRP = 2e-1,ku_dephos = 2e-10)) == 8
 
-    assert len(tcs.update_reactions(MSP, RP, sub_assign, sub_signal, product, energy, waste, kb1 = 2e-3, ku1 = 2e-10,
-        kb2 = 2e-3, ku2 = 2e-10, k_hydro = 1e-1, ku3 = 2e-1, kb4 = 2e-3, ku4 = 2e-10, 
-        k_phosph = 1e-1, ku5 = 2e-1,ku6 = 2e-10, complex_species = c_fake,)) == 8
+    assert len(tcs.update_reactions(MSP, RP, sub_assign, sub_signal, product, energy, waste, kb_sigMS = 2e-3, ku_sigMS = 2e-10,
+        kb_autoPhos = 2e-3, ku_autoPhos = 2e-10, ku_waste = 1e-1, kb_phosRP = 2e-3, ku_phosRP = 2e-10, 
+        k_phosph = 1e-1, ku_activeRP = 2e-1, ku_dephos = 2e-10, complex_species = c_fake,)) == 8

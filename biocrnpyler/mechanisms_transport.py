@@ -61,7 +61,7 @@ class Membrane_Protein_Integration(Mechanism):
 
         return [integral_membrane_protein,  product, complex1]
     
-    def update_reactions(self, integral_membrane_protein, product, complex_dict = None,
+    def update_reactions(self, integral_membrane_protein, product, complex=None,
                          component=None, part_id=None, **keywords):
         """This always requires the inputs component and part_id to find the relevant parameters"""
         # complex=None, complex2 = None, kb1=None, ku1=None,kb2=None,kex=None, kcat=None, 

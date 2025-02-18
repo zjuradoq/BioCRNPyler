@@ -7,6 +7,23 @@ from biocrnpyler import Species, Complex
 #Test Membrane Transport Mechanisms
 from biocrnpyler import Membrane_Signaling_Pathway_MM
 
+def contains(element, nested_array):
+        """Recursively checks if an element is in a nested list."""
+        return any(
+            contains(element, sublist) if isinstance(sublist, list) else element == sublist
+            for sublist in nested_array
+        )
+
+def total_length(nested_array):
+    """Recursively counts the total number of elements in a nested list."""
+    count = 0
+    for item in nested_array:
+        if isinstance(item, list):
+            count += total_length(item)  # Recursively count sublist elements
+        else:
+            count += 1  # Count individual elements
+    return count
+
 class test_membrane_signaling_MM():
     tcs = Membrane_Signaling_Pathway_MM()
     MSP = Species("MSP1")
@@ -33,25 +50,25 @@ class test_membrane_signaling_MM():
     #Complex6
     complex_dict['Activated_MP:RP:Sub']=Complex([complex_dict['Activated_MP'], RP, sub_assign])
 
-    def contains(element, nested_array):
-        """Recursively checks if an element is in a nested list."""
-        return any(
-            contains(element, sublist) if isinstance(sublist, list) else element == sublist
-            for sublist in nested_array
-        )
+    # def contains(element, nested_array):
+    #     """Recursively checks if an element is in a nested list."""
+    #     return any(
+    #         contains(element, sublist) if isinstance(sublist, list) else element == sublist
+    #         for sublist in nested_array
+    #     )
 
-    def total_length(nested_array):
-        """Recursively counts the total number of elements in a nested list."""
-        count = 0
-        for item in nested_array:
-            if isinstance(item, list):
-                count += total_length(item)  # Recursively count sublist elements
-            else:
-                count += 1  # Count individual elements
-        return count
+    # def total_length(nested_array):
+    #     """Recursively counts the total number of elements in a nested list."""
+    #     count = 0
+    #     for item in nested_array:
+    #         if isinstance(item, list):
+    #             count += total_length(item)  # Recursively count sublist elements
+    #         else:
+    #             count += 1  # Count individual elements
+    #     return count
     
     #Test Update Species
-    # assert total_length(tcs.update_species(MSP, RP, sub_assign, sub_signal, product, energy, waste)) == 12
+    assert total_length(tcs.update_species(MSP, RP, sub_assign, sub_signal, product, energy, waste)) == 12
     assert contains(complex_dict['Activated_MP'], tcs.update_species(MSP, RP, sub_assign, sub_signal, product, energy, waste))
     assert contains(complex_dict['ATP:Activated_MP'], tcs.update_species(MSP, RP, sub_assign, sub_signal, product, energy, waste))
     assert contains( complex_dict['ADP:Activated_MP:Sub'], tcs.update_species(MSP, RP, sub_assign, sub_signal, product, energy, waste))

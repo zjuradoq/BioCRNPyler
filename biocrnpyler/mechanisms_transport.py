@@ -202,7 +202,7 @@ class Facilitated_Transport_MM(Mechanism):
         #Make dictionary into array
         complex_array = [value for value in complex_dict.values()]
 
-        return [membrane_carrier, substrate, product, , complex_array] #complex1, complex2]
+        return [membrane_carrier, substrate, product, complex_array] #complex1, complex2]
 
     def update_reactions(self, membrane_carrier, substrate, product, complex_dict = None,
                          component = None, part_id = None, **keywords):

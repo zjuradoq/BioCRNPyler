@@ -75,7 +75,7 @@ class test_membrane_signaling_MM():
         ParameterKey(mechanism = "two_component_membrane_signaling", part_id = None, name = "k_phosph"):1e-1, 
         ParameterKey(mechanism = "two_component_membrane_signaling", part_id = None, name = "ku_activeRP"):2e-1, 
         ParameterKey(mechanism = "two_component_membrane_signaling", part_id = None, name = "ku_dephos"):2e-10,}
-    sensor_params=Component("sensor_test",parameters = ra_param_dict)
+    sensor_params=Component("sensor_test",parameters = sensor_param_dict)
 
     assert len(tcs.update_reactions(MSP, RP, sub_assign, sub_signal, product, energy, waste, component=sensor_params)) == 8
 

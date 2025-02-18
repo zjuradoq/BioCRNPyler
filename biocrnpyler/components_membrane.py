@@ -364,19 +364,6 @@ class MembraneSensor(Component):
                 else:
                     internal_compartment=internal_compartment+'_'+str(cell)
                     
-    # #Additional information on the identity of the specific cell/vesicle (if needed).
-    #     if cell is not None:
-    #         if type(cell) is str:
-    #             internal_compartment=internal_compartment+'_'+cell
-    #         else:
-    #             internal_compartment=internal_compartment+'_'+str(cell)
-    #     else:
-    #         self.membrane_sensor_protein = self.set_species(membrane_sensor_protein)
-    #         membrane_compartment= self.membrane_sensor_protein.compartment.name
-
-    #         if len(membrane_compartment.split('_')) == 2:
-    #             cell = membrane_compartment.split('_')[-1]
-    #             internal_compartment=internal_compartment+'_'+cell
     #RESPONSE PROTEIN
         if response_protein is None:
             self.response_protein = None
@@ -398,7 +385,6 @@ class MembraneSensor(Component):
         else:
             self.assigned_substrate = self.set_species(assigned_substrate, compartment=internal_compartment,
                                                        attributes=attributes)
-    
     #SIGNAL SUBSTRATE
         if signal_substrate is None:
             self.signal_substrate = None

@@ -70,6 +70,7 @@ class Membrane_Protein_Integration(Mechanism):
         kb_oligmor = component.get_parameter("kb_oligmor", part_id = part_id, mechanism = self)
         ku_oligmor = component.get_parameter("ku_oligmor", part_id = part_id, mechanism = self)
         kex = component.get_parameter("kex", part_id = part_id, mechanism = self)
+        kcat = component.get_parameter("kcat", part_id = part_id, mechanism = self)
 
         # if part_id is None and component is not None:
         #     part_id = component.name

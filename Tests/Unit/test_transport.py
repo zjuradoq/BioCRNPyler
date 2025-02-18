@@ -2,7 +2,7 @@
 #  Copyright (c) 2020, Build-A-Cell. All rights reserved.
 #  See LICENSE file in the project root directory for details.
 
-from biocrnpyler import Species, Complex
+from biocrnpyler import Species, Complex, ParameterKey, Component
 
 #Test Membrane Transport Mechanisms
 from biocrnpyler import Simple_Diffusion, Membrane_Protein_Integration, Simple_Transport, Facilitated_Transport_MM, Primary_Active_Transport_MM

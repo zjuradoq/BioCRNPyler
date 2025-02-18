@@ -32,25 +32,23 @@ class test_membrane_signaling_MM():
     complex_dict['Activated_MP:Sub:RP']=Complex([complex_dict['Activated_MP:Sub'], RP])
     #Complex6
     complex_dict['Activated_MP:RP:Sub']=Complex([complex_dict['Activated_MP'], RP, sub_assign])
-    #Complex Fake
-    c_fake = Species("C")
 
     def contains(element, nested_array):
-    """Recursively checks if an element is in a nested list."""
-    return any(
-        contains(element, sublist) if isinstance(sublist, list) else element == sublist
-        for sublist in nested_array
-    )
+        """Recursively checks if an element is in a nested list."""
+        return any(
+            contains(element, sublist) if isinstance(sublist, list) else element == sublist
+            for sublist in nested_array
+        )
 
     def total_length(nested_array):
-    """Recursively counts the total number of elements in a nested list."""
-    count = 0
-    for item in nested_array:
-        if isinstance(item, list):
-            count += total_length(item)  # Recursively count sublist elements
-        else:
-            count += 1  # Count individual elements
-    return count
+        """Recursively counts the total number of elements in a nested list."""
+        count = 0
+        for item in nested_array:
+            if isinstance(item, list):
+                count += total_length(item)  # Recursively count sublist elements
+            else:
+                count += 1  # Count individual elements
+        return count
     
     #Test Update Species
     assert total_length(tcs.update_species(MSP, RP, sub_assign, sub_signal, product, energy, waste)) == 12

@@ -1,5 +1,5 @@
 mechanism	part_id	param_name	value	comments
-membrane_sensor		kb_sigMS	2E-3	Abritrary value for the binding of signal substrate and membrane sensor: S + P --> P*
+two_component_membrane_signaling		kb_sigMS	2E-3	Abritrary value for the binding of signal substrate and membrane sensor: S + P --> P*
 membrane_sensor		ku_sigMS	2E-10	Abritrary value for the unbinding of signal substrate and membrane sensor: S + P <-- P*
 membrane_sensor		kb_autoPhos	2E-03	Abritrary value for the binding of ATP and membrane sensor: P* + ATP --> P*:ATP
 membrane_sensor		ku_autoPhos	2E-10	Abritrary value for the unbinding of ATP and membrane sensor: P* + ATP <-- P*:ATP

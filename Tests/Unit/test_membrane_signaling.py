@@ -17,25 +17,49 @@ class test_membrane_signaling_MM():
     product= Species('RP_active')
     energy = Species("E1")
     waste = Species("W1")
-    c1 =  Complex([sub_signal, MSP])
-    c2 =  Complex([MSP.ATP*[energy], c1])
-    c3 =  Complex([c1, MSP.ATP*[waste], sub_assign])
-    c4 =  Complex([c1, sub_assign])
-    c5 = Complex([c4, RP])
-    c6 = Complex([c1, RP, sub_assign])
-
+    
+    #Create empty dictionary for complexes
+    complex_dict={}
+    #Complex1
+    complex_dict['Activated_MP']=Complex([sub_signal, MSP])
+    #Complex2
+    complex_dict['ATP:Activated_MP']=Complex([MSP.ATP*[energy], complex_dict['Activated_MP']])
+    #Complex3
+    complex_dict['ADP:Activated_MP:Sub']=Complex([complex_dict['Activated_MP'], MSP.ATP*[waste], sub_assign])
+    #Complex4
+    complex_dict['Activated_MP:Sub']=Complex([complex_dict['Activated_MP'], sub_assign])
+    #Complex5
+    complex_dict['Activated_MP:Sub:RP']=Complex([complex_dict['Activated_MP:Sub'], RP])
+    #Complex6
+    complex_dict['Activated_MP:RP:Sub']=Complex([complex_dict['Activated_MP'], RP, sub_assign])
+    #Complex Fake
     c_fake = Species("C")
+
+    def contains(element, nested_array):
+    """Recursively checks if an element is in a nested list."""
+    return any(
+        contains(element, sublist) if isinstance(sublist, list) else element == sublist
+        for sublist in nested_array
+    )
+
+    def total_length(nested_array):
+    """Recursively counts the total number of elements in a nested list."""
+    count = 0
+    for item in nested_array:
+        if isinstance(item, list):
+            count += nested_length(item)  # Recursively count sublist elements
+        else:
+            count += 1  # Count individual elements
+    return count
     
     #Test Update Species
-    assert len(tcs.update_species(MSP, RP, sub_assign, sub_signal, product, energy, waste)) == 7
-    assert c1 in tcs.update_species(MSP, RP, sub_assign, sub_signal, product, energy, waste)
-    # assert c2 in tcs.update_species(MSP, RP, sub_assign, sub_signal, product, energy, waste)
-    # assert c3 in tcs.update_species(MSP, RP, sub_assign, sub_signal, product, energy, waste)
-    # assert c4 in tcs.update_species(MSP, RP, sub_assign, sub_signal, product, energy, waste)
-    # assert c5 in tcs.update_species(MSP, RP, sub_assign, sub_signal, product, energy, waste)
-    # assert c6 in tcs.update_species(MSP, RP, sub_assign, sub_signal, product, energy, waste)
-
-    assert c_fake in tcs.update_species(MSP, RP, sub_assign, sub_signal, product, energy, waste, complex = c_fake)
+    assert total_length(tcs.update_species(MSP, RP, sub_assign, sub_signal, product, energy, waste)) == 12
+    assert contains(complex_dict['Activated_MP'], tcs.update_species(MSP, RP, sub_assign, sub_signal, product, energy, waste))
+    assert contains(complex_dict['ATP:Activated_MP'], tcs.update_species(MSP, RP, sub_assign, sub_signal, product, energy, waste))
+    assert contains( complex_dict['ADP:Activated_MP:Sub'], tcs.update_species(MSP, RP, sub_assign, sub_signal, product, energy, waste))
+    assert contains(complex_dict['Activated_MP:Sub'], tcs.update_species(MSP, RP, sub_assign, sub_signal, product, energy, waste))
+    assert contains(complex_dict['Activated_MP:Sub:RP'], tcs.update_species(MSP, RP, sub_assign, sub_signal, product, energy, waste))
+    assert contains(complex_dict['Activated_MP:RP:Sub'], tcs.update_species(MSP, RP, sub_assign, sub_signal, product, energy, waste))
     
     #Test Update Reactions
     assert len(tcs.update_reactions(MSP, RP, sub_assign, sub_signal, product, energy, waste, kb_sigMS = 2e-3, ku_sigMS = 2e-10, 

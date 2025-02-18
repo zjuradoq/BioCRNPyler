@@ -225,7 +225,7 @@ class Facilitated_Transport_MM(Mechanism):
 
     #Facilitated membrane protein transport
         # Sub + MC --> Sub:MC
-        prop_subMC = GeneralPropensity(f'k1*{substrate}*{membrane_carrier}*Heaviside({substrate}-{product})-k1*{product}*{membrane_carrier}*Heaviside({substrate}-{product})', propensity_species=[product,substrate,membrane_carrier], propensity_parameters=[kb_subMC])
+        prop_subMC = GeneralPropensity(f'kb_subMC*{substrate}*{membrane_carrier}*Heaviside({substrate}-{product})-kb_subMC*{product}*{membrane_carrier}*Heaviside({substrate}-{product})', propensity_species=[product,substrate,membrane_carrier], propensity_parameters=[kb_subMC])
         binding_rxn1 = Reaction([substrate, membrane_carrier], [complex_dict['sub:MC']], propensity_type = prop_subMC)
                 
         # Sub:MC --> Sub + MC

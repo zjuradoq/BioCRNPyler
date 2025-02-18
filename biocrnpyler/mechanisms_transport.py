@@ -303,7 +303,9 @@ class Primary_Active_Transport_MM(Mechanism):
         """This always requires the inputs component and part_id to find the relevant parameters"""
 
         #Get Parameters
+        kb_subMT = component.get_parameter("kb_subMT", part_id = part_id, mechanism = self)
         ku_subMT = component.get_parameter("ku_subMT", part_id = part_id, mechanism = self)
+        kb_subMTnATP = component.get_parameter("kb_subMTnATP", part_id = part_id, mechanism = self)
         ku_subMTnATP = component.get_parameter("ku_subMTnATP", part_id = part_id, mechanism = self)
         k_trnsp = component.get_parameter("k_trnsp", part_id = part_id, mechanism = self)
         ku_prod = component.get_parameter("ku_prod", part_id = part_id, mechanism = self)
@@ -370,7 +372,7 @@ class Primary_Active_Transport_MM(Mechanism):
 
     #Active membrane protein transport
         # Sub + MT<--> Sub:MT
-        prop_subMT = GeneralPropensity(f'k1*{substrate}*{membrane_pump}*Heaviside({membrane_pump})', propensity_species=[substrate,membrane_pump], propensity_parameters=[kb_subMT])
+        prop_subMT = GeneralPropensity(f'kb_subMT*{substrate}*{membrane_pump}*Heaviside({membrane_pump})', propensity_species=[substrate,membrane_pump], propensity_parameters=[kb_subMT])
         binding_rxn1 = Reaction([substrate, membrane_pump], [complex_dict['Pump:Sub']], propensity_type = prop_subMT)
          
         unbinding_rxn1 = Reaction.from_massaction(inputs=[complex_dict['Pump:Sub']],
@@ -378,7 +380,7 @@ class Primary_Active_Transport_MM(Mechanism):
                                                 k_forward=ku_subMT)
         
         # Sub:MT + E <--> Sub:MT:E
-        prop_subMTnATP = GeneralPropensity(f'k2*{complex_dict['Pump:Sub']}*{energy}*Heaviside({complex_dict['Pump:Sub']})', propensity_species=[complex_dict['Pump:Sub'],kb_subMPnATP], propensity_parameters=[k2])
+        prop_subMTnATP = GeneralPropensity(f'kb_subMTnATP*{complex_dict['Pump:Sub']}*{energy}*Heaviside({complex_dict['Pump:Sub']})', propensity_species=[complex_dict['Pump:Sub'],kb_subMPnATP], propensity_parameters=[kb_subMTnATP])
         binding_rxn2 = Reaction([complex_dict['Pump:Sub'], nATP*[energy]], [complex_dict['Pump:Sub:ATP']], propensity_type = prop_subMTnATP)
          
         unbinding_rxn2 = Reaction.from_massaction(inputs=[complex_dict['Pump:Sub:ATP']],

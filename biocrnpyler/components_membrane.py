@@ -345,6 +345,7 @@ class MembraneSensor(Component):
                  response_protein: Union[Species, str, Component],
                  assigned_substrate: Union[Species, str, Component],
                  signal_substrate: Union[Species, str, Component],
+                 product: Union[Species, str, Component]=None,
                  internal_compartment:str='Internal', external_compartment:str='External',
                  ATP:int=None, cell:Union[int, str]=None, attributes=None, **keywords):
         """Initialize a MembraneSensor object to store Transport membrane related information.
@@ -352,6 +353,7 @@ class MembraneSensor(Component):
         :param response_protein: name of the response protein in the TCS, reference to an Species or Component
         :param assigned_substrate: name of the assigned substrate in the TCS, reference to an Species or Component
         :param signal_substrate: name of the signal substrate in the TCS, reference to an Species or Component
+        :param product: name of the product in the TCS, reference to an Species or Component
         :param internal_compartment: name of internal compartment 
         :param external_compartment: name of external compartment 
         :parm cell: indicated the cell, identifier can be name or number
@@ -373,19 +375,21 @@ class MembraneSensor(Component):
                 cell = membrane_compartment.split('_')[-1]
                 internal_compartment=internal_compartment+'_'+cell
 
-            # if self.membrane_sensor_protein.cell is not None:
-            #     cell=self.membrane_sensor_protein.cell
-            #     if type(cell) is str:
-            #         internal_compartment=internal_compartment+'_'+cell
-            #     else:
-            #         internal_compartment=internal_compartment+'_'+str(cell)
-   
     #RESPONSE PROTEIN
         if response_protein is None:
             self.response_protein = None
         else:
             self.response_protein = self.set_species(response_protein, compartment=internal_compartment,
                                                      attributes=attributes)
+
+     #PRODUCT PROTEIN
+        if product is None:
+            self.product = self.set_species(str(response_protein)+'active', compartment=internal_compartment,
+                                            attributes=attributes)
+        else:
+            self.product = self.set_species(product, compartment=internal_compartment,
+                                            attributes=attributes)
+
     # ASSIGNED SUBSTRATE
         if assigned_substrate is None:
             self.assigned_substrate = None
@@ -424,11 +428,11 @@ class MembraneSensor(Component):
     def update_species(self):
         mech_sen = self.get_mechanism('membrane_sensor')
         return mech_sen.update_species(self.membrane_sensor_protein, self.response_protein, 
-                                       self.assigned_substrate, self.signal_substrate, 
+                                       self.assigned_substrate, self.signal_substrate, self.product,
                                        self.energy, self.waste) 
 
     def update_reactions(self):
         mech_sen = self.get_mechanism('membrane_sensor')
         return mech_sen.update_reactions(self.membrane_sensor_protein, self.response_protein, 
-                                         self.assigned_substrate, self.signal_substrate, 
+                                         self.assigned_substrate, self.signal_substrate, self.product,
                                          self.energy, self.waste, component=self,  part_id=self.name)   

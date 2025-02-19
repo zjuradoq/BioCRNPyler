@@ -71,13 +71,28 @@ class IntegralMembraneProtein(Component):
         :param attributes: Species attribute.
         :param keywords: pass into the parent's (Component) initializer
         """
-        
+
+    # #Additional information on the identity of the specific cell/vesicle (if needed). Did not work
+    #     if cell is not None:
+    #         if type(cell) is str:
+    #             internal_compartment=internal_compartment+'_'+cell
+    #         else:
+    #             internal_compartment=internal_compartment+'_'+str(cell)
+    #     else:
+    #         self.membrane_protein = self.set_species(membrane_protein)
+    #         membrane_compartment= self.membrane_protein.compartment.name
+
+    #         if len(membrane_compartment.split('_')) == 2:
+    #             cell = membrane_compartment.split('_')[-1]
+    #             internal_compartment=internal_compartment+'_'+cell
     #Additional information on the identity of the specific cell/vesicle (if needed).
         if cell is not None:
             if type(cell) is str:
-                internal_compartment=internal_compartment+'_'+cell
+                compartment=compartment+'_'+cell
+                membrane_compartment=membrane_compartment+'_'+cell
             else:
-                internal_compartment=internal_compartment+'_'+str(cell)
+                compartment=compartment+'_'+str(cell)
+                membrane_compartment=membrane_compartment+'_'+str(cell)
         else:
             self.membrane_protein = self.set_species(membrane_protein)
             membrane_compartment= self.membrane_protein.compartment.name
@@ -85,14 +100,14 @@ class IntegralMembraneProtein(Component):
             if len(membrane_compartment.split('_')) == 2:
                 cell = membrane_compartment.split('_')[-1]
                 internal_compartment=internal_compartment+'_'+cell
-    # #Additional information on the identity of the specific cell/vesicle (if needed).
-    #     if cell is not None:
-    #         if type(cell) is str:
-    #             compartment=compartment+'_'+cell
-    #             membrane_compartment=membrane_compartment+'_'+cell
-    #         else:
-    #             compartment=compartment+'_'+str(cell)
-    #             membrane_compartment=membrane_compartment+'_'+str(cell)
+
+        # if cell is not None: worked but not complete
+        #     if type(cell) is str:
+        #         compartment=compartment+'_'+cell
+        #         membrane_compartment=membrane_compartment+'_'+cell
+        #     else:
+        #         compartment=compartment+'_'+str(cell)
+        #         membrane_compartment=membrane_compartment+'_'+str(cell)
 
     # PROTEIN
         self.membrane_protein = self.set_species(membrane_protein, material_type='protein', compartment=compartment,

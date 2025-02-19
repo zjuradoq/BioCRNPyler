@@ -3,17 +3,17 @@ membrane_protein_integration		kb_oligmor	2E-3	Arbitrary value for the IMP
 membrane_protein_integration		ku_oligmor	2E-10	Arbitrary value for the IMP
 membrane_protein_integration		kex	1E1	Arbitrary value for the IMP
 membrane_protein_integration		kcat	5E-1	Arbitrary value for the IMP
-membrane_protein_integration		k_diff	2E-4	Arbitrary value for the DiffusibleMolecule
-simple_membrane_protein_transport		kb_subMC	1E-1	Arbitrary value for the channel
-facilitated_membrane_protein_transport		k_trnsp	1E-1	Arbitrary value for thecarrier
+simple_diffusion		k_diff	2E-4	Arbitrary value for the DiffusibleMolecule
+simple_membrane_protein_transport		k_trnsp	1E-1	Arbitrary value for the channel
+facilitated_membrane_protein_transport		kb_subMC	1E-1	Arbitrary value for thecarrier
 facilitated_membrane_protein_transport		ku_subMC	1E-1	Arbitrary value for the carrier
-facilitated_membrane_protein_transport		k_trnsp	1E-2	Arbitrary value for the carrier
+facilitated_membrane_protein_transport		k_trnspMC	1E-2	Arbitrary value for the carrier
 facilitated_membrane_protein_transport		ku_prodMC	1E-1	Arbitrary value for the carrier
 active_membrane_protein_transport		kb_subMT	1E-1	Arbitrary value for the pump
 active_membrane_protein_transport		ku_subMT	1E-1	Arbitrary value for the pump
 active_membrane_protein_transport		kb_subMTnATP	1E-1	Arbitrary value for the pump
 active_membrane_protein_transport		ku_subMTnATP	1E-2	Arbitrary value for the pump
-active_membrane_protein_transport		k_trnsp	1E-2	Arbitrary value for the pump
+active_membrane_protein_transport		k_trnspMP	1E-2	Arbitrary value for the pump
 active_membrane_protein_transport		ku_prod	1E-1	Arbitrary value for the pump
 active_membrane_protein_transport		ku_MT	1E-1	Arbitrary value for the pump
 two_component_membrane_signaling		kb_sigMS	2E-3	Abritrary value for the binding of signal substrate and membrane sensor: S + P --> P*

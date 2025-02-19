@@ -214,7 +214,7 @@ class Facilitated_Transport_MM(Mechanism):
         #Get Parameters
         kb_subMC = component.get_parameter("kb_subMC", part_id = part_id, mechanism = self)
         ku_subMC = component.get_parameter("ku_subMC", part_id = part_id, mechanism = self)
-        k_trnsp = component.get_parameter("k_trnsp", part_id = part_id, mechanism = self)
+        k_trnspMC = component.get_parameter("k_trnspMC", part_id = part_id, mechanism = self)
         ku_prodMC = component.get_parameter("ku_prodMC", part_id = part_id, mechanism = self)
             
         if complex_dict is None:
@@ -238,7 +238,7 @@ class Facilitated_Transport_MM(Mechanism):
         # Sub:MC --> Prod:MC
         transport_rxn = Reaction.from_massaction(inputs=[complex_dict['sub:MC']],
                                                 outputs=[complex_dict['prod:MC']],
-                                                k_forward=k_trnsp)
+                                                k_forward=k_trnspMC)
         
         # MC:Prod --> MC + Prod
         unbinding_rxn2 = Reaction.from_massaction(inputs=[complex_dict['prod:MC']],
@@ -309,7 +309,7 @@ class Primary_Active_Transport_MM(Mechanism):
         ku_subMT = component.get_parameter("ku_subMT", part_id = part_id, mechanism = self)
         kb_subMTnATP = component.get_parameter("kb_subMTnATP", part_id = part_id, mechanism = self)
         ku_subMTnATP = component.get_parameter("ku_subMTnATP", part_id = part_id, mechanism = self)
-        k_trnsp = component.get_parameter("k_trnsp", part_id = part_id, mechanism = self)
+        k_trnspMP = component.get_parameter("k_trnsp", part_id = part_id, mechanism = self)
         ku_prod = component.get_parameter("ku_prod", part_id = part_id, mechanism = self)
         ku_MT = component.get_parameter("ku_MT", part_id = part_id, mechanism = self)
         
@@ -393,7 +393,7 @@ class Primary_Active_Transport_MM(Mechanism):
          # Sub:MT:E --> Prod:MT:E
         transport_rxn = Reaction.from_massaction(inputs=[complex_dict['Pump:Sub:ATP']],
                                                 outputs=[complex_dict['Pump:Prod:ATP']],
-                                                k_forward=k_trnsp)
+                                                k_forward=k_trnspMP)
         # Prod:MT:E--> Prod+MT:W
         unbinding_rxn3 = Reaction.from_massaction(inputs=[complex_dict['Pump:Prod:ATP']],
                                                 outputs=[complex_dict['Pump:ADP'], product],

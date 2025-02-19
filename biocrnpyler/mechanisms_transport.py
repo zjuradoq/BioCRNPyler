@@ -209,7 +209,6 @@ class Facilitated_Transport_MM(Mechanism):
 
     def update_reactions(self, membrane_carrier, substrate, product, complex_dict = None,
                          component = None, part_id = None, **keywords):
-        # complex=None, complex2 = None,  k1=None, ku1=None, k_trnsp=None, ku2=None,**keywords):
         """This always requires the inputs component and part_id to find the relevant parameters"""
 
         #Get Parameters
@@ -258,7 +257,6 @@ class Primary_Active_Transport_MM(Mechanism):
         Mechanism.__init__(self, name, mechanism_type)
      
     def update_species(self, membrane_pump, substrate, product, energy , waste, complex_dict=None,
-        # complex=None, complex2 = None, complex3 = None, complex4 = None, 
         **keywords):
               
         nATP=membrane_pump.ATP
@@ -299,7 +297,7 @@ class Primary_Active_Transport_MM(Mechanism):
         return [membrane_pump, substrate, product, energy, waste, complex_array] #complex1, complex2, complex3, complex4]
 
     def update_reactions(self, membrane_pump, substrate, product, energy, waste, complex_dict = None,
-                            omponent = None, part_id = None, **keywords):
+                            component = None, part_id = None, **keywords):
                             # component = None, part_id = None, 
                          # complex=None, complex2 = None, complex3=None, complex4 = None, complex5 = None, 
                          # k1=None, ku1=None, k2=None, ku2=None, k_trnsp=None, ku3=None, ku4=None, 

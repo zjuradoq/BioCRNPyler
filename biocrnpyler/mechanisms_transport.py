@@ -251,7 +251,7 @@ class Facilitated_Transport_MM(Mechanism):
 class Primary_Active_Transport_MM(Mechanism):
     """A mechanism to model the transport of a substrate through a membrane carrier.
     Mechanism follows Michaelis-Menten Type Reactions with products that can bind to membrane carriers.
-    Mechanism for the schema: Sub+MT <--> Sub:MT + E --> Sub:MT:E --> MT:Prod:E --> Prod + MT:W --> Prod + MT+ W
+    Mechanism for the schema: Sub+MP <--> Sub:MP + E --> Sub:MP:E --> MP:Prod:E --> Prod + MP:W --> Prod + MP+ W
     """
     def __init__(self, name= "active_membrane_protein_transport", 
                  mechanism_type="transport", **keywords):
@@ -376,7 +376,7 @@ class Primary_Active_Transport_MM(Mechanism):
 
     #Active membrane protein transport
         # Sub + MP<--> Sub:MP
-        prop_subMP = GeneralPropensity(f'kb_subMT*{substrate}*{membrane_pump}*Heaviside({membrane_pump})', propensity_species=[substrate,membrane_pump], propensity_parameters=[kb_subMP])
+        prop_subMP = GeneralPropensity(f'kb_subMP*{substrate}*{membrane_pump}*Heaviside({membrane_pump})', propensity_species=[substrate,membrane_pump], propensity_parameters=[kb_subMP])
         binding_rxn1 = Reaction([substrate, membrane_pump], [complex_dict['Pump:Sub']], propensity_type = prop_subMP)
          
         unbinding_rxn1 = Reaction.from_massaction(inputs=[complex_dict['Pump:Sub']],

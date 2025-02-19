@@ -87,6 +87,7 @@ class test_facilitated_transport_MM():
     product = Species("P1")
     c1 =  Complex([substrate, MC])
     c2 =  Complex([product, MC])
+    c_fake = Species("C")
     
     #Test Update Species
     assert total_length(ft.update_species(MC, substrate, product)) == 5
@@ -119,6 +120,7 @@ class test_active_transport_MM():
     c2 =  Complex([MP.ATP*[energy], c1])
     c3 =  Complex([MP.ATP*[energy], product, MP])
     c4 =  Complex([MP.ATP*[waste], MP])
+    c_fake = Species("C")
     
     #Test Update Species
     assert total_length(pat.update_species(MP, substrate, product, energy, waste)) == 9
@@ -138,5 +140,6 @@ class test_active_transport_MM():
         ParameterKey(mechanism = "active_membrane_protein_transport", part_id = None, name = "ku_prod"):2e-10,
         ParameterKey(mechanism = "active_membrane_protein_transport", part_id = None, name = "ku_MT"):2e-10,}
     transport_params=Component("transport_params",parameters = transport_param_dict)
-    # assert len(pat.update_reactions(MP, substrate, product, energy, waste, k1 = 1.0, ku1 = 1.0, k2 = 1.0, ku2 = 1.0, k_trnsp = 1.0, ku3= 1.0, ku4= 1.0)) == 7
-    # assert len(pat.update_reactions(MP, substrate, product, energy, waste, k1 = 1.0, ku1 = 1.0, k2 = 1.0, ku2 = 1.0, k_trnsp = 1.0, ku3= 1.0, ku4= 1.0, complex_species = c_fake,)) == 7
+
+    assert len(pat.update_reactions(MP, substrate, product, energy, waste, component=transport_params)) == 7
+    assert len(pat.update_reactions(MP, substrate, product, energy, waste, component=transport_params,complex_species = c_fake,)) == 7

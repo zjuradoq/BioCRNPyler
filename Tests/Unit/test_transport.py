@@ -99,7 +99,7 @@ class test_facilitated_transport_MM():
     transport_param_dict = {
         ParameterKey(mechanism = "facilitated_membrane_protein_transport", part_id = None, name = "kb_subMC"):2e-3, 
         ParameterKey(mechanism = "facilitated_membrane_protein_transport", part_id = None, name = "ku_subMC"):2e-10, 
-        ParameterKey(mechanism = "facilitated_membrane_protein_transport", part_id = None, name = "k_trnsp"): 2e-3, 
+        ParameterKey(mechanism = "facilitated_membrane_protein_transport", part_id = None, name = "k_trnspMC"): 2e-3, 
         ParameterKey(mechanism = "facilitated_membrane_protein_transport", part_id = None, name = "ku_prodMC"):2e-10,}
     transport_params=Component("transport_params",parameters = transport_param_dict)
 
@@ -132,13 +132,13 @@ class test_active_transport_MM():
     #Test Update Reactions
     #Define sensor parameter dictionary and component
     transport_param_dict = {
-        ParameterKey(mechanism = "active_membrane_protein_transport", part_id = None, name = "kb_subMT"):2e-3, 
-        ParameterKey(mechanism = "active_membrane_protein_transport", part_id = None, name = "ku_subMT"):2e-10, 
-        ParameterKey(mechanism = "active_membrane_protein_transport", part_id = None, name = "kb_subMTnATP"): 2e-3, 
-        ParameterKey(mechanism = "active_membrane_protein_transport", part_id = None, name = "ku_subMTnATP"): 2e-1,
-        ParameterKey(mechanism = "active_membrane_protein_transport", part_id = None, name = "k_trnsp"):2e-10,
+        ParameterKey(mechanism = "active_membrane_protein_transport", part_id = None, name = "kb_subMP"):2e-3, 
+        ParameterKey(mechanism = "active_membrane_protein_transport", part_id = None, name = "ku_subMP"):2e-10, 
+        ParameterKey(mechanism = "active_membrane_protein_transport", part_id = None, name = "kb_subMPnATP"): 2e-3, 
+        ParameterKey(mechanism = "active_membrane_protein_transport", part_id = None, name = "ku_subMPnATP"): 2e-1,
+        ParameterKey(mechanism = "active_membrane_protein_transport", part_id = None, name = "k_trnspMP"):2e-10,
         ParameterKey(mechanism = "active_membrane_protein_transport", part_id = None, name = "ku_prod"):2e-10,
-        ParameterKey(mechanism = "active_membrane_protein_transport", part_id = None, name = "ku_MT"):2e-10,}
+        ParameterKey(mechanism = "active_membrane_protein_transport", part_id = None, name = "ku_MP"):2e-10,}
     transport_params=Component("transport_params",parameters = transport_param_dict)
 
     assert len(pat.update_reactions(MP, substrate, product, energy, waste, component=transport_params)) == 7

@@ -57,6 +57,7 @@ class Membrane_Protein_Integration(Mechanism):
             size=integral_membrane_protein.size
             if size > 1:
                 complex1=Complex([integral_membrane_protein]*size)
+            else: complex1=complex
         else: complex1=complex
 
         return [integral_membrane_protein,  product, complex1]
@@ -305,13 +306,13 @@ class Primary_Active_Transport_MM(Mechanism):
         """This always requires the inputs component and part_id to find the relevant parameters"""
 
         #Get Parameters
-        kb_subMT = component.get_parameter("kb_subMT", part_id = part_id, mechanism = self)
-        ku_subMT = component.get_parameter("ku_subMT", part_id = part_id, mechanism = self)
-        kb_subMTnATP = component.get_parameter("kb_subMTnATP", part_id = part_id, mechanism = self)
-        ku_subMTnATP = component.get_parameter("ku_subMTnATP", part_id = part_id, mechanism = self)
-        k_trnspMP = component.get_parameter("k_trnsp", part_id = part_id, mechanism = self)
+        kb_subMP = component.get_parameter("kb_subMP", part_id = part_id, mechanism = self)
+        ku_subMP = component.get_parameter("ku_subMP", part_id = part_id, mechanism = self)
+        kb_subMPnATP = component.get_parameter("kb_subMPnATP", part_id = part_id, mechanism = self)
+        ku_subMPnATP = component.get_parameter("ku_subMPnATP", part_id = part_id, mechanism = self)
+        k_trnspMP = component.get_parameter("k_trnspMP", part_id = part_id, mechanism = self)
         ku_prod = component.get_parameter("ku_prod", part_id = part_id, mechanism = self)
-        ku_MT = component.get_parameter("ku_MT", part_id = part_id, mechanism = self)
+        ku_MP = component.get_parameter("ku_MP", part_id = part_id, mechanism = self)
         
         # if part_id is None and component is not None:
         #     part_id = component.name
@@ -374,33 +375,33 @@ class Primary_Active_Transport_MM(Mechanism):
             complex_dict['Pump:ADP']=Complex([nATP*[waste], membrane_pump])
 
     #Active membrane protein transport
-        # Sub + MT<--> Sub:MT
-        prop_subMT = GeneralPropensity(f'kb_subMT*{substrate}*{membrane_pump}*Heaviside({membrane_pump})', propensity_species=[substrate,membrane_pump], propensity_parameters=[kb_subMT])
-        binding_rxn1 = Reaction([substrate, membrane_pump], [complex_dict['Pump:Sub']], propensity_type = prop_subMT)
+        # Sub + MP<--> Sub:MP
+        prop_subMP = GeneralPropensity(f'kb_subMT*{substrate}*{membrane_pump}*Heaviside({membrane_pump})', propensity_species=[substrate,membrane_pump], propensity_parameters=[kb_subMP])
+        binding_rxn1 = Reaction([substrate, membrane_pump], [complex_dict['Pump:Sub']], propensity_type = prop_subMP)
          
         unbinding_rxn1 = Reaction.from_massaction(inputs=[complex_dict['Pump:Sub']],
                                                 outputs=[substrate, membrane_pump],
-                                                k_forward=ku_subMT)
+                                                k_forward=ku_subMP)
         
-        # Sub:MT + E <--> Sub:MT:E
-        prop_subMTnATP = GeneralPropensity(f'kb_subMTnATP*{complex1}*{energy}*Heaviside({complex1})', propensity_species=[complex1,energy], propensity_parameters=[kb_subMTnATP])
-        binding_rxn2 = Reaction([complex1, nATP*[energy]], [complex_dict['Pump:Sub:ATP']], propensity_type = prop_subMTnATP)
+        # Sub:MP + E <--> Sub:MP:E
+        prop_subMPnATP = GeneralPropensity(f'kb_subMPnATP*{complex1}*{energy}*Heaviside({complex1})', propensity_species=[complex1,energy], propensity_parameters=[kb_subMPnATP])
+        binding_rxn2 = Reaction([complex1, nATP*[energy]], [complex_dict['Pump:Sub:ATP']], propensity_type = prop_subMPnATP)
          
         unbinding_rxn2 = Reaction.from_massaction(inputs=[complex_dict['Pump:Sub:ATP']],
                                                 outputs=[complex_dict['Pump:Sub'], nATP*[energy]],
-                                                k_forward=ku_subMTnATP)
+                                                k_forward=ku_subMPnATP)
         
-         # Sub:MT:E --> Prod:MT:E
+         # Sub:MP:E --> Prod:MP:E
         transport_rxn = Reaction.from_massaction(inputs=[complex_dict['Pump:Sub:ATP']],
                                                 outputs=[complex_dict['Pump:Prod:ATP']],
                                                 k_forward=k_trnspMP)
-        # Prod:MT:E--> Prod+MT:W
+        # Prod:MP:E--> Prod+MP:W
         unbinding_rxn3 = Reaction.from_massaction(inputs=[complex_dict['Pump:Prod:ATP']],
                                                 outputs=[complex_dict['Pump:ADP'], product],
                                                 k_forward=ku_prod)
-        # MT:W --> MT+W
+        # MP:W --> MP+W
         unbinding_rxn4 = Reaction.from_massaction(inputs=[complex_dict['Pump:ADP']],
                                                 outputs=[nATP*[waste], membrane_pump],
-                                                k_forward=ku_MT)
+                                                k_forward=ku_MP)
 
         return [binding_rxn1, unbinding_rxn1, binding_rxn2, unbinding_rxn2, transport_rxn, unbinding_rxn3, unbinding_rxn4]

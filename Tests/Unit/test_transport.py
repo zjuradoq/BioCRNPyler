@@ -137,7 +137,7 @@ class test_active_transport_MM():
         ParameterKey(mechanism = "active_membrane_protein_transport", part_id = None, name = "kb_subMPnATP"): 2e-3, 
         ParameterKey(mechanism = "active_membrane_protein_transport", part_id = None, name = "ku_subMPnATP"): 2e-1,
         ParameterKey(mechanism = "active_membrane_protein_transport", part_id = None, name = "k_trnspMP"):2e-10,
-        ParameterKey(mechanism = "active_membrane_protein_transport", part_id = None, name = "ku_prod"):2e-10,
+        ParameterKey(mechanism = "active_membrane_protein_transport", part_id = None, name = "ku_prodMP"):2e-10,
         ParameterKey(mechanism = "active_membrane_protein_transport", part_id = None, name = "ku_MP"):2e-10,}
     transport_params=Component("transport_params",parameters = transport_param_dict)
 

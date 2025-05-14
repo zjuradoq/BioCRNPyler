@@ -22,7 +22,7 @@ that connect mechanistic biology with computational analysis, bridging the gap
 between conceptual design and experimental implementation in synthetic biology.
 
 
-.. image:: figures/membrane_transport.png
+.. image:: figures/Membrane_Models.png
    :alt: Types of membrane transport components and mechanisms
    :align: center
    :width: 400px
@@ -73,7 +73,7 @@ Compiling Chemical Reaction Networks with Membrane Features
 complex chemical reaction networks (CRNs) involving membrane-associated components and 
 transport mechanisms from modular, high-level specifications.
 
-.. image:: figures/membrane_model_flowchart.png
+.. image:: figures/Flow_membrane.png
    :alt: Flowchart for membrane modeling options
    :align: center
    :width: 400px
@@ -134,7 +134,7 @@ which can be defined as:
     transport_mechanisms = {mech_tra.mechanism_type: mech_tra}
 
 ~~~~~~~~~~
-Example: Diffusion of nitrate
+Example 1: Diffusion of nitrate
 ~~~~~~~~~~
 
 Consider the following diffusion step for the diffusion of nitrate (NO <sub>3</sub>).
@@ -261,7 +261,7 @@ mechanism for integrating membranes can be implemented and stored in a dictionar
     integration_mechanisms = {mech_integration.mechanism_type: mech_integration}
 
 ~~~~~~~~~~
-Example: Integration of alpha-hemolysin
+Example 2: Integration of alpha-hemolysin
 ~~~~~~~~~~
 
 Consider the following membrane integration steps for alpha-hemolysin.
@@ -396,7 +396,7 @@ The mechanism for simple transport can be implemented and stored in a dictionary
     transport_mechanisms = {mech_transport.mechanism_type: mech_transport}
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Example 1: Transport by alpha-hemolysin
+Example 3: Transport by alpha-hemolysin
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Consider the following reaction of the transport of ATP through the alpha-hemolysin pore:
@@ -483,9 +483,7 @@ Then the mechanism for facilitated transport can be implemented and stored in a 
     mech_transport = Facilitated_Transport()
     transport_mechanisms = {mech_transport.mechanism_type: mech_transport}
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Example: Transport glucose through the membrane using the glucose transporter type 1 
-(GLUT1) channel.
+Example: Transport of glucose by GLUT1
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Consider the following reactions of the transport of glucose by GLUT1.

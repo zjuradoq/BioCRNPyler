@@ -39,9 +39,9 @@ Membrane Mechanisms
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The following membrane-associated mechanisms that are available in BioCRNpyler:
 
-- **:ref:`Simple Diffusion <simple-diffusion>`**: Models the passive movement of 
-small, nonpolar molecules across the membrane, driven by concentration gradients, 
-without the need for membrane proteins or energy input.
+- **:ref:`Simple Diffusion <simple-diffusion>`**: Models the passive movement of
+ small, nonpolar molecules across the membrane, driven by concentration gradients, 
+ without the need for membrane proteins or energy input.
 
 - Membrane protein-mediated mechanisms
     - **:ref:`Membrane Protein Integration <membrane—protein-integration>`**: Models 
@@ -52,9 +52,10 @@ without the need for membrane proteins or energy input.
     substrates through membrane pores/channels along concentration gradients, without 
     requiring energy input.
 
-    - **:ref:`Facilitated Transport <facilitated-transport>`**: Models the passive 
+    - **:ref:`facilitated-transport`**: Models the passive 
     movement of substrates along concentration gradients by binding to carrier 
     proteins that undergo conformational changes, without requiring energy input.
+    Facilitated Transport <
   
     - **:ref:`Primary Active Transport <primary-active-transport>`**: Models the 
     active movement of substrates against concentration gradients by binding to membrane 
@@ -64,23 +65,29 @@ without the need for membrane proteins or energy input.
     sensing through a signaling pathway involving a sensor kinase and phosphorylation of a 
     response regulator protein, enabling adaptive cellular responses.
 
-.. - Multicellular communication
-.. - Examples
+Compiling Chemical Reaction Networks with Membrane Features
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The figure presented below illustrates the various options available for modeling transport 
-and two-component signaling within BioCRNpyler. It specifically highlights the membrane 
-components, indicated by purple boxes, along with their corresponding mechanisms, represented 
-by the blue box.
+**Overview:** The membrane modeling capabilities of BioCRNpyler allow users to build 
+complex chemical reaction networks (CRNs) involving membrane-associated components and 
+transport mechanisms from modular, high-level specifications.
 
 .. image:: figures/membrane_model_flowchart.png
    :alt: Flowchart for membrane modeling options
    :align: center
    :width: 400px
 
+The figure presented above illustrates the various options available for modeling transport 
+and two-component signaling within BioCRNpyler. It specifically highlights the membrane 
+components, indicated by purple boxes, along with their corresponding mechanisms, represented 
+by the blue box.
 
 ----------------
 Diffusible Molecule
 ----------------
+~~~~~~~~~~
+Component: ``DiffusibleMolecule()``
+~~~~~~~~~~
 
 A Diffusible Molecule refers to a class of molecules that can pass through cell membranes 
 without assistance. Examples of such molecules include gases like oxygen (O sub 2 /sub) and 
@@ -105,8 +112,11 @@ To access more information about this component, use:
     help(DiffusibleMolecule)
 
 .. _simple-diffusion:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Mechanism: ``Simple_Diffusion()``
-~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 Simple diffusion allows molecules to passively cross membranes down their concentration 
 gradient. This is the most basic mechanism by which molecules can traverse a membrane, commonly 
 referred to as passive diffusion. In this process, a molecule can dissolve in the lipid bilayer, 
@@ -179,9 +189,9 @@ using the mechanism to construct a CRN.
 Integral Membrane Protein
 -------------
 
-.. ~~~~~~~~~~
-.. Component: ``IntegralMembraneProtein()``
-.. ~~~~~~~~~~
+~~~~~~~~~~
+Component: ``IntegralMembraneProtein()``
+~~~~~~~~~~
 
 Integral Membrane Proteins refer to a class of proteins embedded within the lipid bilayer of 
 cellular membranes. These proteins typically span the membrane and play essential roles in transport, 
@@ -232,7 +242,7 @@ as either a numerical string or an integer.
 .. _membrane—protein-integration:
 
 ~~~~~~~~~~
-Mechanism: `'Membrane_Protein_Integration()'`
+Mechanism: ``Membrane_Protein_Integration()``
 ~~~~~~~~~~
 
 Membrane protein integration models the process by which proteins are inserted into the lipid 
@@ -249,7 +259,9 @@ mechanism for integrating membranes can be implemented and stored in a dictionar
     mech_integration = Membrane_Protein_Integration()
     integration_mechanisms = {mech_integration.mechanism_type: mech_integration}
 
-**Example: Integration of alpha-hemolysin**
+~~~~~~~~~~
+Example: Integration of alpha-hemolysin
+~~~~~~~~~~
 
 Consider the following membrane integration steps for alpha-hemolysin.
 1. **Assemble into a homoheptamer:**
@@ -288,8 +300,7 @@ incorporate it into a mixture using the integration mechanism to construct a CRN
         CRN = M.compile_crn()
         print(CRN.pretty_print())
 
-Console Output:
---------------
+**Console Output:**
 
 .. code-block:: text
 
@@ -324,6 +335,9 @@ Console Output:
 Membrane Channels 
 -------------
 
+~~~~~~~~~~
+Component: ``MembraneChannel()``
+~~~~~~~~~~
 Membrane channels refer to a class of proteins, a subclass of integral membrane proteins, that 
 are pore-forming and create gated pathways across the lipid bilayer. They allow specific molecules 
 or ions to pass through the membrane and play key roles in regulated transport, enabling the movement 
@@ -357,7 +371,7 @@ from one of the following options:
 .. _simple-transport:
 
 ~~~~~~~~~~
-Mechanism: ``Simple_Transport ()``
+Mechanism: ``Simple_Transport()``
 ~~~~~~~~~~
 
 Simple transport models the passive movement of substrates across the membrane through protein channels 
@@ -380,7 +394,8 @@ The mechanism for simple transport can be implemented and stored in a dictionary
     transport_mechanisms = {mech_transport.mechanism_type: mech_transport}
 
 
-**Example: Transport by alpha-hemolysin**
+Example: Transport by alpha-hemolysin
+--------------
 
 Consider the following reactions of the transport of ATP through the alpha-hemolysin pore
 
@@ -411,8 +426,7 @@ a CRN that enables passive transport across the membrane.
         CRN = M.compile_crn()
         print(CRN.pretty_print())
 
-Console Output:
---------------
+**Console Output:**
 
 .. code-block:: text
 
@@ -431,7 +445,7 @@ Console Output:
 
 .. _facilitated-transport:
 ~~~~~~~~~~
-Mechanism: ``Facilitated_Transport_MM ()``
+Mechanism: ``Facilitated_Transport_MM()``
 ~~~~~~~~~~
 Facilitated transport captures the transport of substrates across the membrane with the assistance of 
 specific carrier proteins. These proteins bind to the substrate and undergo conformational changes 
@@ -466,8 +480,10 @@ Then the mechanism for facilitated transport can be implemented and stored in a 
     mech_transport = Facilitated_Transport()
     transport_mechanisms = {mech_transport.mechanism_type: mech_transport}
 
-**Example:  Transport glucose through the membrane using the glucose transporter type 1 (GLUT1) channel.**
+~~~~~~~~~~
+Example:  Transport glucose through the membrane using the glucose transporter type 1 (GLUT1) channel.**
 Consider the following reactions of the transport of glucose by GLUT1.
+~~~~~~~~~~
 
 1. **Integration of membrane protein in membrane:**
 
@@ -520,8 +536,8 @@ transport direction.
         CRN = M.compile_crn()
         print(CRN.pretty_print(show_keys=False))
 
-Console Output:
---------------
+**Console Output:**
+
 .. code-block:: text
     Species(N = 6) = {
     protein[glut1_channel(Importer)] (@ 0),  protein[glut1] (@ 0),  complex[glucose:protein[glut1_channel]] (@ 0),  

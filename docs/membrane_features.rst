@@ -393,9 +393,9 @@ The mechanism for simple transport can be implemented and stored in a dictionary
     mech_transport = Simple_Transport()
     transport_mechanisms = {mech_transport.mechanism_type: mech_transport}
 
-
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Example: Transport by alpha-hemolysin
---------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Consider the following reactions of the transport of ATP through the alpha-hemolysin pore
 
@@ -444,6 +444,7 @@ a CRN that enables passive transport across the membrane.
     ]
 
 .. _facilitated-transport:
+
 ~~~~~~~~~~
 Mechanism: ``Facilitated_Transport_MM()``
 ~~~~~~~~~~
@@ -481,7 +482,7 @@ Then the mechanism for facilitated transport can be implemented and stored in a 
     transport_mechanisms = {mech_transport.mechanism_type: mech_transport}
 
 ~~~~~~~~~~
-Example:  Transport glucose through the membrane using the glucose transporter type 1 (GLUT1) channel.**
+Example: Transport glucose through the membrane using the glucose transporter type 1 (GLUT1) channel.**
 Consider the following reactions of the transport of glucose by GLUT1.
 ~~~~~~~~~~
 

@@ -22,4 +22,3 @@ chapters in the User Guide.
    examples/7. Network Plotting Examples.ipynb
    examples/8. Developer Overview.ipynb
    examples/9. DNA_construct Examples.ipynb
-   membrane_transport

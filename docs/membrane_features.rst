@@ -2,12 +2,12 @@
 Membrane-Associated Components and Mechanisms
 ==============================
 
-.. The following Jupyter notebooks provide a set of tutorial
-.. introductions to BioCRNpyler's membrane-associate features.
+The following Jupyter notebooks provide a set of tutorial
+introductions to BioCRNpyler's membrane-associate features.
 
-.. -------------
-.. Introduction
-.. -------------
+-------------
+Introduction
+-------------
 
 BioCRNpyler supports modeling genetic circuits with membrane-associated 
 features using computational tools. This functionality enables users to 
@@ -25,43 +25,45 @@ between conceptual design and experimental implementation in synthetic biology.
 .. image:: figures/Membrane_Models.png
    :alt: Types of membrane transport components and mechanisms
    :align: center
-   :width: 400px
 
 ~~~~~~~~~~~~~~~~~~
 Membrane Component
 ~~~~~~~~~~~~~~~~~~
 The following membrane-associated component that are available in BioCRNpyler:
 
-ADDD STUFF HERE!!!
+- ``DiffusibleMolecule()``
+- ``IntegralMembraneProtein()``
+- ``MembraneChannel()``
+- ``MembranePump()``
+- ``MembraneSensor()``
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Membrane Mechanisms
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The following membrane-associated mechanisms that are available in BioCRNpyler:
 
-- **:ref:`Simple Diffusion <simple-diffusion>`**: Models the passive movement of
+- ``Simple_Diffusion()``: Models the passive movement of
  small, nonpolar molecules across the membrane, driven by concentration gradients, 
  without the need for membrane proteins or energy input.
 
 - Membrane protein-mediated mechanisms
-    - **:ref:`Membrane Protein Integration <membrane—protein-integration>`**: Models 
+    - ``Membrane_Protein_Integration()``: Models 
     the the insertion and proper orientation of proteins into the membrane, ensuring 
     their structural and functional integration within the lipid bilayer.
 
-    - **:ref:`simple-transport <Simple Transport>`**: Models the passive movement of 
+    - ``Simple_Transport()``: Models the passive movement of 
     substrates through membrane pores/channels along concentration gradients, without 
     requiring energy input.
 
-    - **:ref:`facilitated-transport`**: Models the passive 
+    - ``Facilitated_Transport()``: Models the passive 
     movement of substrates along concentration gradients by binding to carrier 
     proteins that undergo conformational changes, without requiring energy input.
-    Facilitated Transport <
   
-    - **:ref:`Primary Active Transport <primary-active-transport>`**: Models the 
+    - ``Primary_Active_Transport()``: Models the 
     active movement of substrates against concentration gradients by binding to membrane 
     pumps, which undergo conformational changes driven by energy input (e.g., ATP).
 
-    - **:ref:`Two-Component Signaling <two-component-signaling>`**: Models the environmental 
+    - ``Two_Component_Signaling()``: Models the environmental 
     sensing through a signaling pathway involving a sensor kinase and phosphorylation of a 
     response regulator protein, enabling adaptive cellular responses.
 
@@ -76,7 +78,6 @@ transport mechanisms from modular, high-level specifications.
 .. image:: figures/Flow_membrane.png
    :alt: Flowchart for membrane modeling options
    :align: center
-   :width: 400px
 
 The figure presented above illustrates the various options available for modeling transport 
 and two-component signaling within BioCRNpyler. It specifically highlights the membrane 
@@ -483,7 +484,8 @@ Then the mechanism for facilitated transport can be implemented and stored in a 
     mech_transport = Facilitated_Transport()
     transport_mechanisms = {mech_transport.mechanism_type: mech_transport}
 
-Example: Transport of glucose by GLUT1
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Example 4: Transport of glucose by GLUT1
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Consider the following reactions of the transport of glucose by GLUT1.

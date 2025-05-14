@@ -1,5 +1,5 @@
 ==============================
-Membrane-associated Components and Mechanisms
+Membrane-Associated Components and Mechanisms
 ==============================
 
 The following Jupyter notebooks provide a set of tutorial
@@ -48,7 +48,7 @@ without the need for membrane proteins or energy input.
     the the insertion and proper orientation of proteins into the membrane, ensuring 
     their structural and functional integration within the lipid bilayer.
 
-    - **:ref:`Simple Transport <simple-transport>`**: Models the passive movement of 
+    - **:ref:`simple-transport <Simple Transport>`**: Models the passive movement of 
     substrates through membrane pores/channels along concentration gradients, without 
     requiring energy input.
 
@@ -174,7 +174,6 @@ using the mechanism to construct a CRN.
       search_key=(mech=simple_diffusion, partid=NO3, name=k_diff).
 
     ]
-
 
 -------------
 Integral Membrane Protein

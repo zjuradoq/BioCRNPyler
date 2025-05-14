@@ -2,12 +2,12 @@
 Membrane-Associated Components and Mechanisms
 ==============================
 
-The following Jupyter notebooks provide a set of tutorial
-introductions to BioCRNpyler's membrane-associate features.
+.. The following Jupyter notebooks provide a set of tutorial
+.. introductions to BioCRNpyler's membrane-associate features.
 
--------------
-Introduction
--------------
+.. -------------
+.. Introduction
+.. -------------
 
 BioCRNpyler supports modeling genetic circuits with membrane-associated 
 features using computational tools. This functionality enables users to 
@@ -65,6 +65,7 @@ The following membrane-associated mechanisms that are available in BioCRNpyler:
     sensing through a signaling pathway involving a sensor kinase and phosphorylation of a 
     response regulator protein, enabling adaptive cellular responses.
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Compiling Chemical Reaction Networks with Membrane Features
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -338,6 +339,7 @@ Membrane Channels
 ~~~~~~~~~~
 Component: ``MembraneChannel()``
 ~~~~~~~~~~
+
 Membrane channels refer to a class of proteins, a subclass of integral membrane proteins, that 
 are pore-forming and create gated pathways across the lipid bilayer. They allow specific molecules 
 or ions to pass through the membrane and play key roles in regulated transport, enabling the movement 
@@ -394,10 +396,10 @@ The mechanism for simple transport can be implemented and stored in a dictionary
     transport_mechanisms = {mech_transport.mechanism_type: mech_transport}
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Example: Transport by alpha-hemolysin
+Example 1: Transport by alpha-hemolysin
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Consider the following reactions of the transport of ATP through the alpha-hemolysin pore
+Consider the following reaction of the transport of ATP through the alpha-hemolysin pore:
 
 .. math::
 
@@ -481,10 +483,12 @@ Then the mechanism for facilitated transport can be implemented and stored in a 
     mech_transport = Facilitated_Transport()
     transport_mechanisms = {mech_transport.mechanism_type: mech_transport}
 
-~~~~~~~~~~
-Example: Transport glucose through the membrane using the glucose transporter type 1 (GLUT1) channel.**
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Example: Transport glucose through the membrane using the glucose transporter type 1 
+(GLUT1) channel.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 Consider the following reactions of the transport of glucose by GLUT1.
-~~~~~~~~~~
 
 1. **Integration of membrane protein in membrane:**
 

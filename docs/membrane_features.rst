@@ -1,5 +1,5 @@
 ==============================
-Membrane-associated Classes and Mechanisms
+Membrane-associated Components and Mechanisms
 ==============================
 
 The following Jupyter notebooks provide a set of tutorial
@@ -27,29 +27,42 @@ between conceptual design and experimental implementation in synthetic biology.
    :align: center
    :width: 400px
 
+~~~~~~~~~~~~~~~~~~
+Membrane Component
+~~~~~~~~~~~~~~~~~~
+The following membrane-associated component that are available in BioCRNpyler:
+
+ADDD STUFF HERE!!!
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Membrane Component and Mechanisms
+Membrane Mechanisms
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The following membrane-associated mechanisms that are available in BioCRNpyler:
 
-- **:ref:`Simple Diffusion <simple-diffusion>`**: Models the passive movement of small, nonpolar molecules across the membrane, driven 
-  by concentration gradients, without the need for membrane proteins or energy input.
+- **:ref:`Simple Diffusion <simple-diffusion>`**: Models the passive movement of 
+small, nonpolar molecules across the membrane, driven by concentration gradients, 
+without the need for membrane proteins or energy input.
 
 - Membrane protein-mediated mechanisms
-    - **:ref:`Membrane Protein Integration <membrane—protein-integration>`**: Models the the insertion and proper orientation of proteins into the membrane, ensuring 
+    - **:ref:`Membrane Protein Integration <membrane—protein-integration>`**: Models 
+    the the insertion and proper orientation of proteins into the membrane, ensuring 
     their structural and functional integration within the lipid bilayer.
 
-    - **:ref:`Simple Transport <simple-transport>`**: Models the passive movement of substrates through membrane pores/channels along concentration
-   gradients, without requiring energy input.
+    - **:ref:`Simple Transport <simple-transport>`**: Models the passive movement of 
+    substrates through membrane pores/channels along concentration gradients, without 
+    requiring energy input.
 
-    - **:ref:`Facilitated Transport <facilitated-transport>`**: Models the passive movement of substrates along concentration gradients by binding to carrier 
-  proteins that undergo conformational changes, without requiring energy input.
+    - **:ref:`Facilitated Transport <facilitated-transport>`**: Models the passive 
+    movement of substrates along concentration gradients by binding to carrier 
+    proteins that undergo conformational changes, without requiring energy input.
   
-    - **:ref:`Primary Active Transport <primary-active-transport>`**: Models the active movement of substrates against concentration gradients by binding to membrane 
-  pumps, which undergo conformational changes driven by energy input (e.g., ATP).
+    - **:ref:`Primary Active Transport <primary-active-transport>`**: Models the 
+    active movement of substrates against concentration gradients by binding to membrane 
+    pumps, which undergo conformational changes driven by energy input (e.g., ATP).
 
-    - **:ref:`Two-Component Signaling <two-component-signaling>`**: Models the environmental sensing through a signaling pathway involving a sensor kinase and 
-  phosphorylation of a response regulator protein, enabling adaptive cellular responses.
+    - **:ref:`Two-Component Signaling <two-component-signaling>`**: Models the environmental 
+    sensing through a signaling pathway involving a sensor kinase and phosphorylation of a 
+    response regulator protein, enabling adaptive cellular responses.
 
 .. - Multicellular communication
 .. - Examples
@@ -70,8 +83,8 @@ Diffusible Molecule
 ----------------
 
 A Diffusible Molecule refers to a class of molecules that can pass through cell membranes 
-without assistance. Examples of such molecules include gases like oxygen (O<sub>2</sub>) and 
-carbon dioxide (CO<sub>2</sub>), as well as small polar but uncharged molecules. In contrast, 
+without assistance. Examples of such molecules include gases like oxygen (O sub 2 /sub) and 
+carbon dioxide (CO sub 2 /sub), as well as small polar but uncharged molecules. In contrast, 
 larger uncharged molecules and charged molecules require membrane proteins for transport across 
 the membrane.
 
@@ -92,8 +105,6 @@ To access more information about this component, use:
     help(DiffusibleMolecule)
 
 .. _simple-diffusion:
-
-~~~~~~~~~~
 Mechanism: ``Simple_Diffusion()``
 ~~~~~~~~~~
 Simple diffusion allows molecules to passively cross membranes down their concentration 
@@ -111,7 +122,9 @@ which can be defined as:
     mech_tra = Simple_Diffusion()
     transport_mechanisms = {mech_tra.mechanism_type: mech_tra}
 
-**Example: Diffusion of nitrate**
+~~~~~~~~~~
+Example: Diffusion of nitrate
+~~~~~~~~~~
 
 Consider the following diffusion step for the diffusion of nitrate (NO <sub>3</sub>).
 
@@ -143,14 +156,11 @@ using the mechanism to construct a CRN.
     # Print the CRN to see what you created
     print(CRN.pretty_print())
 
-Console Output:
---------------
+**Console Output:**
 
 .. code-block:: text
 
-    Species(N = 2) = {
-    NO3 (@ 0),  NO3 (@ 0),  
-    }
+    Species(N = 2) = {NO3 (@ 0),  NO3 (@ 0),}
 
     Reactions (1) = [
     0. NO3 <--> NO3

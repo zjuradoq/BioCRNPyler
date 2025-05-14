@@ -31,11 +31,11 @@ Membrane Component
 ~~~~~~~~~~~~~~~~~~
 The following membrane-associated component that are available in BioCRNpyler:
 
-- ``DiffusibleMolecule()``
-- ``IntegralMembraneProtein()``
-- ``MembraneChannel()``
-- ``MembranePump()``
-- ``MembraneSensor()``
+- ``DiffusibleMolecule()``:
+- ``IntegralMembraneProtein()``:
+- ``MembraneChannel()``:
+- ``MembranePump()``:
+- ``MembraneSensor()``:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Membrane Mechanisms
@@ -570,6 +570,219 @@ transport direction.
 
     4. complex[glucose:protein[glut1_channel]] --> glucose+protein[glut1_channel(Importer)]
     Kf=k_forward * complex_glucose_Internal_protein_glut1_channel_Importer_
+    k_forward=0.1
+
+    ]
+
+-------------
+Membrane Pumps 
+-------------
+
+~~~~~~~~~~
+Component: ``MembranePump()``
+~~~~~~~~~~
+Membrane pumps are a class of transport proteins, also considered a subclass of integral membrane proteins, 
+that actively move molecules or ions across the lipid bilayer. Unlike passive channels, pumps use energy, 
+typically from ATP or an electrochemical gradient, to drive the transport of substrates against their concentration 
+gradients.
+
+The following code defines a membrane pump component called ``MC``. It requires two inputs: `` integral_membrane_protein`` 
+and `` substrate``, which can be either strings or ``Species`` objects.
+
+.. code-block:: python
+
+    MP = MembranePump(membrane_pump= "MP", substrate = "S") 
+The component also accepts optional inputs, similar to the `IntegralMembraneProtein`. However, if the integral membrane 
+protein has already been defined using `IntegralMembraneProtein`, the `MembranePump` will inherit its `direction` and 
+`compartment` properties from the existing species (e.g., ``IMP``). 
+
+Optional arguments can also be supplied to control transport direction, stoichiometry, and compartment:
+
+.. code-block:: python
+
+MP = MembranePump(membrane_pump= "MP", substrate = "S",
+                  direction = None,
+                  internal_compartment ='Internal',
+                  external_compartment ='External',
+                  ATP = None, cell = None, attributes=None)
+
+**Key Optional Parameters**
+
+``ATP``: An optional input for the membrane pump is designated as 'ATP.' In the absence of a specified integer value 
+for 'ATP,' the model will default to a value of 1.
+``direction``: By default, the ``direction`` is set to ``None``, which will generate a CRN corresponding to an exporter 
+behavior. (check this, if true then okay) in reference to what?<--check, what if the membrane protein is inverted??
+
+The `` MembranePump`` component can uses the `` Primary_Active_Transport_MM()`` mechanism.
+~~~~~~~~~~
+Mechanism: `` Primary_Active_Transport_MM()``
+~~~~~~~~~~
+Primary active transport describes the energy-dependent movement of substrates across the membrane, typically against 
+their concentration gradient. This process is carried out by specialized membrane pumps that bind to the substrate and 
+undergo conformational changes powered by energy sources such as ATP hydrolysis. The transport is both selective and 
+directional. 
+
+The ``Primary_Active_Transport_MM()`` mechanism captures this behavior through binding, energy-driven conformational 
+changes, and unbinding steps. For example, if the membrane pump is defined as an **exporter**, the resulting reactions are: 
+
+1. * **Binding of antibiotic substrate (S) to membrane pump (MP):**
+
+.. math::
+
+    S_{internal} + MP_{exporter} \rightleftharpoons S_{internal}:MP_{exporter}
+
+2. **Binding of ATP to the complex of S with MP:**
+
+.. math::
+
+    ATP_{internal} + S_{internal}:MP_{exporter} \rightleftharpoons ATP_{internal}:S_{internal}:MP_{exporter}
+
+3. **Export of S from the internal compartment to the external compartment:**
+
+.. math::
+
+    ATP_{internal}:S_{internal}:MP_{exporter} \rightarrow ATP_{internal}:S_{external}:MP_{exporter}
+
+4. **Unbinding of S:**
+
+.. math::
+
+    ATP_{internal}:S_{external}:MP_{exporter} \rightarrow ADP_{internal}:MP_{exporter} + S_{external}
+
+5. **Unbinding of ADP from MP:**
+
+.. math::
+
+    ADP_{internal}:MP_{exporter} \rightarrow ADP_{internal} + MP_{exporter} 
+
+To use `` Primary_Active_Transport_MM()``, we need to redefine the membrane channel to include a transport direction designation, such as ``Importer`` or ``Exporter``. For example:
+
+.. code-block:: python
+
+    MC = MembraneChannel(integral_membrane_protein="IMP", substrate="S",     
+                         direction='Importer')
+Then the mechanism for facilitated transport can be implemented and stored in a dictionary.
+
+.. code-block:: python
+
+    mech_transport = Primary_Active_Transport_MM()
+transport_mechanisms = {mech_transport.mechanism_type: mech_transport}
+
+**Example 5:  Transport glucose through the membrane using the glucose transporter type 1 (GLUT1) channel.**
+Consider the following reactions of the export of erythromycin by MsbA.
+
+1. **Integration of membrane protein in membrane:**
+
+.. math::
+
+    MsbA_{homodimer} \rightarrow MsbA_{exporter}
+
+2. **Binding of antibiotic (Abx) substrate (e.g., erythromycin) to MsbA transporter:**
+
+.. math::
+
+    Abx_{internal} + MsbA_{exporter} \leftrightarrow Abx_{internal}:MsbA_{exporter}
+
+3. **Binding of ATP to complex of erythromycin with MsbA:**
+
+.. math::
+
+    2ATP_{internal} + Abx_{internal}:MsbA_{exporter} \leftrightarrow 2ATP_{internal}:Abx_{internal}:MsbA_{exporter}
+
+4. **Export of erythromycin lipid from inner membrane to outer membrane:**
+
+.. math::
+
+    2ATP_{internal}:Abx_{internal}:MsbA_{exporter} \rightarrow 2ATP_{internal}:Abx_{external}:MsbA_{exporter}
+
+5. **Unbinding of erythromycin:**
+
+.. math::
+
+    2ATP_{internal}:Abx_{external}:MsbA_{exporter} \rightarrow 2ADP_{internal}:MsbA_{exporter} + Abx_{external}
+
+6. **Unbinding of ADP from MsbA:**
+
+.. math::
+
+    2ADP_{internal}:MsbA_{exporter} \rightarrow 2ADP_{internal} + MsbA_{exporter}
+
+To model the example above using the ``MembranePump`` component and the ``Primary_Active_Transport_MM`` mechanism, we can either define the pump directly or specify the integral membrane protein (e.g., MsbA) using the ``IntegralMembraneProtein`` component to incorporate transport directionality.
+
+The following example begins by defining the integral membrane protein, including the specification of its direction (e.g., ``Exporter``).
+
+.. code-block:: python
+
+    # Define integral membrane protein
+    MsbA = IntegralMembraneProtein('MsbA', product='MsbA_pump',
+                                    direction='Exporter', size= 2)
+
+    # Define membrane pump
+    MsbA_pump = MembranePump(MsbA.product, substrate = 'abx', ATP = 2)
+
+    # Mechanisms
+    mech_integration = Membrane_Protein_Integration()
+    mech_transport = Membrane_Protein_Integration()
+
+    all_mechanisms = {mech_integration.mechanism_type:mech_integration,
+                    mech_transport.mechanism_type:mech_transport}
+
+    # Create mixture
+        M = Mixture(components=[ MsbA, MsbA_pump,],
+        mechanisms=all_mechanisms,
+        parameter_file = "membrane_toolbox_parameters.txt") 
+
+    #Compile the CRN and print
+        CRN = M.compile_crn()
+        print(CRN.pretty_print(show_keys=False))
+
+Console Output:
+--------------
+.. code-block:: text
+
+    Species(N = 11) = {
+    complex[protein[MsbA_pump]:2x_small_molecule[ADP]] (@ 0),  complex[2x_protein[MsbA]] (@ 0),  complex[complex[abx:protein[MsbA_pump]]:2x_small_molecule[ATP]] (@ 0),  complex[abx:protein[MsbA_pump]] (@ 0),  complex[abx:protein[MsbA_pump]:2x_small_molecule[ATP]] (@ 0),  abx (@ 0),  abx (@ 0),  protein[MsbA_pump(Exporter)] (@ 0),  protein[MsbA] (@ 0),  small_molecule[ATP] (@ 0),  small_molecule[ADP] (@ 0),  
+    }
+
+    Reactions (9) = [
+    0. 2protein[MsbA] <--> complex[2x_protein[MsbA]]
+    Kf=k_forward * protein_MsbA_Internal^2
+    Kr=k_reverse * complex_protein_MsbA_Internal_2x_
+    k_forward=0.002
+    k_reverse=2e-10
+
+    1. complex[2x_protein[MsbA]] --> protein[MsbA_pump(Exporter)]
+    Kf = k complex[2x_protein[MsbA]] / ( 1 + (protein[MsbA_pump(Exporter)]/K)^4 )
+    k=10.0
+    K=0.5
+    n=4
+
+    2. abx+protein[MsbA_pump(Exporter)] --> complex[abx:protein[MsbA_pump]]
+    kb_subMP*abx_Internal*protein_MsbA_pump_Exporter*Heaviside(protein_MsbA_pump_Exporter)
+    kb_subMP=0.1
+
+    3. complex[abx:protein[MsbA_pump]] --> abx+protein[MsbA_pump(Exporter)]
+    Kf=k_forward * complex_abx_Internal_protein_MsbA_pump_Exporter_
+    k_forward=0.1
+
+    4. complex[abx:protein[MsbA_pump]]+2small_molecule[ATP] --> complex[complex[abx:protein[MsbA_pump]]:2x_small_molecule[ATP]]
+    kb_subMPnATP*complex_abx_Internal_protein_MsbA_pump_Exporter_*small_molecule_ATP_Internal*Heaviside(complex_abx_Internal_protein_MsbA_pump_Exporter_)
+    kb_subMPnATP=0.1
+
+    5. complex[complex[abx:protein[MsbA_pump]]:2x_small_molecule[ATP]] --> complex[abx:protein[MsbA_pump]]+2small_molecule[ATP]
+    Kf=k_forward * complex_complex_abx_Internal_protein_MsbA_pump_Exporter__small_molecule_ATP_Internal_2x_
+    k_forward=0.01
+
+    6. complex[complex[abx:protein[MsbA_pump]]:2x_small_molecule[ATP]] --> complex[abx:protein[MsbA_pump]:2x_small_molecule[ATP]]
+    Kf=k_forward * complex_complex_abx_Internal_protein_MsbA_pump_Exporter__small_molecule_ATP_Internal_2x_
+    k_forward=0.01
+
+    7. complex[abx:protein[MsbA_pump]:2x_small_molecule[ATP]] --> complex[protein[MsbA_pump]:2x_small_molecule[ADP]]+abx
+    Kf=k_forward * complex_abx_External_protein_MsbA_pump_Exporter_small_molecule_ATP_Internal_2x_
+    k_forward=0.1
+
+    8. complex[protein[MsbA_pump]:2x_small_molecule[ADP]] --> 2small_molecule[ADP]+protein[MsbA_pump(Exporter)]
+    Kf=k_forward * complex_protein_MsbA_pump_Exporter_small_molecule_ADP_Internal_2x_
     k_forward=0.1
 
     ]

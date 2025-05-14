@@ -21,7 +21,6 @@ channels and transporters. This facilitates the design and refinement of models
 that connect mechanistic biology with computational analysis, bridging the gap 
 between conceptual design and experimental implementation in synthetic biology.
 
-
 .. image:: figures/Membrane_Models.png
    :alt: Types of membrane transport components and mechanisms
    :align: center
@@ -63,7 +62,7 @@ The following membrane-associated mechanisms that are available in BioCRNpyler:
     active movement of substrates against concentration gradients by binding to membrane 
     pumps, which undergo conformational changes driven by energy input (e.g., ATP).
 
-    - ``Two_Component_Signaling()``: Models the environmental 
+    - ``Membrane_Signaling_Pathway_MM()``: Models the environmental 
     sensing through a signaling pathway involving a sensor kinase and phosphorylation of a 
     response regulator protein, enabling adaptive cellular responses.
 
@@ -396,9 +395,9 @@ The mechanism for simple transport can be implemented and stored in a dictionary
     mech_transport = Simple_Transport()
     transport_mechanisms = {mech_transport.mechanism_type: mech_transport}
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Example 3: Transport by alpha-hemolysin
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Consider the following reaction of the transport of ATP through the alpha-hemolysin pore:
 
@@ -448,9 +447,10 @@ a CRN that enables passive transport across the membrane.
 
 .. _facilitated-transport:
 
-~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Mechanism: ``Facilitated_Transport_MM()``
-~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 Facilitated transport captures the transport of substrates across the membrane with the assistance of 
 specific carrier proteins. These proteins bind to the substrate and undergo conformational changes 
 to move the molecule from one side of the membrane to the other. Although no energy is required, the 
@@ -484,9 +484,10 @@ Then the mechanism for facilitated transport can be implemented and stored in a 
     mech_transport = Facilitated_Transport()
     transport_mechanisms = {mech_transport.mechanism_type: mech_transport}
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Example 4: Transport of glucose by GLUT1
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Construct a chemical reaction network (CRN) for the transport of glucose through the T7 RNAP activated expression of membrane channel glucose transporter type 1 (GLUT1).
 
 Consider the following reactions of the transport of glucose by GLUT1.
 
@@ -544,6 +545,7 @@ transport direction.
 **Console Output:**
 
 .. code-block:: text
+
     Species(N = 6) = {
     protein[glut1_channel(Importer)] (@ 0),  protein[glut1] (@ 0),  complex[glucose:protein[glut1_channel]] (@ 0),  
     complex[glucose:protein[glut1_channel]] (@ 0),  glucose (@ 0),  glucose (@ 0),  
@@ -578,9 +580,10 @@ transport direction.
 Membrane Pumps 
 -------------
 
-~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Component: ``MembranePump()``
-~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 Membrane pumps are a class of transport proteins, also considered a subclass of integral membrane proteins, 
 that actively move molecules or ions across the lipid bilayer. Unlike passive channels, pumps use energy, 
 typically from ATP or an electrochemical gradient, to drive the transport of substrates against their concentration 
@@ -592,6 +595,7 @@ and `` substrate``, which can be either strings or ``Species`` objects.
 .. code-block:: python
 
     MP = MembranePump(membrane_pump= "MP", substrate = "S") 
+
 The component also accepts optional inputs, similar to the `IntegralMembraneProtein`. However, if the integral membrane 
 protein has already been defined using `IntegralMembraneProtein`, the `MembranePump` will inherit its `direction` and 
 `compartment` properties from the existing species (e.g., ``IMP``). 
@@ -600,23 +604,26 @@ Optional arguments can also be supplied to control transport direction, stoichio
 
 .. code-block:: python
 
-MP = MembranePump(membrane_pump= "MP", substrate = "S",
-                  direction = None,
-                  internal_compartment ='Internal',
-                  external_compartment ='External',
-                  ATP = None, cell = None, attributes=None)
+    MP = MembranePump(membrane_pump= "MP", substrate = "S",
+                    direction = None,
+                    internal_compartment ='Internal',
+                    external_compartment ='External',
+                    ATP = None, cell = None, attributes=None)
 
 **Key Optional Parameters**
 
 ``ATP``: An optional input for the membrane pump is designated as 'ATP.' In the absence of a specified integer value 
 for 'ATP,' the model will default to a value of 1.
+
 ``direction``: By default, the ``direction`` is set to ``None``, which will generate a CRN corresponding to an exporter 
 behavior. (check this, if true then okay) in reference to what?<--check, what if the membrane protein is inverted??
 
 The `` MembranePump`` component can uses the `` Primary_Active_Transport_MM()`` mechanism.
-~~~~~~~~~~
-Mechanism: `` Primary_Active_Transport_MM()``
-~~~~~~~~~~
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Mechanism: ``Primary_Active_Transport_MM()``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 Primary active transport describes the energy-dependent movement of substrates across the membrane, typically against 
 their concentration gradient. This process is carried out by specialized membrane pumps that bind to the substrate and 
 undergo conformational changes powered by energy sources such as ATP hydrolysis. The transport is both selective and 
@@ -625,7 +632,7 @@ directional.
 The ``Primary_Active_Transport_MM()`` mechanism captures this behavior through binding, energy-driven conformational 
 changes, and unbinding steps. For example, if the membrane pump is defined as an **exporter**, the resulting reactions are: 
 
-1. * **Binding of antibiotic substrate (S) to membrane pump (MP):**
+1. **Binding of antibiotic substrate (S) to membrane pump (MP):**
 
 .. math::
 
@@ -661,14 +668,21 @@ To use `` Primary_Active_Transport_MM()``, we need to redefine the membrane chan
 
     MC = MembraneChannel(integral_membrane_protein="IMP", substrate="S",     
                          direction='Importer')
-Then the mechanism for facilitated transport can be implemented and stored in a dictionary.
+T
+hen the mechanism for facilitated transport can be implemented and stored in a dictionary.
 
 .. code-block:: python
 
     mech_transport = Primary_Active_Transport_MM()
-transport_mechanisms = {mech_transport.mechanism_type: mech_transport}
+    transport_mechanisms = {mech_transport.mechanism_type: mech_transport}
 
-**Example 5:  Transport glucose through the membrane using the glucose transporter type 1 (GLUT1) channel.**
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Example 5: Export of erythromycin by MsbA
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Construct a chemical reaction network (CRN) for the export of the antibiotic 
+erythromycin, driven by T7 RNA polymerase activation of the membrane pump MsbA.
+
 Consider the following reactions of the export of erythromycin by MsbA.
 
 1. **Integration of membrane protein in membrane:**
@@ -736,8 +750,8 @@ The following example begins by defining the integral membrane protein, includin
         CRN = M.compile_crn()
         print(CRN.pretty_print(show_keys=False))
 
-Console Output:
---------------
+**Console Output:**
+
 .. code-block:: text
 
     Species(N = 11) = {
@@ -786,3 +800,23 @@ Console Output:
     k_forward=0.1
 
     ]
+
+---------------
+Membrane Sensors 
+---------------
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Component: ``MembraneSensor()``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Mechanism: ``Membrane_Signaling_Pathway_MM()``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Example 6: 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Console Output:**
+
+.. code-block:: text

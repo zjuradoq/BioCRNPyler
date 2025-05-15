@@ -617,7 +617,7 @@ Optional arguments can also be supplied to control transport direction, stoichio
 for 'ATP,' the model will default to a value of 1.
 
 - ``direction``: By default, the ``direction`` is set to ``None``, which will generate a CRN corresponding to an exporter 
-behavior. (check this, if true then okay) in reference to what?<--check, what if the membrane protein is inverted??
+.. behavior. (check this, if true then okay) in reference to what?<--check, what if the membrane protein is inverted??
 
 The ``MembranePump`` component can uses the ``Primary_Active_Transport_MM()`` mechanism.
 
@@ -667,8 +667,9 @@ To use ``Primary_Active_Transport_MM()``, we need to redefine the membrane chann
 
 .. code-block:: python
 
-    MC = MembraneChannel(integral_membrane_protein="IMP", substrate="S",     
-                         direction='Importer')
+    # Define Component
+    MC = MembraneChannel(integral_membrane_protein = "IMP", substrate = "S",     
+                         direction = 'Importer')
 
 Then the mechanism for facilitated transport can be implemented and stored in a dictionary.
 
@@ -744,13 +745,13 @@ The following example begins by defining the integral membrane protein, includin
                     mech_transport.mechanism_type:mech_transport}
 
     # Create mixture
-        M = Mixture(components=[ MsbA, MsbA_pump,],
-        mechanisms=all_mechanisms,
+        M = Mixture(components = [MsbA, MsbA_pump,],
+        mechanisms = all_mechanisms,
         parameter_file = "membrane_toolbox_parameters.txt") 
 
     #Compile the CRN and print
         CRN = M.compile_crn()
-        print(CRN.pretty_print(show_keys=False))
+        print(CRN.pretty_print(show_keys = False))
 
 **Console Output:**
 
@@ -818,10 +819,10 @@ Component: ``MembraneSensor()``
 
 The following code defines a membrane sensor component called ``Membrane_sensor``. This component requires **four inputs**:
 
-- ``membrane_sensor_protein`` – the membrane-bound sensor protein (e.g., a histidine kinase)
-- ``response_protein`` – the cytoplasmic response regulator
-- ``assigned_substrate`` – the substrate to which the sensor is assigned or responds
-- ``signal_substrate`` – the substrate that acts as the external signal or inducer
+- ``membrane_sensor_protein``: the membrane-bound sensor protein (e.g., a histidine kinase)
+- ``response_protein``: the cytoplasmic response regulator
+- ``assigned_substrate``: the substrate to which the sensor is assigned or responds
+- ``signal_substrate``: the substrate that acts as the external signal or inducer
 
 .. code-block:: python
 
@@ -837,7 +838,7 @@ The following code defines a membrane sensor component called ``Membrane_sensor`
 
 In addition, the `MembraneSensor` component has an optional input:
 
-- ``ATP`` – an integer representing the number of ATP molecules required for phosphorylation events.  
+- ``ATP``:  an integer representing the number of ATP molecules required for phosphorylation events.  
   The default value is **2** if not explicitly specified.
 
 The "MembraneSensor" component utilizes the "Membrane_Signaling_Pathway_MM()" mechanism to model two-component signaling systems, where signal detection at the membrane results in phosphorylation-driven regulatory responses within the cell.
@@ -944,10 +945,10 @@ The following example specifies the integral membrane protein, which is then inc
 
     # Define integral membrane protein
     NarX = IntegralMembraneProtein('NarX', product='NarX_sensor',
-                                size= 2)
+                                size = 2)
 
     # Define membrane sensor
-    NarX_sensor=MembraneSensor(NarX.product, response_protein = 'NarL',
+    NarX_sensor = MembraneSensor(NarX.product, response_protein = 'NarL',
                             assigned_substrate = 'P', signal_substrate = 'NO3', ATP = 2)
 
 
@@ -959,13 +960,13 @@ The following example specifies the integral membrane protein, which is then inc
                     mech_sensing.mechanism_type:mech_sensing}
 
     # Create mixture
-     M = Mixture(components=[NarX, NarX_sensor],
-                mechanisms=all_mechanisms,
+     M = Mixture(components = [NarX, NarX_sensor],
+                mechanisms = all_mechanisms,
                 parameter_file = "membrane_toolbox_parameters.txt") 
 
     #Compile the CRN and print
     CRN = E.compile_crn()
-    print(CRN.pretty_print(show_keys=False))
+    print(CRN.pretty_print(show_keys = False))
 
 
 **Console Output:**
@@ -1033,7 +1034,6 @@ The following example specifies the integral membrane protein, which is then inc
 Exercises
 ---------------
 
-~~~~~~~~~~~
-Exercise 1:
-~~~~~~~~~~~
-[Place holder]
+- Exercise 1 [Place holder]
+- Exercise 2 [Place holder]
+- Exercise 3 [Place holder]

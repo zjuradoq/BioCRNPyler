@@ -100,6 +100,7 @@ the membrane.
 The following code defines a diffusible molecule called ``S``:
 
 .. code-block:: python
+
     # Define component
     S = DiffusibleMolecule('name')
 
@@ -348,7 +349,7 @@ objects.
 
 .. code-block:: python
 
-    # Define Component
+    # Define component
     MC = MembraneChannel(integral_membrane_protein = "IMP", substrate = "S")
 
 The component also accepts optional inputs, similar to the `IntegralMembraneProtein`. However, if 
@@ -473,7 +474,7 @@ direction designation, such as ``Importer`` or ``Exporter``. For example:
 
 .. code-block:: python
 
-    # Define Component
+    # Define component
     MC = MembraneChannel(integral_membrane_protein = "IMP", substrate = "S",     
                          direction = 'Importer')
 Then the mechanism for facilitated transport can be implemented and stored in a dictionary.
@@ -594,7 +595,7 @@ and ``substrate``, which can be either strings or ``Species`` objects.
 
 .. code-block:: python
 
-    # Define Component
+    # Define component
     MP = MembranePump(membrane_pump = "MP", substrate = "S") 
 
 The component also accepts optional inputs, similar to the `IntegralMembraneProtein`. However, if the integral membrane 
@@ -667,7 +668,7 @@ To use ``Primary_Active_Transport_MM()``, we need to redefine the membrane chann
 
 .. code-block:: python
 
-    # Define Component
+    # Define component
     MC = MembraneChannel(integral_membrane_protein = "IMP", substrate = "S",     
                          direction = 'Importer')
 
@@ -826,7 +827,7 @@ The following code defines a membrane sensor component called ``Membrane_sensor`
 
 .. code-block:: python
 
-    # Define Componenet
+    # Define componenet
     Membrane_sensor = MembraneSensor(
         membrane_sensor_protein = "IMP",    
         response_protein = "RP",

@@ -25,6 +25,7 @@ between conceptual design and experimental implementation in synthetic biology.
    :alt: Types of membrane transport components and mechanisms
    :align: center
 
+
 ~~~~~~~~~~~~~~~~~~
 Membrane Component
 ~~~~~~~~~~~~~~~~~~
@@ -277,7 +278,7 @@ Consider the following membrane integration steps for alpha-hemolysin.
 
     \alpha HL_{homoheptamer} \rightarrow \alpha HL_{channel}
 
-To model the example above using the ``IntegralMembraneProtein `` component and the ``Membrane_Protein_Integration`` 
+To model the example above using the ``IntegralMembraneProtein`` component and the ``Membrane_Protein_Integration`` 
 mechanism, we must first define the integral membrane protein (e.g., alpha-hemolysin) and then 
 incorporate it into a mixture using the integration mechanism to construct a CRN. 
 
@@ -346,7 +347,7 @@ or ions to pass through the membrane and play key roles in regulated transport, 
 of substrates in response to concentration gradients or signaling events.
 
 The following code defines an membrane channel component called ``MC``. It requires two 
-inputs: ``integral_membrane_protein`` and `` substrate``, which can be either strings or ``Species`` 
+inputs: ``integral_membrane_protein`` and ``substrate``, which can be either strings or ``Species`` 
 objects.
 
 .. code-block:: python
@@ -395,9 +396,9 @@ The mechanism for simple transport can be implemented and stored in a dictionary
     mech_transport = Simple_Transport()
     transport_mechanisms = {mech_transport.mechanism_type: mech_transport}
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Example 3: Transport by alpha-hemolysin
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Example 3: Simple Transport by alpha-hemolysin
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Consider the following reaction of the transport of ATP through the alpha-hemolysin pore:
 
@@ -484,9 +485,9 @@ Then the mechanism for facilitated transport can be implemented and stored in a 
     mech_transport = Facilitated_Transport()
     transport_mechanisms = {mech_transport.mechanism_type: mech_transport}
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Example 4: Transport of glucose by GLUT1
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Example 4: Facilitated transport of glucose by GLUT1
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Construct a chemical reaction network (CRN) for the transport of glucose through the T7 RNAP activated expression of membrane channel glucose transporter type 1 (GLUT1).
 
 Consider the following reactions of the transport of glucose by GLUT1.
@@ -589,8 +590,8 @@ that actively move molecules or ions across the lipid bilayer. Unlike passive ch
 typically from ATP or an electrochemical gradient, to drive the transport of substrates against their concentration 
 gradients.
 
-The following code defines a membrane pump component called ``MC``. It requires two inputs: `` integral_membrane_protein`` 
-and `` substrate``, which can be either strings or ``Species`` objects.
+The following code defines a membrane pump component called ``MC``. It requires two inputs: ``integral_membrane_protein`` 
+and ``substrate``, which can be either strings or ``Species`` objects.
 
 .. code-block:: python
 
@@ -618,7 +619,7 @@ for 'ATP,' the model will default to a value of 1.
 ``direction``: By default, the ``direction`` is set to ``None``, which will generate a CRN corresponding to an exporter 
 behavior. (check this, if true then okay) in reference to what?<--check, what if the membrane protein is inverted??
 
-The `` MembranePump`` component can uses the `` Primary_Active_Transport_MM()`` mechanism.
+The ``MembranePump`` component can uses the ``Primary_Active_Transport_MM()`` mechanism.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Mechanism: ``Primary_Active_Transport_MM()``
@@ -662,14 +663,14 @@ changes, and unbinding steps. For example, if the membrane pump is defined as an
 
     ADP_{internal}:MP_{exporter} \rightarrow ADP_{internal} + MP_{exporter} 
 
-To use `` Primary_Active_Transport_MM()``, we need to redefine the membrane channel to include a transport direction designation, such as ``Importer`` or ``Exporter``. For example:
+To use ``Primary_Active_Transport_MM()``, we need to redefine the membrane channel to include a transport direction designation, such as ``Importer`` or ``Exporter``. For example:
 
 .. code-block:: python
 
     MC = MembraneChannel(integral_membrane_protein="IMP", substrate="S",     
                          direction='Importer')
-T
-hen the mechanism for facilitated transport can be implemented and stored in a dictionary.
+
+Then the mechanism for facilitated transport can be implemented and stored in a dictionary.
 
 .. code-block:: python
 
@@ -808,15 +809,229 @@ Membrane Sensors
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Component: ``MembraneSensor()``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Membrane sensors are a type of membrane protein, classified as a subgroup of integral membrane proteins. They are specialized for detecting external signals or environmental changes at the cell surface. Typically, these sensors are part of larger signaling systems, such as two-component systems. They initiate signal transduction pathways by responding to specific stimuli, including chemical ligands, changes in osmotic pressure, or shifts in pH. When activated, membrane sensors often undergo conformational changes or autophosphorylation, which triggers downstream responses within the cell.
+
+~~~~~~~~~~
+Component: ``MembraneSensor()``
+~~~~~~~~~~
+
+The following code defines a membrane sensor component called ``Membrane_sensor``. This component requires **four inputs**:
+
+- ``membrane_sensor_protein`` – the membrane-bound sensor protein (e.g., a histidine kinase)
+- ``response_protein`` – the cytoplasmic response regulator
+- ``assigned_substrate`` – the substrate to which the sensor is assigned or responds
+- ``signal_substrate`` – the substrate that acts as the external signal or inducer
+
+.. code-block:: python
+
+    Membrane_sensor = MembraneSensor(
+        membrane_sensor_protein="IMP",    
+        response_protein="RP",
+        assigned_substrate="S_assigned",
+        signal_substrate="S_signal"
+    )
+
+**Key Optional Parameters**
+
+In addition, the `MembraneSensor` component has an optional input:
+
+- ``ATP`` – an integer representing the number of ATP molecules required for phosphorylation events.  
+  The default value is **2** if not explicitly specified.
+
+The "MembraneSensor" component utilizes the "Membrane_Signaling_Pathway_MM()" mechanism to model two-component signaling systems, where signal detection at the membrane results in phosphorylation-driven regulatory responses within the cell.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Mechanism: ``Membrane_Signaling_Pathway_MM()``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Example 6: 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The Membrane Signaling Pathway models the two-component signaling process allows cells to detect and respond to external environmental signals using a membrane-bound sensor kinase and a cytoplasmic response regulator. This mechanism facilitates 
+signal transduction without the need for direct transport of substrates across the membrane. When the sensor kinase detects a stimulus, it undergoes autophosphorylation, transferring a phosphate group to the response regulator. This transfer 
+initiates downstream cellular responses.
+
+The ``Membrane_Signaling_Pathway_MM()`` mechanism captures two-component signaling behavior using Michaelis-Menten kinetics to model key steps such as stimulus detection, sensor autophosphorylation, and phosphate transfer to a response regulator. The following reactions illustrate the signaling pathway modeled by the ``Membrane_Signaling_Pathway_MM()`` mechanism. These steps follow Michaelis-Menten dynamics to represent enzymatic interactions such as substrate binding, phosphorylation, and dephosphorylation.
+
+1. **Signal detection and binding of the signal substrate (``S_sig``) to the membrane sensor (``M_sensor``):**
+
+.. math::
+
+    M_{\text{sensor}} + S_{\text{sig}} \rightleftharpoons M_{\text{sensor}}{:}S_{\text{sig}} \equiv M^{*}_{\text{sensor}}
+
+2. **Auto-phosphorylation of the membrane sensor via ATP binding:**
+
+.. math::
+
+    M^{*}_{\text{sensor}} + 2\,ATP_{\text{internal}} \rightleftharpoons M^{*}_{\text{sensor}}{:}2\,ATP_{\text{internal}} 
+    \rightarrow M^{*}_{\text{sensor}}^{2P}{:}2\,ADP_{\text{internal}} 
+    \rightarrow M^{*}_{\text{sensor}}^{2P} + 2\,ADP_{\text{internal}}
+
+3. **Phosphorylation of the response protein (``RP``):**
+
+.. math::
+
+    M^{*}_{\text{sensor}}^{2P} + RP \rightleftharpoons M^{*}_{\text{sensor}}^{2P}{:}RP 
+    \rightarrow M^{*}_{\text{sensor}}{:}RP^{*} 
+    \rightarrow M^{*}_{\text{sensor}} + RP^{*}
+
+4. **Dephosphorylation of the phosphorylated response protein (``RP*``):**
+
+.. math::
+
+    RP^{*} \rightarrow RP + P_{i}
+
+Then the mechanism for membrane signaling can be implemented and stored in a dictionary.
+
+.. code-block:: python
+	mech_sensor = Membrane_Signaling_Pathway_MM()
+	sensor_mechanisms = {mech_sensor.mechanism_type:mech_sensor}
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Example 6: NarX-NarL two component signalling path
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Based on the sequence of biochemical reactions provided below, construct a chemical reaction network (CRN) for the NarX–NarL two-component signaling pathway. Your model should account for membrane protein integration, signal detection, sensor autophosphorylation, and phosphate transfer to the response regulator.
+
+Use the reaction steps as a guide to define the necessary components and mechanisms for simulating this signaling cascade.
+
+.. math::
+1. **Homodimerization of NarX monomers:**
+
+.. math::
+
+    2\,NarX_{\text{monomer}} \rightarrow NarX_{\text{homodimer}}
+
+2. **Integration of NarX homodimer into the membrane:**
+
+.. math::
+
+    NarX_{\text{homodimer}} \rightarrow NarX_{\text{sensor}}
+
+3. **Detection and binding of nitrate (NO\ :sub:`3`\ ):**
+
+.. math::
+
+    NarX_{\text{sensor}} + NO_{3} \rightleftharpoons NarX_{\text{sensor}}{:}NO_{3} \equiv NarX^{*}_{\text{sensor}}
+
+4. **Auto-phosphorylation of activated NarX sensor:**
+
+.. math::
+
+    NarX^{*}_{\text{sensor}} + 2\,ATP_{\text{internal}} \rightleftharpoons NarX^{*}_{\text{sensor}}{:}2\,ATP_{\text{internal}} 
+    \rightarrow NarX^{*2P}_{\text{sensor}}{:}2\,ADP_{\text{internal}} 
+    \rightarrow NarX^{*2P}_{\text{sensor}} + 2\,ADP_{\text{internal}}
+
+5. **Phosphorylation of the response regulator NarL:**
+
+.. math::
+
+    NarX^{*2P}_{\text{sensor}} + NarL \rightleftharpoons NarX^{*2P}_{\text{sensor}}{:}NarL 
+    \rightarrow NarX^{*}_{\text{sensor}}{:}NarL^{*} 
+    \rightarrow NarX^{*}_{\text{sensor}} + NarL^{*}
+
+6. **Dephosphorylation of phosphorylated NarL (NarL\*):**
+
+.. math::
+
+    NarL^{*} \rightarrow NarL + P_{i}
+
+
+To model the example above using the ``MembraneSensor`` component and the ``Membrane_Signaling_Pathway_MM`` mechanism, we can begin by defining a new integral membrane protein (e.g., NarX) using the ``IntegralMembraneProtein`` component. This protein will serve as the membrane-bound sensor in the signaling pathway.
+
+The following example specifies the integral membrane protein, which is then incorporated into a mixture along with the response regulator and relevant signaling substrates.
+
+.. code-block:: python
+
+    # Define integral membrane protein
+    NarX = IntegralMembraneProtein('NarX', product='NarX_sensor',
+                                size= 2)
+
+    # Define membrane sensor
+    NarX_sensor=MembraneSensor(NarX.product, response_protein = 'NarL',
+                            assigned_substrate = 'P', signal_substrate = 'NO3', ATP = 2)
+
+
+    # Mechanisms
+    mech_integration = Membrane_Protein_Integration()
+    mech_sensing = Membrane_Signaling_Pathway_MM()
+
+    all_mechanisms = {mech_integration.mechanism_type:mech_integration,
+                    mech_sensing.mechanism_type:mech_sensing}
+
+    # Create mixture
+     M = Mixture(components=[NarX, NarX_sensor],
+                mechanisms=all_mechanisms,
+                parameter_file = "membrane_toolbox_parameters.txt") 
+
+    #Compile the CRN and print
+    CRN = E.compile_crn()
+    print(CRN.pretty_print(show_keys=False))
+
 
 **Console Output:**
 
 .. code-block:: text
+
+    Species(N = 15) = {
+    complex[2x_protein[NarX]] (@ 0),  complex[complex[NO3:protein[NarX_sensor]]:2x_small_molecule[ATP]] (@ 0),  complex[P:complex[NO3:protein[NarX_sensor]]:2x_small_molecule[ADP]] (@ 0),  complex[P:complex[NO3:protein[NarX_sensor]]] (@ 0),  P (@ 0),  protein[NarX_sensor(Passive)] (@ 0),  protein[NarX] (@ 0),  NarLactive (@ 0),  complex[NarL:complex[P:complex[NO3:protein[NarX_sensor]]]] (@ 0),  complex[NarL:P:complex[NO3:protein[NarX_sensor]]] (@ 0),  NarL (@ 0),  complex[NO3:protein[NarX_sensor]] (@ 0),  NO3 (@ 0),  small_molecule[ATP] (@ 0),  small_molecule[ADP] (@ 0),  
+    }
+
+    Reactions (10) = [
+    0. 2protein[NarX] <--> complex[2x_protein[NarX]]
+    Kf=k_forward * protein_NarX_Internal^2
+    Kr=k_reverse * complex_protein_NarX_Internal_2x_
+    k_forward=0.002
+    k_reverse=2e-10
+
+    1. complex[2x_protein[NarX]] --> protein[NarX_sensor(Passive)]
+    Kf = k complex[2x_protein[NarX]] / ( 1 + (protein[NarX_sensor(Passive)]/K)^4 )
+    k=10.0
+    K=0.5
+    n=4
+
+    2. NO3+protein[NarX_sensor(Passive)] <--> complex[NO3:protein[NarX_sensor]]
+    Kf=k_forward * NO3_Internal * protein_NarX_sensor_Passive
+    Kr=k_reverse * complex_NO3_Internal_protein_NarX_sensor_Passive_
+    k_forward=0.002
+    k_reverse=2e-10
+
+    3. complex[NO3:protein[NarX_sensor]]+2small_molecule[ATP] <--> complex[complex[NO3:protein[NarX_sensor]]:2x_small_molecule[ATP]]
+    Kf=k_forward * complex_NO3_Internal_protein_NarX_sensor_Passive_ * small_molecule_ATP_Internal^2
+    Kr=k_reverse * complex_complex_NO3_Internal_protein_NarX_sensor_Passive__small_molecule_ATP_Internal_2x_
+    k_forward=0.002
+    k_reverse=2e-10
+
+    4. complex[complex[NO3:protein[NarX_sensor]]:2x_small_molecule[ATP]] --> complex[P:complex[NO3:protein[NarX_sensor]]:2x_small_molecule[ADP]]
+    Kf=k_forward * complex_complex_NO3_Internal_protein_NarX_sensor_Passive__small_molecule_ATP_Internal_2x_
+    k_forward=0.1
+
+    5. complex[P:complex[NO3:protein[NarX_sensor]]:2x_small_molecule[ADP]] --> complex[P:complex[NO3:protein[NarX_sensor]]]+2small_molecule[ADP]
+    Kf=k_forward * complex_P_Internal_complex_NO3_Internal_protein_NarX_sensor_Passive__small_molecule_ADP_Internal_2x_
+    k_forward=0.8
+
+    6. complex[P:complex[NO3:protein[NarX_sensor]]]+NarL <--> complex[NarL:complex[P:complex[NO3:protein[NarX_sensor]]]]
+    Kf=k_forward * complex_P_Internal_complex_NO3_Internal_protein_NarX_sensor_Passive__ * NarL_Internal
+    Kr=k_reverse * complex_NarL_Internal_complex_P_Internal_complex_NO3_Internal_protein_NarX_sensor_Passive___
+    k_forward=0.002
+    k_reverse=1e-10
+
+    7. complex[NarL:complex[P:complex[NO3:protein[NarX_sensor]]]] --> complex[NarL:P:complex[NO3:protein[NarX_sensor]]]
+    Kf=k_forward * complex_NarL_Internal_complex_P_Internal_complex_NO3_Internal_protein_NarX_sensor_Passive___
+    k_forward=0.1
+
+    8. complex[NarL:P:complex[NO3:protein[NarX_sensor]]] --> NarLactive+complex[NO3:protein[NarX_sensor]]
+    Kf=k_forward * complex_NarL_Internal_P_Internal_complex_NO3_Internal_protein_NarX_sensor_Passive__
+    k_forward=0.2
+
+    9. NarLactive --> NarL+P
+    Kf=k_forward * NarLactive_Internal
+    k_forward=2e-10
+
+    ]
+
+---------------
+Exercises
+---------------
+
+~~~~~~~~~~~
+Exercise 1:
+~~~~~~~~~~~
+[Place holder]

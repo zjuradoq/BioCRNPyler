@@ -32,26 +32,24 @@ Membrane Component
 The following membrane-associated component that are available in BioCRNpyler:
 
 - ``DiffusibleMolecule()``: Represents a molecule that can diffuse freely across
-or within compartments, such as ions, gases, or small polar molecules. 
+  or within compartments, such as ions, gases, or small polar molecules. 
 - ``IntegralMembraneProtein()``: Represents a protein embedded permanently within
-the membrane, spanning the lipid bilayer. 
+  the membrane, spanning the lipid bilayer. 
 - ``MembraneChannel()``: A subtype of integral membrane protein that represents a
-membrane protein that uses passive or facilitated transport of to move specific ions
+  membrane protein that uses passive or facilitated transport of to move specific ions
 or molecules across the membrane via a pore.
 - ``MembranePump()``: A subtype of integral membrane protein that represents an active
-transport protein that moves ions or molecules against their concentration gradient using
-energy (e.g., ATP).
+  transport protein that moves ions or molecules against their concentration gradient using
+  energy (e.g., ATP).
 - ``MembraneSensor()``: A subtype of integral membrane protein that represents a protein
-embedded in the membrane that detects environmental or intracellular signals (e.g., ligand
-binding, voltage change) and initiates a cellular response, such as activating a signaling
-cascade.
+  embedded in the membrane that detects environmental or intracellular signals (e.g., ligand
+  binding, voltage change) and initiates a cellular response, such as activating a signaling
+  cascade.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Membrane Mechanisms
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The following membrane-associated mechanisms that are available in BioCRNpyler:
-
-- ``Simple_Diffusion()``: Models the passive movement of small, nonpolar molecules across the membrane, driven by concentration gradients, without the need for membrane proteins or energy input.
 
 - ``Simple_Diffusion()``: 
   Models the passive movement of small, nonpolar molecules across the membrane, 
@@ -234,17 +232,17 @@ Optional arguments can also be supplied to control transport direction, stoichio
 **Key Optional Parameters**
 
 - ``direction``: Specifies the transport direction with `'Exporter'`, `'Importer'`, or `'Passive'` 
-(default) options. The default value of `'Passive'` indicates that the internal membrane protein is 
-embedded in the membrane. This default may apply to non-transporter proteins or unidirectional 
-transporters.  The flux of the substrates, based on the `'direction`', follows the general transport 
-below.
+  (default) options. The default value of `'Passive'` indicates that the internal membrane protein is 
+  embedded in the membrane. This default may apply to non-transporter proteins or unidirectional 
+  transporters.  The flux of the substrates, based on the `'direction`', follows the general transport 
+  below.
     - Exporter: :math:`S_{in} \rightarrow S_{out}`  
     - Importer: :math:`S_{in} \leftarrow S_{out}`  
     - Passive: :math:`S_{in} \leftrightarrow S_{out}`
 
 - ``size``: Defines the number of monomers required for the integral membrane used in `'Membrane_Protein_Integration()'`
-and the subsequent reactions.. For homo-oligomer membrane proteins, we can include an input for `'size'`
-as either a numerical string or an integer.
+  and the subsequent reactions.. For homo-oligomer membrane proteins, we can include an input for `'size'`
+  as either a numerical string or an integer.
     - If provided:  
     :code:`monomer * size → oligomer → integral_membrane_protein`  
     - If not:  
@@ -372,13 +370,13 @@ The ``MembraneChannel`` component can uses the ``Simple_Transport`` or ``Facilit
 mechanism. The choice of mechanism depends on the biological behavior of the channel. You can choose 
 from one of the following options:
 
-- **Simple_Transport**  
-  Allows bidirectional movement of substrates, following the concentration gradient. The `direction` 
-  of the membrane channel must be set to ``Passive``.
+- **Simple_Transport**:  
+    Allows bidirectional movement of substrates, following the concentration gradient. The `direction` 
+    of the membrane channel must be set to ``Passive``.
 
-- **Facilitated_Transport_MM**  
-  Allows unidirectional movement of substrates, also along the concentration gradient. The `direction` 
-  of the membrane channel must be either ``Importer`` or ``Exporter``.
+- **Facilitated_Transport_MM**:  
+    Allows unidirectional movement of substrates, also along the concentration gradient. The `direction` 
+    of the membrane channel must be either ``Importer`` or ``Exporter``.
 
 .. _simple-transport:
 

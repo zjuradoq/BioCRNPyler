@@ -51,28 +51,33 @@ Membrane Mechanisms
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The following membrane-associated mechanisms that are available in BioCRNpyler:
 
-- ``Simple_Diffusion()``: Models the passive movement of small, nonpolar molecules across
-the membrane, driven by concentration gradients, without the need for membrane proteins or
-energy input.
+- ``Simple_Diffusion()``: Models the passive movement of small, nonpolar molecules across the membrane, driven by concentration gradients, without the need for membrane proteins or energy input.
+
+- ``Simple_Diffusion()``: 
+  Models the passive movement of small, nonpolar molecules across the membrane, 
+  driven by concentration gradients, without the need for membrane proteins or 
+  energy input.
+
 - Membrane protein-mediated mechanisms
-    - ``Membrane_Protein_Integration()``: Models the the insertion and proper orientation of
-    proteins into the membrane, ensuring their structural and functional integration within the
-    lipid bilayer.
+    - ``Membrane_Protein_Integration()``: 
+      Models the the insertion and proper orientation of
+      proteins into the membrane, ensuring their structural and functional integration within the
+      lipid bilayer.
 
     - ``Simple_Transport()``: Models the passive movement of substrates through membrane
-    pores/channels along concentration gradients, without requiring energy input.
+      pores/channels along concentration gradients, without requiring energy input.
 
     - ``Facilitated_Transport()``: Models the passive movement of substrates along
-    concentration gradients by binding to carrier proteins that undergo conformational
-    changes, without requiring energy input.
+      concentration gradients by binding to carrier proteins that undergo conformational
+      changes, without requiring energy input.
   
     - ``Primary_Active_Transport()``: Models the active movement of substrates
-    against concentration gradients by binding to membrane pumps, which undergo
-    conformational changes driven by energy input (e.g., ATP).
+      against concentration gradients by binding to membrane pumps, which undergo
+      conformational changes driven by energy input (e.g., ATP).
 
-    - ``Membrane_Signaling_Pathway_MM()``: Models the environmental sensing 
-    through a signaling pathway involving a sensor kinase and phosphorylation of 
-    a response regulator protein, enabling adaptive cellular responses.
+    - ``Membrane_Signaling_Pathway_MM()``: Models the environmental sensing through a 
+      signaling pathway involving a sensor kinase and phosphorylation of a response
+      regulator protein, enabling adaptive cellular responses.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Compiling Chemical Reaction Networks with Membrane Features

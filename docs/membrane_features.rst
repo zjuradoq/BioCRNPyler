@@ -861,6 +861,12 @@ The ``Membrane_Signaling_Pathway_MM()`` mechanism captures two-component signali
 
 .. math::
 
+    M^{*}_{\text{sensor}} + 2\,ATP_{\text{internal}} \rightleftharpoons M^{*}_{\text{sensor}}{:}2\,ATP_{\text{internal}} 
+    \rightarrow M^{*2P}_{\text{sensor}}{:}2\,ADP_{\text{internal}} 
+    \rightarrow M^{*2P}_{\text{sensor}} + 2\,ADP_{\text{internal}}
+
+.. math::
+
     (M^*)_{\text{sensor}} 
     .. + 2\,ATP_{\text{internal}} \rightleftharpoons M^{*}_{\text{sensor}}{:}2\,ATP_{\text{internal}} 
     .. \rightarrow M^{*}_{\text{sensor}}^{2P}{:}2\,ADP_{\text{internal}} 
@@ -868,6 +874,12 @@ The ``Membrane_Signaling_Pathway_MM()`` mechanism captures two-component signali
 
 3. **Phosphorylation of the response protein (RP):**
 
+.. math::
+
+    NarX^{*2P}_{\text{sensor}} + NarL \rightleftharpoons NarX^{*2P}_{\text{sensor}}{:}NarL 
+    \rightarrow NarX^{*}_{\text{sensor}}{:}NarL^{*} 
+    \rightarrow NarX^{*}_{\text{sensor}} + NarL^{*}
+    
 .. .. math::
     
         M^{*2P}

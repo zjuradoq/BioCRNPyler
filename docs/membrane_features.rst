@@ -31,11 +31,11 @@ Membrane Component
 ~~~~~~~~~~~~~~~~~~
 The following membrane-associated component that are available in BioCRNpyler:
 
-- ``DiffusibleMolecule()``:
-- ``IntegralMembraneProtein()``:
-- ``MembraneChannel()``:
-- ``MembranePump()``:
-- ``MembraneSensor()``:
+- ``DiffusibleMolecule()``: Represents a molecule that can diffuse freely across or within compartments, such as ions, gases, or small polar molecules. 
+- ``IntegralMembraneProtein()``: Represents a protein embedded permanently within the membrane, spanning the lipid bilayer. 
+- ``MembraneChannel()``: A subtype of integral membrane protein that represents a membrane protein that uses passive or facilitated transport of to move specific ions or molecules across the membrane via a pore.
+- ``MembranePump()``:  A subtype of integral membrane protein that represents an active transport protein that moves ions or molecules against their concentration gradient using energy (e.g., ATP).
+- ``MembraneSensor()``:  A subtype of integral membrane protein that represents a protein embedded in the membrane that detects environmental or intracellular signals (e.g., ligand binding, voltage change) and initiates a cellular response, such as activating a signaling cascade.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Membrane Mechanisms
@@ -255,6 +255,7 @@ mechanism for integrating membranes can be implemented and stored in a dictionar
 
 .. code-block:: python
 
+    # Mechanism
     mech_integration = Membrane_Protein_Integration()
     integration_mechanisms = {mech_integration.mechanism_type: mech_integration}
 
@@ -284,10 +285,9 @@ incorporate it into a mixture using the integration mechanism to construct a CRN
     # Define membrane protein
     alphaHL = IntegralMembraneProtein('alphaHL_monomer', product='alphaHL',
                                         size = 7)
-    # Instantiate a mechanism for membrane integration
-    mech_integration = Membrane_Protein_Integration()
     
     # Mechanisms
+    mech_integration = Membrane_Protein_Integration()
     integration_mechanisms = {mech_integration.mechanism_type: mech_integration}
 
     # Create mixture
@@ -864,19 +864,20 @@ The ``Membrane_Signaling_Pathway_MM()`` mechanism captures two-component signali
 
 .. math::
 
-    M^{*}_{\text{sensor}} + 2\,ATP_{\text{internal}} \rightleftharpoons M^{*}_{\text{sensor}}{:}2\,ATP_{\text{internal}} 
-    \rightarrow M^{*}_{\text{sensor}}^{2P}{:}2\,ADP_{\text{internal}} 
-    \rightarrow M^{*}_{\text{sensor}}^{2P} + 2\,ADP_{\text{internal}}
+    (M^{*})_{\text{sensor}} 
+    .. + 2\,ATP_{\text{internal}} \rightleftharpoons M^{*}_{\text{sensor}}{:}2\,ATP_{\text{internal}} 
+    .. \rightarrow M^{*}_{\text{sensor}}^{2P}{:}2\,ADP_{\text{internal}} 
+    .. \rightarrow M^{*}_{\text{sensor}}^{2P} + 2\,ADP_{\text{internal}}
 
-3. **Phosphorylation of the response protein (``RP``):**
+3. **Phosphorylation of the response protein (RP):**
 
 .. math::
 
-    M^{*}_{\text{sensor}}^{2P} + RP \rightleftharpoons M^{*}_{\text{sensor}}^{2P}{:}RP 
+    M^{*2P}_{\text{sensor}} + RP \rightleftharpoons M^{*}_{\text{sensor}}^{2P}{:}RP 
     \rightarrow M^{*}_{\text{sensor}}{:}RP^{*} 
     \rightarrow M^{*}_{\text{sensor}} + RP^{*}
 
-4. **Dephosphorylation of the phosphorylated response protein (``RP*``):**
+4. **Dephosphorylation of the phosphorylated response protein (RP*):**
 
 .. math::
 
@@ -952,7 +953,6 @@ The following example specifies the integral membrane protein, which is then inc
     NarX_sensor = MembraneSensor(NarX.product, response_protein = 'NarL',
                             assigned_substrate = 'P', signal_substrate = 'NO3', ATP = 2)
 
-
     # Mechanisms
     mech_integration = Membrane_Protein_Integration()
     mech_sensing = Membrane_Signaling_Pathway_MM()
@@ -968,7 +968,6 @@ The following example specifies the integral membrane protein, which is then inc
     #Compile the CRN and print
     CRN = E.compile_crn()
     print(CRN.pretty_print(show_keys = False))
-
 
 **Console Output:**
 

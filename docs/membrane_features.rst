@@ -33,18 +33,22 @@ The following membrane-associated component that are available in BioCRNpyler:
 
 - ``DiffusibleMolecule()``: Represents a molecule that can diffuse freely across
   or within compartments, such as ions, gases, or small polar molecules. 
+
 - ``IntegralMembraneProtein()``: Represents a protein embedded permanently within
   the membrane, spanning the lipid bilayer. 
-- ``MembraneChannel()``: A subtype of integral membrane protein that represents a
-  membrane protein that uses passive or facilitated transport of to move specific ions
-or molecules across the membrane via a pore.
-- ``MembranePump()``: A subtype of integral membrane protein that represents an active
-  transport protein that moves ions or molecules against their concentration gradient using
-  energy (e.g., ATP).
-- ``MembraneSensor()``: A subtype of integral membrane protein that represents a protein
-  embedded in the membrane that detects environmental or intracellular signals (e.g., ligand
-  binding, voltage change) and initiates a cellular response, such as activating a signaling
-  cascade.
+
+- ``MembraneChannel()``: A subtype of integral membrane protein that represents
+  a membrane protein that uses passive or facilitated transport of to move 
+  specific ions or molecules across the membrane via a pore.
+
+- ``MembranePump()``: A subtype of integral membrane protein that represents 
+  an active transport protein that moves ions or molecules against their 
+  concentration gradient using energy (e.g., ATP).
+
+- ``MembraneSensor()``: A subtype of integral membrane protein that represents 
+  a protein embedded in the membrane that detects environmental or intracellular
+  signals (e.g., ligand binding, voltage change) and initiates a cellular 
+  response, such as activating a signaling cascade.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Membrane Mechanisms
@@ -58,24 +62,24 @@ The following membrane-associated mechanisms that are available in BioCRNpyler:
 
 - Membrane protein-mediated mechanisms
     - ``Membrane_Protein_Integration()``: 
-      Models the the insertion and proper orientation of
-      proteins into the membrane, ensuring their structural and functional integration within the
+      Models the the insertion and proper orientation of proteins into the 
+      membrane, ensuring their structural and functional integration within the
       lipid bilayer.
 
-    - ``Simple_Transport()``: Models the passive movement of substrates through membrane
-      pores/channels along concentration gradients, without requiring energy input.
+    - ``Simple_Transport()``: Models the passive movement of substrates through 
+      membrane pores/channels along concentration gradients, without requiring energy input.
 
-    - ``Facilitated_Transport()``: Models the passive movement of substrates along
-      concentration gradients by binding to carrier proteins that undergo conformational
-      changes, without requiring energy input.
+    - ``Facilitated_Transport()``: Models the passive movement of substrates 
+      along concentration gradients by binding to carrier proteins that undergo 
+      conformational changes, without requiring energy input.
   
     - ``Primary_Active_Transport()``: Models the active movement of substrates
       against concentration gradients by binding to membrane pumps, which undergo
       conformational changes driven by energy input (e.g., ATP).
 
-    - ``Membrane_Signaling_Pathway_MM()``: Models the environmental sensing through a 
-      signaling pathway involving a sensor kinase and phosphorylation of a response
-      regulator protein, enabling adaptive cellular responses.
+    - ``Membrane_Signaling_Pathway_MM()``: Models the environmental sensing 
+      through a signaling pathway involving a sensor kinase and phosphorylation 
+      of a response regulator protein, enabling adaptive cellular responses.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Compiling Chemical Reaction Networks with Membrane Features
@@ -89,10 +93,10 @@ components and transport mechanisms from modular, high-level specifications.
    :alt: Flowchart for membrane modeling options
    :align: center
 
-The figure presented above illustrates the various options available for modeling transport 
-and two-component signaling within BioCRNpyler. It specifically highlights the membrane 
-components, indicated by purple boxes, along with their corresponding mechanisms, represented 
-by the blue box.
+The figure presented above illustrates the various options available for modeling 
+transport and two-component signaling within BioCRNpyler. It specifically 
+highlights the membrane components, indicated by purple boxes, along with their 
+corresponding mechanisms, represented by the blue box.
 
 ----------------
 Diffusible Molecule
@@ -101,11 +105,11 @@ Diffusible Molecule
 Component: ``DiffusibleMolecule()``
 ~~~~~~~~~~
 
-A Diffusible Molecule refers to a class of molecules that can pass through cell membranes 
-without assistance. Examples of such molecules include gases like oxygen (O\ :sub:`2`\) and 
-carbon dioxide (CO\ :sub:`2`\), as well as small polar but uncharged molecules. In contrast, 
-larger uncharged molecules and charged molecules require membrane proteins for transport across 
-the membrane.
+A Diffusible Molecule refers to a class of molecules that can pass through cell 
+membranes without assistance. Examples of such molecules include gases like 
+oxygen (O\ :sub:`2`\) and carbon dioxide (CO\ :sub:`2`\), as well as small polar
+but uncharged molecules. In contrast, larger uncharged molecules and charged 
+molecules require membrane proteins for transport across the membrane.
 
 The following code defines a diffusible molecule called ``S``:
 
@@ -114,9 +118,10 @@ The following code defines a diffusible molecule called ``S``:
     # Define component
     S = DiffusibleMolecule('name')
 
-Unless otherwise specified, the species ``S`` will reside in the ``internal`` compartment.  
-The membrane component ``DiffusibleMolecule(Component)`` will then create a species ``product``,  
-which is a copy of ``S`` but located in the ``external`` compartment.
+Unless otherwise specified, the species ``S`` will reside in the ``internal`` 
+compartment. The membrane component ``DiffusibleMolecule(Component)`` will then 
+create a species ``product``, which is a copy of ``S`` but located in the 
+``external`` compartment.
 
 .. _simple-diffusion:
 
@@ -231,11 +236,12 @@ Optional arguments can also be supplied to control transport direction, stoichio
 
 **Key Optional Parameters**
 
-- ``direction``: Specifies the transport direction with `'Exporter'`, `'Importer'`, or `'Passive'` 
-  (default) options. The default value of `'Passive'` indicates that the internal membrane protein is 
-  embedded in the membrane. This default may apply to non-transporter proteins or unidirectional 
-  transporters.  The flux of the substrates, based on the `'direction`', follows the general transport 
-  below.
+- ``direction``: Specifies the transport direction with `'Exporter'`,
+  `'Importer'`, or `'Passive'` (default) options. The default value of 
+  `'Passive'` indicates that the internal membrane protein is embedded in the 
+  membrane. This default may apply to non-transporter proteins or unidirectional
+  transporters.  The flux of the substrates, based on the `'direction`', 
+  follows the general transport below.
     - Exporter: :math:`S_{in} \rightarrow S_{out}`  
     - Importer: :math:`S_{in} \leftarrow S_{out}`  
     - Passive: :math:`S_{in} \leftrightarrow S_{out}`

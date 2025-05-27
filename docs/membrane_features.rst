@@ -42,11 +42,10 @@ Membrane Mechanisms
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The following membrane-associated mechanisms that are available in BioCRNpyler:
 
-- ``Simple_Diffusion()``: Models the passive movement of small, nonpolar molecules across the membrane, driven by concentration gradients, without the need for membrane proteins or energy input.
+- ``Simple_Diffusion()``: Models the passive movement of small,
+nonpolar molecules across the membrane, driven by concentration gradients, without the need for membrane proteins or energy input.
 - Membrane protein-mediated mechanisms
-    - ``Membrane_Protein_Integration()``: Models the the insertion and proper 
-    orientation of proteins into the membrane, ensuring their structural and 
-    functional integration within the lipid bilayer.
+    - ``Membrane_Protein_Integration()``: Models the the insertion and proper orientation of proteins into the membrane, ensuring their structural and functional integration within the lipid bilayer.
 
     - ``Simple_Transport()``: Models the passive movement of substrates through
     membrane pores/channels along concentration gradients, without requiring
@@ -865,27 +864,13 @@ The ``Membrane_Signaling_Pathway_MM()`` mechanism captures two-component signali
     \rightarrow M^{*2P}_{\text{sensor}}{:}2\,ADP_{\text{internal}} 
     \rightarrow M^{*2P}_{\text{sensor}} + 2\,ADP_{\text{internal}}
 
-.. math::
-
-    (M^*)_{\text{sensor}} 
-    .. + 2\,ATP_{\text{internal}} \rightleftharpoons M^{*}_{\text{sensor}}{:}2\,ATP_{\text{internal}} 
-    .. \rightarrow M^{*}_{\text{sensor}}^{2P}{:}2\,ADP_{\text{internal}} 
-    .. \rightarrow M^{*}_{\text{sensor}}^{2P} + 2\,ADP_{\text{internal}}
-
 3. **Phosphorylation of the response protein (RP):**
 
 .. math::
 
-    NarX^{*2P}_{\text{sensor}} + NarL \rightleftharpoons NarX^{*2P}_{\text{sensor}}{:}NarL 
-    \rightarrow NarX^{*}_{\text{sensor}}{:}NarL^{*} 
-    \rightarrow NarX^{*}_{\text{sensor}} + NarL^{*}
-    
-.. .. math::
-    
-        M^{*2P}
-..     M^{*2P}_{\text{sensor}} + RP \rightleftharpoons M^{*}_{\text{sensor}}^{2P}{:}RP 
-..     \rightarrow M^{*}_{\text{sensor}}{:}RP^{*} 
-..     \rightarrow M^{*}_{\text{sensor}} + RP^{*}
+    M^{*2P}_{\text{sensor}} + RP \rightleftharpoons M^{*2P}_{\text{sensor}}{:}RP 
+    \rightarrow M^{*}_{\text{sensor}}{:}RP^{*} 
+    \rightarrow M^{*}_{\text{sensor}} + RP^{*}
 
 4. **Dephosphorylation of the phosphorylated response protein (RP*):**
 
@@ -920,7 +905,7 @@ Construct a chemical reaction network (CRN) for the NarX–NarL two-component si
 
     NarX_{\text{homodimer}} \rightarrow NarX_{\text{sensor}}
 
-3. **Detection and binding of nitrate (NO\ :sub:`3`\ ):**
+3. **Detection and binding of nitrate (:math: `NO_3``):** (:math:`\mathrm{NO_3}`)
 
 .. math::
 

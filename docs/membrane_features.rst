@@ -31,32 +31,43 @@ Membrane Component
 ~~~~~~~~~~~~~~~~~~
 The following membrane-associated component that are available in BioCRNpyler:
 
-- ``DiffusibleMolecule()``: Represents a molecule that can diffuse freely across or within compartments, such as ions, gases, or small polar molecules. 
-- ``IntegralMembraneProtein()``: Represents a protein embedded permanently within the membrane, spanning the lipid bilayer. 
-- ``MembraneChannel()``: A subtype of integral membrane protein that represents a membrane protein that uses passive or facilitated transport of to move specific ions or molecules across the membrane via a pore.
-- ``MembranePump()``: A subtype of integral membrane protein that represents an active transport protein that moves ions or molecules against their concentration gradient using energy (e.g., ATP).
-- ``MembraneSensor()``: A subtype of integral membrane protein that represents a protein embedded in the membrane that detects environmental or intracellular signals (e.g., ligand binding, voltage change) and initiates a cellular response, such as activating a signaling cascade.
+- ``DiffusibleMolecule()``: Represents a molecule that can diffuse freely across
+or within compartments, such as ions, gases, or small polar molecules. 
+- ``IntegralMembraneProtein()``: Represents a protein embedded permanently within
+the membrane, spanning the lipid bilayer. 
+- ``MembraneChannel()``: A subtype of integral membrane protein that represents a
+membrane protein that uses passive or facilitated transport of to move specific ions
+or molecules across the membrane via a pore.
+- ``MembranePump()``: A subtype of integral membrane protein that represents an active
+transport protein that moves ions or molecules against their concentration gradient using
+energy (e.g., ATP).
+- ``MembraneSensor()``: A subtype of integral membrane protein that represents a protein
+embedded in the membrane that detects environmental or intracellular signals (e.g., ligand
+binding, voltage change) and initiates a cellular response, such as activating a signaling
+cascade.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Membrane Mechanisms
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The following membrane-associated mechanisms that are available in BioCRNpyler:
 
-- ``Simple_Diffusion()``: Models the passive movement of small,
-nonpolar molecules across the membrane, driven by concentration gradients, without the need for membrane proteins or energy input.
+- ``Simple_Diffusion()``: Models the passive movement of small, nonpolar molecules across
+the membrane, driven by concentration gradients, without the need for membrane proteins or
+energy input.
 - Membrane protein-mediated mechanisms
-    - ``Membrane_Protein_Integration()``: Models the the insertion and proper orientation of proteins into the membrane, ensuring their structural and functional integration within the lipid bilayer.
+    - ``Membrane_Protein_Integration()``: Models the the insertion and proper orientation of
+    proteins into the membrane, ensuring their structural and functional integration within the
+    lipid bilayer.
 
-    - ``Simple_Transport()``: Models the passive movement of substrates through
-    membrane pores/channels along concentration gradients, without requiring
-    energy input.
+    - ``Simple_Transport()``: Models the passive movement of substrates through membrane
+    pores/channels along concentration gradients, without requiring energy input.
 
-    - ``Facilitated_Transport()``: Models the passive movement of substrates 
-    along concentration gradients by binding to carrier proteins that undergo 
-    conformational changes, without requiring energy input.
+    - ``Facilitated_Transport()``: Models the passive movement of substrates along
+    concentration gradients by binding to carrier proteins that undergo conformational
+    changes, without requiring energy input.
   
-    - ``Primary_Active_Transport()``: Models the active movement of substrates 
-    against concentration gradients by binding to membrane pumps, which undergo 
+    - ``Primary_Active_Transport()``: Models the active movement of substrates
+    against concentration gradients by binding to membrane pumps, which undergo
     conformational changes driven by energy input (e.g., ATP).
 
     - ``Membrane_Signaling_Pathway_MM()``: Models the environmental sensing 

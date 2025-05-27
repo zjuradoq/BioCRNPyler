@@ -67,7 +67,8 @@ The following membrane-associated mechanisms that are available in BioCRNpyler:
       lipid bilayer.
 
     - ``Simple_Transport()``: Models the passive movement of substrates through 
-      membrane pores/channels along concentration gradients, without requiring energy input.
+      membrane pores/channels along concentration gradients, without requiring 
+      energy input.
 
     - ``Facilitated_Transport()``: Models the passive movement of substrates 
       along concentration gradients by binding to carrier proteins that undergo 
@@ -129,15 +130,16 @@ create a species ``product``, which is a copy of ``S`` but located in the
 Mechanism: ``Simple_Diffusion()``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Simple diffusion allows molecules to passively cross membranes down their concentration 
-gradient. This is the most basic mechanism by which molecules can traverse a membrane, commonly 
-referred to as passive diffusion. In this process, a molecule can dissolve in the lipid bilayer, 
-diffuse across it, and reach the other side. This mechanism does not require the assistance of 
-membrane proteins, and the transport direction is determined by the concentration gradient, 
-moving from areas of high concentration to areas of low concentration.
+Simple diffusion allows molecules to passively cross membranes down their 
+  concentration gradient. This is the most basic mechanism by which molecules 
+  can traverse a membrane, commonly referred to as passive diffusion. In this 
+  process, a molecule can dissolve in the lipid bilayer, diffuse across it, and 
+  reach the other side. This mechanism does not require the assistance of membrane 
+  proteins, and the transport direction is determined by the concentration 
+  gradient, moving from areas of high concentration to areas of low concentration.
 
-In BioCRNpyler, the ``DiffusibleMolecule`` component uses the mechanism ``Simple_Diffusion``, 
-which can be defined as:
+In BioCRNpyler, the ``DiffusibleMolecule`` component uses the mechanism 
+  ``Simple_Diffusion``, which can be defined as:
 
 .. code-block:: python
 
@@ -155,9 +157,9 @@ Consider the following diffusion step for the diffusion of nitrate (NO\ :sub:`3`
 
     NO3_{internal} \rightleftharpoons NO3_{external}
 
-To model the example above using the ``Diffusible_Molecule`` component and the ``Simple_Diffusion`` 
-mechanism, we must first define the diffusible molecule and then incorporate it into a mixture 
-using the mechanism to construct a CRN.
+To model the example above using the ``Diffusible_Molecule`` component and the 
+  ``Simple_Diffusion`` mechanism, we must first define the diffusible molecule 
+  and then incorporate it into a mixture using the mechanism to construct a CRN.
 
 .. code-block:: python
 
@@ -206,20 +208,23 @@ Integral Membrane Protein
 Component: ``IntegralMembraneProtein()``
 ~~~~~~~~~~
 
-Integral Membrane Proteins refer to a class of proteins embedded within the lipid bilayer of 
-cellular membranes. These proteins typically span the membrane and play essential roles in transport, 
-signaling, and structural support. Once integrated, they can mediate the movement of other molecules 
-or relay signals across the membrane.
+Integral Membrane Proteins refer to a class of proteins embedded within the lipid 
+  bilayer of cellular membranes. These proteins typically span the membrane and 
+  play essential roles in transport, signaling, and structural support. Once 
+  integrated, they can mediate the movement of other molecules or relay signals 
+  across the membrane.
 
-The following code defines an integral membrane protein component called ``IMP``. It requires two inputs: 
-``membrane_protein`` and ``product``, which can be either strings or ``Species`` objects.
+The following code defines an integral membrane protein component called ``IMP``. 
+  It requires two inputs: ``membrane_protein`` and ``product``, which can be 
+  either strings or ``Species`` objects.
 
 .. code-block:: python
     
     # Define component
     IMP = IntegralMembraneProtein(membrane_protein = "MP", product = "P")
 
-Optional arguments can also be supplied to control transport direction, stoichiometry, and compartment:
+Optional arguments can also be supplied to control transport direction, 
+  stoichiometry, and compartment:
 
 .. code-block:: python
 
@@ -246,13 +251,19 @@ Optional arguments can also be supplied to control transport direction, stoichio
     - Importer: :math:`S_{in} \leftarrow S_{out}`  
     - Passive: :math:`S_{in} \leftrightarrow S_{out}`
 
-- ``size``: Defines the number of monomers required for the integral membrane used in `'Membrane_Protein_Integration()'`
-  and the subsequent reactions.. For homo-oligomer membrane proteins, we can include an input for `'size'`
-  as either a numerical string or an integer.
+- ``size``: Defines the number of monomers required for the integral membrane 
+  used in `'Membrane_Protein_Integration()'` and the subsequent reactions. For 
+  homo-oligomer membrane proteins, we can include an input for `'size'` as 
+  either a numerical string or an integer.
     - If provided:  
-    :code:`monomer * size → oligomer → integral_membrane_protein`  
+      :code:
+    
+          `monomer * size → oligomer → integral_membrane_protein`  
+    
     - If not:  
-    :code:`monomer → integral_membrane_protein`
+      :code:
+    
+          `monomer → integral_membrane_protein`
 
 .. _membrane—protein-integration:
 
@@ -260,14 +271,17 @@ Optional arguments can also be supplied to control transport direction, stoichio
 Mechanism: ``Membrane_Protein_Integration()``
 ~~~~~~~~~~
 
-Membrane protein integration models the process by which proteins are inserted into the lipid 
-bilayer of a membrane. This mechanism ensures that membrane proteins are correctly localized 
-and oriented within the membrane, a crucial step for their function in transport, signaling, or 
-structural roles. The mechanism does not model active transport or signaling directly, but provides 
-the foundational step of embedding proteins into the membrane where they can carry out these roles.
+Membrane protein integration models the process by which proteins are inserted 
+  into the lipid bilayer of a membrane. This mechanism ensures that membrane 
+  proteins are correctly localized and oriented within the membrane, a crucial 
+  step for their function in transport, signaling, or structural roles. The 
+  mechanism does not model active transport or signaling directly, but provides
+  the foundational step of embedding proteins into the membrane where they can 
+  carry out these roles.
 
-The ``IntegralMembraneProtein`` component uses the ``Membrane_Protein_Integration`` mechanism. The 
-mechanism for integrating membranes can be implemented and stored in a dictionary.
+The ``IntegralMembraneProtein`` component uses the ``Membrane_Protein_Integration`` 
+  mechanism. The mechanism for integrating membranes can be implemented and 
+  stored in a dictionary.
 
 .. code-block:: python
 
@@ -292,9 +306,10 @@ Consider the following membrane integration steps for alpha-hemolysin.
 
     \alpha HL_{homoheptamer} \rightarrow \alpha HL_{channel}
 
-To model the example above using the ``IntegralMembraneProtein`` component and the ``Membrane_Protein_Integration`` 
-mechanism, we must first define the integral membrane protein (e.g., alpha-hemolysin) and then 
-incorporate it into a mixture using the integration mechanism to construct a CRN. 
+To model the example above using the ``IntegralMembraneProtein`` component and 
+  the ``Membrane_Protein_Integration`` mechanism, we must first define the 
+  integral membrane protein (e.g., alpha-hemolysin) and then incorporate it into 
+  a mixture using the integration mechanism to construct a CRN. 
 
 .. code-block:: python
 
@@ -354,35 +369,39 @@ Membrane Channels
 Component: ``MembraneChannel()``
 ~~~~~~~~~~
 
-Membrane channels refer to a class of proteins, a subclass of integral membrane proteins, that 
-are pore-forming and create gated pathways across the lipid bilayer. They allow specific molecules 
-or ions to pass through the membrane and play key roles in regulated transport, enabling the movement 
-of substrates in response to concentration gradients or signaling events.
+Membrane channels refer to a class of proteins, a subclass of integral membrane 
+  proteins, that are pore-forming and create gated pathways across the lipid 
+  bilayer. They allow specific molecules or ions to pass through the membrane 
+  and play key roles in regulated transport, enabling the movement of substrates 
+  in response to concentration gradients or signaling events.
 
-The following code defines an membrane channel component called ``MC``. It requires two 
-inputs: ``integral_membrane_protein`` and ``substrate``, which can be either strings or ``Species`` 
-objects.
+The following code defines an membrane channel component called ``MC``. It 
+  requires two inputs: ``integral_membrane_protein`` and ``substrate``, which 
+  can be either strings or ``Species`` objects.
 
 .. code-block:: python
 
     # Define component
     MC = MembraneChannel(integral_membrane_protein = "IMP", substrate = "S")
 
-The component also accepts optional inputs, similar to the `IntegralMembraneProtein`. However, if 
-the `integral membrane protein`` has already been defined using `IntegralMembraneProtein()`, the `MembraneChannel` 
-will inherit its `direction` and `compartment` properties from the existing species (e.g., ``IMP``).
+The component also accepts optional inputs, similar to the `IntegralMembraneProtein`. 
+  However, if the `integral membrane protein`` has already been defined using 
+  `IntegralMembraneProtein()`, the `MembraneChannel` will inherit its `direction` 
+  and `compartment` properties from the existing species (e.g., ``IMP``).
 
-The ``MembraneChannel`` component can uses the ``Simple_Transport`` or ``Facilitated_Transport_MM`` 
-mechanism. The choice of mechanism depends on the biological behavior of the channel. You can choose 
-from one of the following options:
+The ``MembraneChannel`` component can uses the ``Simple_Transport`` or 
+  ``Facilitated_Transport_MM`` mechanism. The choice of mechanism depends on 
+  the biological behavior of the channel. You can choose from one of the 
+  following options:
 
 - **Simple_Transport**:  
-    Allows bidirectional movement of substrates, following the concentration gradient. The `direction` 
-    of the membrane channel must be set to ``Passive``.
+    Allows bidirectional movement of substrates, following the concentration 
+      gradient. The `direction` of the membrane channel must be set to ``Passive``.
 
 - **Facilitated_Transport_MM**:  
-    Allows unidirectional movement of substrates, also along the concentration gradient. The `direction` 
-    of the membrane channel must be either ``Importer`` or ``Exporter``.
+    Allows unidirectional movement of substrates, also along the concentration 
+      gradient. The `direction` of the membrane channel must be either ``Importer`` 
+      or ``Exporter``.
 
 .. _simple-transport:
 
@@ -390,13 +409,14 @@ from one of the following options:
 Mechanism: ``Simple_Transport()``
 ~~~~~~~~~~
 
-Simple transport models the passive movement of substrates across the membrane through protein channels 
-or pores. This mechanism enables molecules to move down their concentration gradient without energy input. 
-It assumes the channel is always open or allows diffusion based on molecular properties, and does not 
-involve binding or conformational changes.
+Simple transport models the passive movement of substrates across the membrane 
+  through protein channels or pores. This mechanism enables molecules to move 
+  down their concentration gradient without energy input. It assumes the channel
+  is always open or allows diffusion based on molecular properties, and does not
+  involve binding or conformational changes.
 
-The ``Simple_Transport()`` mechanism involves a one-step reaction followinf the resulting reaction is 
-a reversible diffusion-like process:
+The ``Simple_Transport()`` mechanism involves a one-step reaction following the 
+  resulting reaction is a reversible diffusion-like process:
 
 .. math::
 
@@ -414,16 +434,18 @@ The mechanism for simple transport can be implemented and stored in a dictionary
 Example 3: Simple Transport by alpha-hemolysin
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Consider the following reaction of the transport of ATP through the alpha-hemolysin pore:
+Consider the following reaction of the transport of ATP through the alpha-hemolysin 
+  pore:
 
 .. math::
 
     ATP_{internal} + \alpha HL_{channel} \leftrightarrow ATP_{external} + \alpha HL_{channel}
 
-To model the example above using the ``Membrane_Channel`` component and the ``Simple_Transport`` 
-mechanism, we use the previously defined integral membrane protein (e.g., alphaHL) represented by 
-``alphaHL_monomer.product`` and incorporate it into a mixture with the transport mechanism to construct 
-a CRN that enables passive transport across the membrane.
+To model the example above using the ``Membrane_Channel`` component and the 
+  ``Simple_Transport`` mechanism, we use the previously defined integral 
+  membrane protein (e.g., alphaHL) represented by ``alphaHL_monomer.product`` 
+  and incorporate it into a mixture with the transport mechanism to construct
+  a CRN that enables passive transport across the membrane.
 
 .. code-block:: python
 
@@ -466,15 +488,17 @@ a CRN that enables passive transport across the membrane.
 Mechanism: ``Facilitated_Transport_MM()``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Facilitated transport captures the transport of substrates across the membrane with the assistance of 
-specific carrier proteins. These proteins bind to the substrate and undergo conformational changes 
-to move the molecule from one side of the membrane to the other. Although no energy is required, the 
-process is selective and directional, following the substrate’s concentration gradient.
+Facilitated transport captures the transport of substrates across the membrane 
+  with the assistance of specific carrier proteins. These proteins bind to the 
+  substrate and undergo conformational changes to move the molecule from one 
+  side of the membrane to the other. Although no energy is required, the process
+  is selective and directional, following the substrate’s concentration gradient.
 
-The ``Facilitated_Transport_MM()`` mechanism involves binding, translocation, and unbinding steps. 
-For example, if the membrane channel is an **importer**, the resulting reactions are:
+The ``Facilitated_Transport_MM()`` mechanism involves binding, translocation, 
+  and unbinding steps. For example, if the membrane channel is an **importer**, 
+  the resulting reactions are:
 
-1. **Binding and transport of substrate (`S`) across the membrane:**
+1. **Binding and transport of substrate (S) across the membrane:**
 
 .. math::
 
@@ -485,15 +509,18 @@ For example, if the membrane channel is an **importer**, the resulting reactions
 .. math::
 
     S_{internal}:MC_{channel} \rightarrow S_{internal} + MC_{channel}
-To use ``Facilitated_Transport_MM()``, we need to redefine the membrane channel to include a transport 
-direction designation, such as ``Importer`` or ``Exporter``. For example:
+
+To use ``Facilitated_Transport_MM()``, we need to redefine the membrane channel 
+  to include a transport direction designation, such as ``Importer`` or 
+  ``Exporter``. For example:
 
 .. code-block:: python
 
     # Define component
     MC = MembraneChannel(integral_membrane_protein = "IMP", substrate = "S",     
                          direction = 'Importer')
-Then the mechanism for facilitated transport can be implemented and stored in a dictionary.
+Then the mechanism for facilitated transport can be implemented and stored in 
+  a dictionary.
 
 .. code-block:: python
 
@@ -504,7 +531,9 @@ Then the mechanism for facilitated transport can be implemented and stored in a 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Example 4: Facilitated transport of glucose by GLUT1
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Construct a chemical reaction network (CRN) for the transport of glucose through the T7 RNAP activated expression of membrane channel glucose transporter type 1 (GLUT1).
+Construct a chemical reaction network (CRN) for the transport of glucose through 
+  the T7 RNAP activated expression of membrane channel glucose transporter type
+  1 (GLUT1).
 
 Consider the following reactions of the transport of glucose by GLUT1.
 
@@ -527,12 +556,13 @@ Consider the following reactions of the transport of glucose by GLUT1.
     glucose_{internal}:GLUT1_{channel} \rightarrow glucose_{internal} + GLUT1_{channel}
 
 
-To model the example above using the ``MembraneChannel`` component and the ``Facilitated_Transport_MM`` 
-mechanism, we can either redefine the "Membrane_Channel" component or the integral membrane protein GLUT1 
-using the "IntegralMembraneProtein" component to incorporate directionality.
+To model the example above using the ``MembraneChannel`` component and the 
+  ``Facilitated_Transport_MM`` mechanism, we can either redefine the 
+  "Membrane_Channel" component or the integral membrane protein GLUT1
+  using the "IntegralMembraneProtein" component to incorporate directionality.
 
-The following example begins by defining the integral membrane protein, including the specification of its 
-transport direction.
+The following example begins by defining the integral membrane protein, 
+  including the specification of its transport direction.
 
 .. code-block:: python
 
@@ -601,24 +631,28 @@ Membrane Pumps
 Component: ``MembranePump()``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Membrane pumps are a class of transport proteins, also considered a subclass of integral membrane proteins, 
-that actively move molecules or ions across the lipid bilayer. Unlike passive channels, pumps use energy, 
-typically from ATP or an electrochemical gradient, to drive the transport of substrates against their concentration 
-gradients.
+Membrane pumps are a class of transport proteins, also considered a subclass of 
+  integral membrane proteins, that actively move molecules or ions across the 
+  lipid bilayer. Unlike passive channels, pumps use energy, typically from ATP 
+  or an electrochemical gradient, to drive the transport of substrates against 
+  their concentration gradients.
 
-The following code defines a membrane pump component called ``MC``. It requires two inputs: ``integral_membrane_protein`` 
-and ``substrate``, which can be either strings or ``Species`` objects.
+The following code defines a membrane pump component called ``MC``. It requires
+  two inputs: ``integral_membrane_protein`` and ``substrate``, which can be 
+  either strings or ``Species`` objects.
 
 .. code-block:: python
 
     # Define component
     MP = MembranePump(membrane_pump = "MP", substrate = "S") 
 
-The component also accepts optional inputs, similar to the `IntegralMembraneProtein`. However, if the integral membrane 
-protein has already been defined using `IntegralMembraneProtein`, the `MembranePump` will inherit its `direction` and 
-`compartment` properties from the existing species (e.g., ``IMP``). 
+The component also accepts optional inputs, similar to the `IntegralMembraneProtein`.
+  However, if the integral membrane protein has already been defined using 
+  `IntegralMembraneProtein`, the `MembranePump` will inherit its `direction` and
+  `compartment` properties from the existing species (e.g., ``IMP``). 
 
-Optional arguments can also be supplied to control transport direction, stoichiometry, and compartment:
+Optional arguments can also be supplied to control transport direction, 
+  stoichiometry, and compartment:
 
 .. code-block:: python
 
@@ -630,25 +664,30 @@ Optional arguments can also be supplied to control transport direction, stoichio
 
 **Key Optional Parameters**
 
-- ``ATP``: An optional input for the membrane pump is designated as 'ATP.' In the absence of a specified integer value 
-for 'ATP,' the model will default to a value of 1.
+- ``ATP``: An optional input for the membrane pump is designated as 'ATP.' In the 
+  absence of a specified integer value  for 'ATP,' the model will default to a 
+  value of 1.
 
-- ``direction``: By default, the ``direction`` is set to ``None``, which will generate a CRN corresponding to an exporter 
+- ``direction``: By default, the ``direction`` is set to ``None``, which will 
+  generate a CRN corresponding to an exporter 
 .. behavior. (check this, if true then okay) in reference to what?<--check, what if the membrane protein is inverted??
 
-The ``MembranePump`` component can uses the ``Primary_Active_Transport_MM()`` mechanism.
+The ``MembranePump`` component can uses the ``Primary_Active_Transport_MM()`` 
+  mechanism.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Mechanism: ``Primary_Active_Transport_MM()``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Primary active transport describes the energy-dependent movement of substrates across the membrane, typically against 
-their concentration gradient. This process is carried out by specialized membrane pumps that bind to the substrate and 
-undergo conformational changes powered by energy sources such as ATP hydrolysis. The transport is both selective and 
-directional. 
+Primary active transport describes the energy-dependent movement of substrates 
+  across the membrane, typically against their concentration gradient. This 
+  process is carried out by specialized membrane pumps that bind to the substrate 
+  and undergo conformational changes powered by energy sources such as ATP 
+  hydrolysis. The transport is both selective and directional. 
 
-The ``Primary_Active_Transport_MM()`` mechanism captures this behavior through binding, energy-driven conformational 
-changes, and unbinding steps. For example, if the membrane pump is defined as an **exporter**, the resulting reactions are: 
+The ``Primary_Active_Transport_MM()`` mechanism captures this behavior through 
+binding, energy-driven conformational changes, and unbinding steps. For example, 
+if the membrane pump is defined as an **exporter**, the resulting reactions are: 
 
 1. **Binding of antibiotic substrate (S) to membrane pump (MP):**
 

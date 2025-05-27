@@ -42,17 +42,14 @@ Membrane Mechanisms
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The following membrane-associated mechanisms that are available in BioCRNpyler:
 
-- ``Simple_Diffusion()``: Models the passive movement of small, nonpolar 
-molecules across the membrane, driven by concentration gradients, without the 
-need for membrane proteins or energy input.
-
+- ``Simple_Diffusion()``: Models the passive movement of small, nonpolar molecules across the membrane, driven by concentration gradients, without the need for membrane proteins or energy input.
 - Membrane protein-mediated mechanisms
     - ``Membrane_Protein_Integration()``: Models the the insertion and proper 
     orientation of proteins into the membrane, ensuring their structural and 
     functional integration within the lipid bilayer.
 
-    - ``Simple_Transport()``: Models the passive movement of substrates through 
-    membrane pores/channels along concentration gradients, without requiring 
+    - ``Simple_Transport()``: Models the passive movement of substrates through
+    membrane pores/channels along concentration gradients, without requiring
     energy input.
 
     - ``Facilitated_Transport()``: Models the passive movement of substrates 
@@ -854,7 +851,7 @@ initiates downstream cellular responses.
 
 The ``Membrane_Signaling_Pathway_MM()`` mechanism captures two-component signaling behavior using Michaelis-Menten kinetics to model key steps such as stimulus detection, sensor autophosphorylation, and phosphate transfer to a response regulator. The following reactions illustrate the signaling pathway modeled by the ``Membrane_Signaling_Pathway_MM()`` mechanism. These steps follow Michaelis-Menten dynamics to represent enzymatic interactions such as substrate binding, phosphorylation, and dephosphorylation.
 
-1. **Signal detection and binding of the signal substrate (``S_sig``) to the membrane sensor (``M_sensor``):**
+1. **Signal detection and binding of the signal substrate (S_sig) to the membrane sensor (M_sensor):**
 
 .. math::
 

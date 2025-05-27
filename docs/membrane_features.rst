@@ -866,18 +866,18 @@ The ``Membrane_Signaling_Pathway_MM()`` mechanism captures two-component signali
 
 .. math::
 
-    (M^{*})_{\text{sensor}} 
+    ((M)^{*})_{\text{sensor}} 
     .. + 2\,ATP_{\text{internal}} \rightleftharpoons M^{*}_{\text{sensor}}{:}2\,ATP_{\text{internal}} 
     .. \rightarrow M^{*}_{\text{sensor}}^{2P}{:}2\,ADP_{\text{internal}} 
     .. \rightarrow M^{*}_{\text{sensor}}^{2P} + 2\,ADP_{\text{internal}}
 
 3. **Phosphorylation of the response protein (RP):**
 
-.. math::
+.. .. math::
 
-    M^{*2P}_{\text{sensor}} + RP \rightleftharpoons M^{*}_{\text{sensor}}^{2P}{:}RP 
-    \rightarrow M^{*}_{\text{sensor}}{:}RP^{*} 
-    \rightarrow M^{*}_{\text{sensor}} + RP^{*}
+..     M^{*2P}_{\text{sensor}} + RP \rightleftharpoons M^{*}_{\text{sensor}}^{2P}{:}RP 
+..     \rightarrow M^{*}_{\text{sensor}}{:}RP^{*} 
+..     \rightarrow M^{*}_{\text{sensor}} + RP^{*}
 
 4. **Dephosphorylation of the phosphorylated response protein (RP*):**
 

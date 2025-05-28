@@ -162,12 +162,12 @@ Example 1: Diffusion of nitrate
 Construct a chemical reaction network (CRN) for the diffusion of nitrate 
 (NO\ :sub:`3`\) across a membrane.
 
+
 .. image:: figures/Simple_Diffusion.png
    :width: 100%
    :align: center
 
-   **Figure 3.3**: 
-
+   **Figure 3.3**: Add words here
 
 Consider the following diffusion step for the diffusion of nitrate (NO\ :sub:`3`\).
 

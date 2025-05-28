@@ -1013,7 +1013,7 @@ Use the reaction steps as a guide to define the necessary components and mechani
 
     NarX_{\text{homodimer}} \rightarrow NarX_{\text{sensor}}
 
-3. **Detection and binding of nitrate (:math: `NO_3``):** (:math:`\mathrm{NO_3}`)
+3. **Detection and binding of nitrate**
 
 .. math::
 

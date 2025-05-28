@@ -1161,13 +1161,13 @@ the response regulator and relevant signaling substrates.
 
     ]
 
----------------
-Exercises
----------------
+.. ---------------
+.. Exercises
+.. ---------------
 
-- Exercise 1 [Place holder]
-- Exercise 2 [Place holder]
-- Exercise 3 [Place holder]
+.. - Exercise 1 [Place holder]
+.. - Exercise 2 [Place holder]
+.. - Exercise 3 [Place holder]
 
 ---------------
 References

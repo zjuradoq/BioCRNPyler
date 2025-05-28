@@ -14,7 +14,6 @@ features using computational tools. This functionality enables users to
 construct and simulate genetic circuits that incorporate membrane components 
 and mechanisms within simplified cell-free system models. 
  
-
 BioCRNpyler's membrane-associated features allow for the representation of 
 inducer dynamics, including diffusion across membranes or transport via 
 channels and transporters. These membrane-associated features facilitate 
@@ -29,7 +28,10 @@ provides an overview of the membrane proteins currently included in BioCRNpyler.
    :width: 100%
    :align: center
 
-   **Figure 3.1**: Caption Image components were adapted from previously published structures: [Song1996]_, [Sun12]_, [Jost18]_, [Cheung09]_.
+   **Figure 3.1**: *Membrane components and mechanisms.* The figure includes key 
+   membrane components and the pathways of their mechanisms. The membrane crystal 
+   structures depicted in the figure were adapted from previously published studies
+   : [Song1996]_, [Sun12]_, [Jost18]_, [Cheung09]_.
 
 ~~~~~~~~~~~~~~~~~~
 Membrane Component
@@ -97,11 +99,14 @@ components and transport mechanisms from modular, high-level specifications.
 
 .. _fig-flow_chart_membrane_features:
 
-.. figure:: figures/Flow_membrane.png
+.. figure:: figures/Flow_Chart_MembraneFeatures.png
    :width: 100%
    :align: center
 
-   **Figure 3.2**: Flowchart illustrating membrane protein features.
+   **Figure 3.2**: *Flowchart illustrating membrane protein features and modeling 
+     specifications.* Specifications include biomolecular components and modeling 
+     assumptions (mechanisms) relevant to the simulation and analysis of membrane-
+     associated processes.
 
 :ref:`Figure 3.2 <fig-flow_chart_membrane_features>` illustrates the various options 
 available for modeling transport and two-component signaling within BioCRNpyler. It 
@@ -168,13 +173,14 @@ Construct a chemical reaction network (CRN) for the diffusion of nitrate
    :width: 100%
    :align: center
 
-   **Figure 3.3**: Add words here
+   **Figure 3.3**: *Simple diffusion across a lipid bilayer.* The diffusion of 
+   nitrate ions (NO\ :sub:`3`\) across the lipid bilayer.
 
 Consider the following diffusion step for the diffusion of nitrate (NO\ :sub:`3`\).
 
 .. math::
 
-    NO3_{internal} \rightleftharpoons NO3_{external}
+    (NO_3)_{internal} \rightleftharpoons (NO_3)_{internal}
 
 To model the example above using the ``Diffusible_Molecule`` component and the 
 ``Simple_Diffusion`` mechanism, we must first define the diffusible molecule 
@@ -274,9 +280,9 @@ the stoichiometry, and specify the compartment.
   used in `'Membrane_Protein_Integration()'` and the subsequent reactions. For 
   homo-oligomer membrane proteins, we can include an input for `'size'` as 
   either a numerical string or an integer.
-    - If provided: :math:`monomer * size \rightarrow oligomer \rightarrow integral_membrane_protein`
+    - If provided: :math:`MP_{monomer} * size \rightarrow MP_{oligomer} \rightarrow IMP`
     
-    - If not::math:`monomer \rightarrow integral_membrane_protein`
+    - If not: :math:`MP \rightarrow IMP`
 
 .. _membrane—protein-integration:
 
@@ -314,6 +320,7 @@ of alpha-hemolysin.
    **Figure 3.4**: 
 
 Consider the following membrane integration steps for alpha-hemolysin.
+
 1. **Assemble into a homoheptamer:**
 
 .. math::
@@ -525,7 +532,7 @@ the process is selective and directional, following the concentration gradient
 of the substrate.
 
 The ``Facilitated_Transport_MM()`` mechanism involves binding, translocation, 
-and unbinding steps. For example, if the membrane channel is an **importer**, 
+and unbinding steps. For example, if the membrane channel is an ``importer``, 
 the resulting reactions are:
 
 1. **Binding and transport of substrate (S) across the membrane:**
@@ -700,7 +707,7 @@ stoichiometry, and compartment.
 **Key Optional Parameters**
 
 - ``ATP``: Specifies the necessary amount of ATP needed for transport to take place. 
-  In the absence of a specified integer value for 'ATP,' the model defaults to a 
+  In the absence of a specified integer value for ``ATP``, the model defaults to a 
   value of 1.
 
 - ``direction``: By default, the ``direction`` is set to ``None``, generating a 

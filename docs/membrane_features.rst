@@ -25,7 +25,6 @@ between conceptual design and experimental implementation in synthetic biology.
    :alt: Types of membrane transport components and mechanisms
    :align: center
 
-
 ~~~~~~~~~~~~~~~~~~
 Membrane Component
 ~~~~~~~~~~~~~~~~~~
@@ -150,6 +149,7 @@ In BioCRNpyler, the ``DiffusibleMolecule`` component uses the mechanism
 ~~~~~~~~~~
 Example 1: Diffusion of nitrate
 ~~~~~~~~~~
+
 .. image:: figures/Simple_Diffusion.pdf
    :alt: Types of membrane transport components and mechanisms
    :align: center
@@ -289,6 +289,7 @@ stored in a dictionary.
 ~~~~~~~~~~
 Example 2: Integration of alpha-hemolysin
 ~~~~~~~~~~
+
 .. image:: figures/Membrane_Integration.pdf
    :alt: Types of membrane transport components and mechanisms
    :align: center
@@ -433,6 +434,10 @@ The mechanism for simple transport can be implemented and stored in a dictionary
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Example 3: Simple Transport by alpha-hemolysin
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Construct a chemical reaction network (CRN) for the transport of ATP through 
+alpha-hemolysin.
+
 .. image:: figures/Simple_Transport.pdf
    :alt: Types of membrane transport components and mechanisms
    :align: center
@@ -535,8 +540,7 @@ a dictionary.
 Example 4: Facilitated transport of glucose by GLUT1
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Construct a chemical reaction network (CRN) for the transport of glucose through 
-the T7 RNAP activated expression of membrane channel glucose transporter type
-1 (GLUT1).
+the membrane channel glucose transporter type 1 (GLUT1).
 
 .. image:: figures/Facilitated_Transport.pdf
    :alt: Types of membrane transport components and mechanisms
@@ -746,7 +750,8 @@ Example 5: Export of erythromycin by MsbA
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Construct a chemical reaction network (CRN) for the export of the antibiotic 
-erythromycin, driven by T7 RNA polymerase activation of the membrane pump MsbA.
+erythromycin, driven the membrane pump MsbA.
+
 .. image:: figures/Primary_Active_Transport.pdf
    :alt: Types of membrane transport components and mechanisms
    :align: center
@@ -959,9 +964,11 @@ Example 6: NarX-NarL two component signalling path
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Construct a chemical reaction network (CRN) for the NarX–NarL two-component signaling pathway. 
+
 .. image:: figures/Two_Component_Sensing.pdf
    :alt: Types of membrane transport components and mechanisms
    :align: center
+
 Use the reaction steps as a guide to define the necessary components and mechanisms for simulating this signaling cascade.
 
 .. math::

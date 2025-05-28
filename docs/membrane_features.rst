@@ -104,9 +104,9 @@ components and transport mechanisms from modular, high-level specifications.
    :align: center
 
    **Figure 3.2**: *Flowchart illustrating membrane protein features and modeling 
-     specifications.* Specifications include biomolecular components and modeling 
-     assumptions (mechanisms) relevant to the simulation and analysis of membrane-
-     associated processes.
+    specifications.* Specifications include biomolecular components and modeling 
+    assumptions (mechanisms) relevant to the simulation and analysis of membrane-
+    associated processes.
 
 :ref:`Figure 3.2 <fig-flow_chart_membrane_features>` illustrates the various options 
 available for modeling transport and two-component signaling within BioCRNpyler. It 

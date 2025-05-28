@@ -29,7 +29,7 @@ of the membrane proteins currently included in BioCRNpyler.
    :width: 100%
    :align: center
 
-   Figure 3.1. [Caption]
+   Figure 3.1. Caption Image components were adapted from previously published structures:[Song1996]_, [Sun12]_, [Jost18]_, [Cheung09]_.
 
 ..  Use this type of line to cite the figure
 ~~~~~~~~~~~~~~~~~~
@@ -1139,3 +1139,21 @@ Exercises
 - Exercise 1 [Place holder]
 - Exercise 2 [Place holder]
 - Exercise 3 [Place holder]
+
+---------------
+References
+---------------
+
+.. [Song1996] L.Song et al. ,*Structure of Staphylococcal ::math:`\alpha`-Hemolysin, 
+   a Heptameric Transmembrane Pore*. Science , 1996.
+
+
+.. [Sun12] L. Sun et al. ,*Crystal structure of a bacterial homologue of glucose 
+   transporters GLUT1-4*. Nature, 2012. 
+
+.. [Jost18] I. Josts et al. , *Conformational States of ABC Transporter MsbA in a 
+Lipid Environment Investigated by Small-Angle Scattering Using Stealth Carrier Nanodiscs*. 
+   Structure, 2018. 
+
+.. [Cheung09] J. Cheung and W. A. Hendrickson, *Structural analysis of ligand stimulation 
+   of the histidine kinase NarX. Structure, 2009.

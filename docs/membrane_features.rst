@@ -163,7 +163,7 @@ Construct a chemical reaction network (CRN) for the diffusion of nitrate
 (NO\ :sub:`3`\) across a membrane.
 
 
-.. image:: figures/Simple_Diffusion.png
+.. figure:: figures/Simple_Diffusion.png
    :width: 100%
    :align: center
 
@@ -307,7 +307,7 @@ Example 2: Integration of alpha-hemolysin
 Construct a chemical reaction network (CRN) for the membrane integration steps 
 of alpha-hemolysin.
 
-.. image:: figures/Membrane_Integration.png
+.. figure:: figures/Membrane_Integration.png
    :width: 100%
    :align: center
 
@@ -457,7 +457,7 @@ Example 3: Simple Transport by alpha-hemolysin
 Construct a chemical reaction network (CRN) for the transport of ATP through 
 alpha-hemolysin.
 
-.. image:: figures/Simple_Transport.png
+.. figure:: figures/Simple_Transport.png
    :width: 100%
    :align: center
 
@@ -563,7 +563,7 @@ Example 4: Facilitated transport of glucose by GLUT1
 Construct a chemical reaction network (CRN) for the transport of glucose through 
 the membrane channel glucose transporter type 1 (GLUT1).
 
-.. image:: figures/Facilitated_Transport.png
+.. figure:: figures/Facilitated_Transport.png
    :width: 100%
    :align: center
 
@@ -775,7 +775,7 @@ Example 5: Export of erythromycin by MsbA
 Construct a chemical reaction network (CRN) for the export of the antibiotic 
 erythromycin, driven the membrane pump MsbA.
 
-.. image:: figures/Primary_Active_Transport.png
+.. figure:: figures/Primary_Active_Transport.png
    :width: 100%
    :align: center
 
@@ -990,7 +990,7 @@ Example 6: NarX-NarL two component signalling path
 
 Construct a chemical reaction network (CRN) for the NarX–NarL two-component signaling pathway. 
 
-.. image:: figures/Two_Component_Sensing.png
+.. figure:: figures/Two_Component_Sensing.png
    :width: 100%
    :align: center
 

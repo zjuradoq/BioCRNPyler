@@ -173,8 +173,7 @@ Construct a chemical reaction network (CRN) for the diffusion of nitrate
    :width: 100%
    :align: center
 
-   **Figure 3.3**: *Simple diffusion across a lipid bilayer.* The diffusion of 
-   nitrate ions (NO\ :sub:`3`\) across the lipid bilayer.
+   **Figure 3.3**: *Simple diffusion across a lipid bilayer.*
 
 Consider the following diffusion step for the diffusion of nitrate (NO\ :sub:`3`\).
 
@@ -317,7 +316,7 @@ of alpha-hemolysin.
    :width: 100%
    :align: center
 
-   **Figure 3.4**: 
+   **Figure 3.4**: *Integration of membrane proteins into the lipid bilayer.* 
 
 Consider the following membrane integration steps for alpha-hemolysin.
 
@@ -468,7 +467,7 @@ alpha-hemolysin.
    :width: 100%
    :align: center
 
-   **Figure 3.5**: 
+   **Figure 3.5**: *Passive transport through membrane pores or channels.*
 
 Consider the following reaction of the transport of ATP through the alpha-hemolysin 
 pore:
@@ -575,7 +574,7 @@ the membrane channel glucose transporter type 1 (GLUT1).
    :width: 100%
    :align: center
 
-   **Figure 3.6**: 
+   **Figure 3.6**: *Facilitated diffusion via carrier proteins.*
 
 Consider the following reactions of the transport of glucose by GLUT1.
 
@@ -788,7 +787,7 @@ erythromycin driven by the membrane pump MsbA.
    :width: 100%
    :align: center
 
-   **Figure 3.7**: 
+   **Figure 3.7**: *Primary active transport using membrane pumps.*
 
 Consider the following reactions for the export of erythromycin by MsbA.
 
@@ -1020,7 +1019,7 @@ Construct a chemical reaction network (CRN) for the NarX–NarL two-component si
    :width: 100%
    :align: center
 
-   **Figure 3.8**: 
+   **Figure 3.8**: *Membrane-associated two-componentent signaling pathway.*
 
 Use the reaction steps as a guide to define the necessary components and mechanisms for simulating this signaling cascade.
 

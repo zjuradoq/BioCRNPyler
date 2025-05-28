@@ -20,15 +20,14 @@ inducer dynamics, including diffusion across membranes or transport via
 channels and transporters. This facilitates the design and refinement of models 
 that connect mechanistic biology with computational analysis, bridging the gap 
 between conceptual design and experimental implementation in synthetic biology.
-Figure (:ref:`Figure 3.1 <fig-current_membrane_models>`) provides an overview 
+:ref:`Figure 3.1 <fig-current_membrane_models>` provides an overview 
 of the membrane proteins currently included in BioCRNpyler.
 
 .. _fig-current_membrane_models:
 
 .. image:: figures/Membrane_Models.png
-    :alt: Types of membrane transport components and mechanisms
-    :align: center
-    :width: 100%
+   :width: 100%
+   :align: center
 
    Figure 3.1. [Caption]
 
@@ -100,13 +99,12 @@ components and transport mechanisms from modular, high-level specifications.
 .. _fig-flow_chart_membrane_features:
 
 .. image:: figures/Flow_membrane.png
-   :alt: Flowchart for membrane modeling options
    :width: 100%
    :align: center
 
-   Figure 3.2. [Caption]
+    Figure 3.2. [Caption]
 
-(:ref:`Figure 3.2 <fig-flow_chart_membrane_features>`) presented above illustrates the various options available for modeling 
+:ref:`Figure 3.2 <fig-flow_chart_membrane_features>` presented above illustrates the various options available for modeling 
 transport and two-component signaling within BioCRNpyler. It specifically 
 highlights the membrane components, indicated by purple boxes, along with their 
 corresponding mechanisms, represented by the blue box.
@@ -166,9 +164,8 @@ Construct a chemical reaction network (CRN) for the diffusion of nitrate
 (NO\ :sub:`3`\) across a membrane.
 
 .. image:: figures/Simple_Diffusion.pdf
-   :alt: Diffusion
-   :align: center
    :width: 100%
+   :align: center
 
    Figure 3.3. [Caption]
 
@@ -312,7 +309,6 @@ Construct a chemical reaction network (CRN) for the membrane integration steps
 of alpha-hemolysin.
 
 .. image:: figures/Membrane_Integration.pdf
-   :alt: Integration
    :width: 100%
    :align: center
 
@@ -463,7 +459,6 @@ Construct a chemical reaction network (CRN) for the transport of ATP through
 alpha-hemolysin.
 
 .. image:: figures/Simple_Transport.pdf
-   :alt: Simple Transport
    :width: 100%
    :align: center
 
@@ -570,7 +565,6 @@ Construct a chemical reaction network (CRN) for the transport of glucose through
 the membrane channel glucose transporter type 1 (GLUT1).
 
 .. image:: figures/Facilitated_Transport.pdf
-   :alt: Facilitated_Transport
    :width: 100%
    :align: center
 
@@ -783,7 +777,6 @@ Construct a chemical reaction network (CRN) for the export of the antibiotic
 erythromycin, driven the membrane pump MsbA.
 
 .. image:: figures/Primary_Active_Transport.pdf
-   :alt: Primary_Active_Transport
    :width: 100%
    :align: center
 
@@ -999,7 +992,6 @@ Example 6: NarX-NarL two component signalling path
 Construct a chemical reaction network (CRN) for the NarX–NarL two-component signaling pathway. 
 
 .. image:: figures/Two_Component_Sensing.pdf
-   :alt: Two_Component_Sensing
    :width: 100%
    :align: center
 

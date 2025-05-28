@@ -150,6 +150,9 @@ In BioCRNpyler, the ``DiffusibleMolecule`` component uses the mechanism
 ~~~~~~~~~~
 Example 1: Diffusion of nitrate
 ~~~~~~~~~~
+.. image:: figures/Simple_Diffusion.pdf
+   :alt: Types of membrane transport components and mechanisms
+   :align: center
 
 Consider the following diffusion step for the diffusion of nitrate (NO\ :sub:`3`\).
 
@@ -286,6 +289,9 @@ stored in a dictionary.
 ~~~~~~~~~~
 Example 2: Integration of alpha-hemolysin
 ~~~~~~~~~~
+.. image:: figures/Membrane_Integration.pdf
+   :alt: Types of membrane transport components and mechanisms
+   :align: center
 
 Consider the following membrane integration steps for alpha-hemolysin.
 1. **Assemble into a homoheptamer:**
@@ -427,6 +433,9 @@ The mechanism for simple transport can be implemented and stored in a dictionary
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Example 3: Simple Transport by alpha-hemolysin
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. image:: figures/Simple_Transport.pdf
+   :alt: Types of membrane transport components and mechanisms
+   :align: center
 
 Consider the following reaction of the transport of ATP through the alpha-hemolysin 
 pore:
@@ -528,6 +537,10 @@ Example 4: Facilitated transport of glucose by GLUT1
 Construct a chemical reaction network (CRN) for the transport of glucose through 
 the T7 RNAP activated expression of membrane channel glucose transporter type
 1 (GLUT1).
+
+.. image:: figures/Facilitated_Transport.pdf
+   :alt: Types of membrane transport components and mechanisms
+   :align: center
 
 Consider the following reactions of the transport of glucose by GLUT1.
 
@@ -663,8 +676,7 @@ stoichiometry, and compartment:
   value of 1.
 
 - ``direction``: By default, the ``direction`` is set to ``None``, which will 
-  generate a CRN corresponding to an exporter 
-.. behavior. (check this, if true then okay) in reference to what?<--check, what if the membrane protein is inverted??
+  generate a CRN corresponding to an exporter.
 
 The ``MembranePump`` component can uses the ``Primary_Active_Transport_MM()`` 
   mechanism.
@@ -735,6 +747,9 @@ Example 5: Export of erythromycin by MsbA
 
 Construct a chemical reaction network (CRN) for the export of the antibiotic 
 erythromycin, driven by T7 RNA polymerase activation of the membrane pump MsbA.
+.. image:: figures/Primary_Active_Transport.pdf
+   :alt: Types of membrane transport components and mechanisms
+   :align: center
 
 Consider the following reactions of the export of erythromycin by MsbA.
 
@@ -943,7 +958,11 @@ Then the mechanism for membrane signaling can be implemented and stored in a dic
 Example 6: NarX-NarL two component signalling path
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Construct a chemical reaction network (CRN) for the NarX–NarL two-component signaling pathway. Use the reaction steps as a guide to define the necessary components and mechanisms for simulating this signaling cascade.
+Construct a chemical reaction network (CRN) for the NarX–NarL two-component signaling pathway. 
+.. image:: figures/Two_Component_Sensing.pdf
+   :alt: Types of membrane transport components and mechanisms
+   :align: center
+Use the reaction steps as a guide to define the necessary components and mechanisms for simulating this signaling cascade.
 
 .. math::
 1. **Homodimerization of NarX monomers:**

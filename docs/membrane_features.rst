@@ -30,8 +30,8 @@ provides an overview of the membrane proteins currently included in BioCRNpyler.
 
    **Figure 3.1**: *Membrane components and mechanisms.* The figure includes key 
    membrane components and the pathways of their mechanisms. The membrane crystal 
-   structures depicted in the figure were adapted from previously published studies
-   : [Song1996]_, [Sun12]_, [Jost18]_, [Cheung09]_.
+   structures depicted in the figure were adapted from previously published studies: 
+   [Song1996]_, [Sun12]_, [Jost18]_, [Cheung09]_.
 
 ~~~~~~~~~~~~~~~~~~
 Membrane Component
@@ -103,10 +103,10 @@ components and transport mechanisms from modular, high-level specifications.
    :width: 100%
    :align: center
 
-   **Figure 3.2**: *Flowchart illustrating membrane protein features and modeling 
-    specifications.* Specifications include biomolecular components and modeling 
-    assumptions (mechanisms) relevant to the simulation and analysis of membrane-
-    associated processes.
+   **Figure 3.2**: *Flowchart illustrating membrane protein features and modeling
+   specifications.* Specifications include biomolecular components and modeling
+   assumptions (mechanisms) relevant to the simulation and analysis of membrane-
+   associated processes.
 
 :ref:`Figure 3.2 <fig-flow_chart_membrane_features>` illustrates the various options 
 available for modeling transport and two-component signaling within BioCRNpyler. It 

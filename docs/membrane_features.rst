@@ -151,7 +151,6 @@ Example 1: Diffusion of nitrate
 ~~~~~~~~~~
 
 .. image:: figures/Simple_Diffusion.pdf
-   :alt: Types of membrane transport components and mechanisms
    :align: center
 
 Consider the following diffusion step for the diffusion of nitrate (NO\ :sub:`3`\).
@@ -291,7 +290,6 @@ Example 2: Integration of alpha-hemolysin
 ~~~~~~~~~~
 
 .. image:: figures/Membrane_Integration.pdf
-   :alt: Types of membrane transport components and mechanisms
    :align: center
 
 Consider the following membrane integration steps for alpha-hemolysin.
@@ -439,7 +437,6 @@ Construct a chemical reaction network (CRN) for the transport of ATP through
 alpha-hemolysin.
 
 .. image:: figures/Simple_Transport.pdf
-   :alt: Types of membrane transport components and mechanisms
    :align: center
 
 Consider the following reaction of the transport of ATP through the alpha-hemolysin 
@@ -543,7 +540,6 @@ Construct a chemical reaction network (CRN) for the transport of glucose through
 the membrane channel glucose transporter type 1 (GLUT1).
 
 .. image:: figures/Facilitated_Transport.pdf
-   :alt: Types of membrane transport components and mechanisms
    :align: center
 
 Consider the following reactions of the transport of glucose by GLUT1.
@@ -753,7 +749,6 @@ Construct a chemical reaction network (CRN) for the export of the antibiotic
 erythromycin, driven the membrane pump MsbA.
 
 .. image:: figures/Primary_Active_Transport.pdf
-   :alt: Types of membrane transport components and mechanisms
    :align: center
 
 Consider the following reactions of the export of erythromycin by MsbA.
@@ -966,7 +961,6 @@ Example 6: NarX-NarL two component signalling path
 Construct a chemical reaction network (CRN) for the NarX–NarL two-component signaling pathway. 
 
 .. image:: figures/Two_Component_Sensing.pdf
-   :alt: Types of membrane transport components and mechanisms
    :align: center
 
 Use the reaction steps as a guide to define the necessary components and mechanisms for simulating this signaling cascade.

@@ -162,7 +162,7 @@ Example 1: Diffusion of nitrate
 Construct a chemical reaction network (CRN) for the diffusion of nitrate 
 (NO\ :sub:`3`\) across a membrane.
 
-.. image:: figures/Simple_Diffusion.pdf
+.. image:: figures/Simple_Diffusion.png
    :width: 100%
    :align: center
 
@@ -307,7 +307,7 @@ Example 2: Integration of alpha-hemolysin
 Construct a chemical reaction network (CRN) for the membrane integration steps 
 of alpha-hemolysin.
 
-.. image:: figures/Membrane_Integration.pdf
+.. image:: figures/Membrane_Integration.png
    :width: 100%
    :align: center
 
@@ -457,7 +457,7 @@ Example 3: Simple Transport by alpha-hemolysin
 Construct a chemical reaction network (CRN) for the transport of ATP through 
 alpha-hemolysin.
 
-.. image:: figures/Simple_Transport.pdf
+.. image:: figures/Simple_Transport.png
    :width: 100%
    :align: center
 
@@ -563,7 +563,7 @@ Example 4: Facilitated transport of glucose by GLUT1
 Construct a chemical reaction network (CRN) for the transport of glucose through 
 the membrane channel glucose transporter type 1 (GLUT1).
 
-.. image:: figures/Facilitated_Transport.pdf
+.. image:: figures/Facilitated_Transport.png
    :width: 100%
    :align: center
 
@@ -775,7 +775,7 @@ Example 5: Export of erythromycin by MsbA
 Construct a chemical reaction network (CRN) for the export of the antibiotic 
 erythromycin, driven the membrane pump MsbA.
 
-.. image:: figures/Primary_Active_Transport.pdf
+.. image:: figures/Primary_Active_Transport.png
    :width: 100%
    :align: center
 
@@ -990,7 +990,7 @@ Example 6: NarX-NarL two component signalling path
 
 Construct a chemical reaction network (CRN) for the NarX–NarL two-component signaling pathway. 
 
-.. image:: figures/Two_Component_Sensing.pdf
+.. image:: figures/Two_Component_Sensing.png
    :width: 100%
    :align: center
 
@@ -1143,13 +1143,13 @@ Exercises
 References
 ---------------
 
-.. [Song1996] L.Song et al. , *Structure of Staphylococcal Alpha-Hemolysin, 
+.. [Song1996] L.Song et al., *Structure of Staphylococcal Alpha-Hemolysin, 
    a Heptameric Transmembrane Pore*. Science , 1996.
 
-.. [Sun12] L. Sun et al. , *Crystal structure of a bacterial homologue of glucose 
+.. [Sun12] L. Sun et al., *Crystal structure of a bacterial homologue of glucose 
    transporters GLUT1-4*. Nature, 2012. 
 
-.. [Jost18] I. Josts et al. , *Conformational States of ABC Transporter MsbA in a 
+.. [Jost18] I. Josts et al., *Conformational States of ABC Transporter MsbA in a 
    Lipid Environment Investigated by Small-Angle Scattering Using Stealth Carrier 
    Nanodiscs*. Structure, 2018. 
 

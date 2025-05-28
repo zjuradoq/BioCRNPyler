@@ -25,11 +25,11 @@ of the membrane proteins currently included in BioCRNpyler.
 
 .. _fig-current_membrane_models:
 
-.. image:: figures/Membrane_Models.png
+.. figure:: figures/Membrane_Models.png
    :width: 100%
    :align: center
 
-   Figure 3.1. Caption Image components were adapted from previously published structures:[Song1996]_, [Sun12]_, [Jost18]_, [Cheung09]_.
+   **Figure 3.1**: Caption Image components were adapted from previously published structures: [Song1996]_, [Sun12]_, [Jost18]_, [Cheung09]_.
 
 ~~~~~~~~~~~~~~~~~~
 Membrane Component
@@ -97,11 +97,11 @@ components and transport mechanisms from modular, high-level specifications.
 
 .. _fig-flow_chart_membrane_features:
 
-.. image:: figures/Flow_membrane.png
+.. figure:: figures/Flow_membrane.png
    :width: 100%
    :align: center
 
-    Figure 3.2. [Caption]
+   **Figure 3.2**: Flowchart illustrating membrane protein features.
 
 :ref:`Figure 3.2 <fig-flow_chart_membrane_features>` presented above illustrates the various options available for modeling 
 transport and two-component signaling within BioCRNpyler. It specifically 
@@ -166,7 +166,7 @@ Construct a chemical reaction network (CRN) for the diffusion of nitrate
    :width: 100%
    :align: center
 
-   Figure 3.3. [Caption]
+   **Figure 3.3**: 
 
 
 Consider the following diffusion step for the diffusion of nitrate (NO\ :sub:`3`\).
@@ -311,7 +311,7 @@ of alpha-hemolysin.
    :width: 100%
    :align: center
 
-   Figure 3.4. [Caption]
+   **Figure 3.4**: 
 
 Consider the following membrane integration steps for alpha-hemolysin.
 1. **Assemble into a homoheptamer:**
@@ -461,7 +461,7 @@ alpha-hemolysin.
    :width: 100%
    :align: center
 
-   Figure 3.5. [Caption]
+   **Figure 3.5**: 
 
 Consider the following reaction of the transport of ATP through the alpha-hemolysin 
 pore:
@@ -567,7 +567,7 @@ the membrane channel glucose transporter type 1 (GLUT1).
    :width: 100%
    :align: center
 
-   Figure 3.6. [Caption]
+   **Figure 3.6**: 
 
 Consider the following reactions of the transport of glucose by GLUT1.
 
@@ -779,7 +779,7 @@ erythromycin, driven the membrane pump MsbA.
    :width: 100%
    :align: center
 
-   Figure 3.7. [Caption]
+   **Figure 3.7**: 
 
 Consider the following reactions of the export of erythromycin by MsbA.
 
@@ -994,7 +994,7 @@ Construct a chemical reaction network (CRN) for the NarX–NarL two-component si
    :width: 100%
    :align: center
 
-   Figure 3.8. [Caption]
+   **Figure 3.8**: 
 
 Use the reaction steps as a guide to define the necessary components and mechanisms for simulating this signaling cascade.
 

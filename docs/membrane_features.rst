@@ -20,14 +20,19 @@ inducer dynamics, including diffusion across membranes or transport via
 channels and transporters. This facilitates the design and refinement of models 
 that connect mechanistic biology with computational analysis, bridging the gap 
 between conceptual design and experimental implementation in synthetic biology.
+Figure (:ref:`Figure 3.1 <fig-current_membrane_models>`) provides an overview 
+of the membrane proteins currently included in BioCRNpyler.
+
+.. _fig-current_membrane_models:
 
 .. image:: figures/Membrane_Models.png
-   :alt: Types of membrane transport components and mechanisms
-   :align: center
-   :width: 100%
+    :alt: Types of membrane transport components and mechanisms
+    :align: center
+    :width: 100%
 
    Figure 3.1. [Caption]
 
+..  Use this type of line to cite the figure
 ~~~~~~~~~~~~~~~~~~
 Membrane Component
 ~~~~~~~~~~~~~~~~~~
@@ -92,6 +97,8 @@ Compiling Chemical Reaction Networks with Membrane Features
 build complex chemical reaction networks (CRNs) involving membrane-associated 
 components and transport mechanisms from modular, high-level specifications.
 
+.. _fig-flow_chart_membrane_features:
+
 .. image:: figures/Flow_membrane.png
    :alt: Flowchart for membrane modeling options
    :width: 100%
@@ -99,7 +106,7 @@ components and transport mechanisms from modular, high-level specifications.
 
    Figure 3.2. [Caption]
 
-The figure presented above illustrates the various options available for modeling 
+(:ref:`Figure 3.2 <fig-flow_chart_membrane_features>`) presented above illustrates the various options available for modeling 
 transport and two-component signaling within BioCRNpyler. It specifically 
 highlights the membrane components, indicated by purple boxes, along with their 
 corresponding mechanisms, represented by the blue box.

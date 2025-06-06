@@ -37,6 +37,7 @@ provides an overview of the membrane proteins currently included in BioCRNpyler.
 Membrane Component
 ~~~~~~~~~~~~~~~~~~
 The following membrane-associated components are available in BioCRNpyler:
+
 - ``DiffusibleMolecule()``: Represents a molecule that can diffuse freely across
   or within compartments, such as ions, gases, or small polar molecules. 
 
@@ -61,12 +62,13 @@ The following membrane-associated components are available in BioCRNpyler:
 Membrane Mechanisms
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The following membrane-associated mechanisms that are available in BioCRNpyler:
+
 - ``Simple_Diffusion()``: 
   Models the passive movement of small, nonpolar molecules across the membrane, 
   driven by concentration gradients, without the need for membrane proteins or 
   energy input.
 
-- Membrane protein-mediated mechanisms
+- Membrane protein-mediated mechanisms:
     - ``Membrane_Protein_Integration()``: 
       Models the insertion and proper orientation of proteins into the 
       membrane, ensuring their structural and functional integration within the
@@ -271,7 +273,7 @@ the stoichiometry, and specify the compartment.
   `Passive` indicates that the membrane protein is an integral
   membrane protein. This default may apply to non-transporter proteins or 
   unidirectional transporters.  The flux of the substrates, based on the 
-  `direction`, follows the general transport below.
+  ``direction``, follows the general transport below.
     - Exporter: :math:`S_{in} \rightarrow S_{out}`  
     - Importer: :math:`S_{in} \leftarrow S_{out}`  
     - Passive: :math:`S_{in} \leftrightarrow S_{out}`
@@ -414,20 +416,21 @@ can be either strings or ``Species`` objects.
 
 The component also accepts optional inputs, similar to the ``IntegralMembraneProtein()``. 
 However, if the `integral membrane protein` has already been defined using 
-``IntegralMembraneProtein()``, the `MembraneChannel` will inherit its `direction` 
+``IntegralMembraneProtein()``, the `MembraneChannel` will inherit its ``direction`` 
 and `compartment` properties from the existing species (e.g., ``IMP``).
 
 The ``MembraneChannel`` component can utilize the ``Simple_Transport`` or 
 ``Facilitated_Transport_MM`` mechanism. The choice of mechanism depends on 
 the biological behavior of the channel. You can choose from one of the 
 following options:
+
 - **Simple_Transport**:  
     Allows bidirectional movement of substrates following the concentration 
-    gradient. The direction of the membrane channel must be set to ``Passive``.
+    gradient. The direction of the membrane channel must be set to `Passive`.
 - **Facilitated_Transport_MM**:  
     Allows the unidirectional movement of substrates, also along concentration 
-    gradient. The `direction` of the membrane channel must be either ``Importer`` 
-    or ``Exporter``.
+    gradient. The ``direction`` of the membrane channel must be either `Importer` 
+    or `Exporter`.
 
 .. _simple-transport:
 
@@ -603,8 +606,8 @@ Consider the following reactions of the transport of glucose by GLUT1.
 
 To model the example above using the ``MembraneChannel()`` component and the 
 ``Facilitated_Transport_MM()`` mechanism, we can either redefine the 
-"Membrane_Channel" component or the integral membrane protein GLUT1
-using the "IntegralMembraneProtein" component to incorporate directionality.
+``Membrane_Channel()`` component or the integral membrane protein GLUT1
+using the ``IntegralMembraneProtein()`` component to incorporate directionality.
 
 The following example begins by defining the integral membrane protein, 
 including the specification of its transport direction.
@@ -692,9 +695,9 @@ either strings or ``Species`` objects.
     # Define component
     MP = MembranePump(membrane_pump = "MP", substrate = "S")
 
-The component also accepts optional inputs, similar to the `IntegralMembraneProtein`.
+The component also accepts optional inputs, similar to the ``IntegralMembraneProtein()``.
 If the integral membrane protein was previously defined using the component
-`IntegralMembraneProtein`, then the `MembranePump` will inherit its `direction` and
+`IntegralMembraneProtein`, then the `MembranePump` will inherit its ``direction`` and
 `compartment` properties from the existing species (e.g., ``IMP``). 
 
 Additionally, optional arguments can be provided to control the transport direction, 
@@ -941,6 +944,7 @@ Component: ``MembraneSensor()``
 
 The following code defines a membrane sensor component called ``Membrane_sensor()``. 
 This component requires **four inputs**:
+
 - ``membrane_sensor_protein``: the membrane-bound sensor protein (e.g., a histidine kinase)
 - ``response_protein``: the cytoplasmic response regulator
 - ``assigned_substrate``: the substrate to which the sensor is assigned or responds

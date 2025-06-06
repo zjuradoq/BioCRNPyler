@@ -697,7 +697,7 @@ either strings or ``Species`` objects.
 
 The component also accepts optional inputs, similar to the ``IntegralMembraneProtein()``.
 If the integral membrane protein was previously defined using the component
-``IntegralMembraneProtein()``, then the ``MembranePump()``` will inherit its ``direction`` and
+``IntegralMembraneProtein()``, then the ``MembranePump()`` will inherit its ``direction`` and
 `compartment` properties from the existing species (e.g., `IMP`). 
 
 Additionally, optional arguments can be provided to control the transport direction, 
@@ -1205,4 +1205,4 @@ References
 
 .. rubric:: Footnotes
 
-.. [1] Figures created with* `BioRender.com <https://www.biorender.com>`
+.. [1] Figures created with* `BioRender.com <https://www.biorender.com>`__

@@ -1205,4 +1205,4 @@ References
 
 .. rubric:: Footnotes
 
-.. [1] Figures created with* `BioRender.com <https://www.biorender.com>`__
+.. [1] Figures created with `BioRender.com <https://www.biorender.com>`__

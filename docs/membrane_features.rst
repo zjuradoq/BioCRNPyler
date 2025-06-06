@@ -164,7 +164,7 @@ In BioCRNpyler, the ``DiffusibleMolecule`` component uses the mechanism
     mech_tra = Simple_Diffusion()
     transport_mechanisms = {mech_tra.mechanism_type: mech_tra}
 
-    
+
 ~~~~~~~~~~
 Example 1: Diffusion of nitrate
 ~~~~~~~~~~
@@ -226,6 +226,7 @@ and then incorporate it into a mixture using the mechanism to construct a CRN.
       search_key=(mech=simple_diffusion, partid=NO3, name=k_diff).
 
     ]
+
 
 -------------
 Integral Membrane Protein
@@ -309,6 +310,7 @@ stored in a dictionary.
     mech_integration = Membrane_Protein_Integration()
     integration_mechanisms = {mech_integration.mechanism_type: mech_integration}
 
+
 ~~~~~~~~~~
 Example 2: Integration of alpha-hemolysin
 ~~~~~~~~~~
@@ -343,8 +345,7 @@ a mixture using the integration mechanism to construct a CRN.
 .. code-block:: python
 
     # Define membrane protein
-    alphaHL = IntegralMembraneProtein('alphaHL_monomer', product='alphaHL',
-                                        size = 7)
+    alphaHL = IntegralMembraneProtein('alphaHL_monomer', product='alphaHL', size = 7)
     
     # Mechanisms
     mech_integration = Membrane_Protein_Integration()
@@ -389,6 +390,7 @@ a mixture using the integration mechanism to construct a CRN.
     n=4
 
     ]
+
 
 -------------
 Membrane Channels 
@@ -459,6 +461,7 @@ The mechanism for simple transport can be implemented and stored in a dictionary
     mech_transport = Simple_Transport()
     transport_mechanisms = {mech_transport.mechanism_type: mech_transport}
 
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Example 3: Simple Transport by alpha-hemolysin
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -520,6 +523,7 @@ a CRN that enables passive transport across the membrane.
 
     ]
 
+
 .. _facilitated-transport:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -558,6 +562,7 @@ to include a transport direction designation, such as ``Importer`` or
     # Define component
     MC = MembraneChannel(integral_membrane_protein = "IMP", substrate = "S",     
                          direction = 'Importer')
+
 Then, the mechanism for facilitated transport can be implemented and stored in 
 a dictionary.
 
@@ -566,6 +571,7 @@ a dictionary.
     # Mechanism 
     mech_transport = Facilitated_Transport()
     transport_mechanisms = {mech_transport.mechanism_type: mech_transport}
+
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Example 4: Facilitated transport of glucose by GLUT1
@@ -667,6 +673,7 @@ including the specification of its transport direction.
 
     ]
 
+
 -------------
 Membrane Pumps 
 -------------
@@ -688,7 +695,7 @@ either strings or ``Species`` objects.
 .. code-block:: python
 
     # Define component
-    MP = MembranePump(membrane_pump = "MP", substrate = "S") 
+    MP = MembranePump(membrane_pump = "MP", substrate = "S")
 
 The component also accepts optional inputs, similar to the `IntegralMembraneProtein`.
 If the integral membrane protein was previously defined using the component
@@ -778,6 +785,7 @@ Then, the mechanism for facilitated transport can be implemented and stored in a
     # Mechanism
     mech_transport = Primary_Active_Transport_MM()
     transport_mechanisms = {mech_transport.mechanism_type: mech_transport}
+
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Example 5: Export of erythromycin by MsbA
@@ -914,6 +922,7 @@ the specification of its direction (e.g., ``Exporter``).
     
     ]
 
+
 ---------------
 Membrane Sensors 
 ---------------
@@ -1011,6 +1020,7 @@ Then, the mechanism for membrane signaling can be implemented and stored in a di
     # Mechanism
 	mech_sensor = Membrane_Signaling_Pathway_MM()
 	sensor_mechanisms = {mech_sensor.mechanism_type:mech_sensor}
+
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Example 6: NarX-NarL two-component signaling path
@@ -1164,6 +1174,7 @@ the response regulator and relevant signaling substrates.
 
     ]
 
+
 .. ---------------
 .. Exercises
 .. ---------------
@@ -1189,6 +1200,7 @@ References
 .. [Cheung09] J. Cheung and W. A. Hendrickson, *Structural analysis of ligand stimulation 
    of the histidine kinase NarX*. Structure, 2009.
 
-   .. rubric:: Footnotes
+
+.. rubric:: Footnotes
 
 .. [1] Figures created with* `BioRender.com <https://www.biorender.com>`

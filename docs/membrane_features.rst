@@ -57,6 +57,7 @@ The following membrane-associated components are available in BioCRNpyler:
   signals (e.g., ligand binding, voltage change) and initiates a cellular 
   response, such as activating a signaling cascade.
 
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Membrane Mechanisms
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -110,8 +111,9 @@ components and transport mechanisms from modular, high-level specifications.
 
 :ref:`Figure 3.2 <fig-flow_chart_membrane_features>` illustrates the various options 
 available for modeling transport and two-component signaling within BioCRNpyler. It 
-specifically highlights the membrane components, indicated by purple boxes, along 
-with their corresponding mechanisms, represented by the blue box.
+specifically highlights the membrane components (orange boxes), their corresponding 
+mechanisms (green boxes), and species by the (blue boxes).
+
 
 ----------------
 Diffusible Molecule
@@ -162,6 +164,7 @@ In BioCRNpyler, the ``DiffusibleMolecule`` component uses the mechanism
     mech_tra = Simple_Diffusion()
     transport_mechanisms = {mech_tra.mechanism_type: mech_tra}
 
+    
 ~~~~~~~~~~
 Example 1: Diffusion of nitrate
 ~~~~~~~~~~
@@ -1185,3 +1188,7 @@ References
 
 .. [Cheung09] J. Cheung and W. A. Hendrickson, *Structural analysis of ligand stimulation 
    of the histidine kinase NarX*. Structure, 2009.
+
+   .. rubric:: Footnotes
+
+.. [1] Figures created with* `BioRender.com <https://www.biorender.com>`

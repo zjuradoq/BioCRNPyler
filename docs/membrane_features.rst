@@ -416,11 +416,11 @@ can be either strings or ``Species`` objects.
 
 The component also accepts optional inputs, similar to the ``IntegralMembraneProtein()``. 
 However, if the `integral membrane protein` has already been defined using 
-``IntegralMembraneProtein()``, the `MembraneChannel` will inherit its ``direction`` 
-and `compartment` properties from the existing species (e.g., ``IMP``).
+``IntegralMembraneProtein()``, the ``MembraneChannel()`` will inherit its ``direction`` 
+and `compartment` properties from the existing species (e.g., `IMP`).
 
-The ``MembraneChannel`` component can utilize the ``Simple_Transport`` or 
-``Facilitated_Transport_MM`` mechanism. The choice of mechanism depends on 
+The ``MembraneChannel()`` component can utilize the ``Simple_Transport()`` or 
+``Facilitated_Transport_MM()`` mechanism. The choice of mechanism depends on 
 the biological behavior of the channel. You can choose from one of the 
 following options:
 
@@ -697,8 +697,8 @@ either strings or ``Species`` objects.
 
 The component also accepts optional inputs, similar to the ``IntegralMembraneProtein()``.
 If the integral membrane protein was previously defined using the component
-`IntegralMembraneProtein`, then the `MembranePump` will inherit its ``direction`` and
-`compartment` properties from the existing species (e.g., ``IMP``). 
+``IntegralMembraneProtein()``, then the ``MembranePump()``` will inherit its ``direction`` and
+`compartment` properties from the existing species (e.g., `IMP`). 
 
 Additionally, optional arguments can be provided to control the transport direction, 
 stoichiometry, and compartment.
@@ -767,7 +767,7 @@ if the membrane pump is classified as an **exporter**, the resulting reactions a
     ADP_{internal}:MP_{exporter} \rightarrow ADP_{internal} + MP_{exporter} 
 
 To use ``Primary_Active_Transport_MM()``, we need to redefine the membrane channel 
-to include a transport direction designation, such as ``Importer`` or ``Exporter``. 
+to include a transport direction designation, such as `Importer` or `Exporter`. 
 For example:
 
 .. code-block:: python

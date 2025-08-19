@@ -164,7 +164,6 @@ In BioCRNpyler, the ``DiffusibleMolecule()`` component uses the mechanism
     mech_tra = Simple_Diffusion()
     transport_mechanisms = {mech_tra.mechanism_type: mech_tra}
 
-
 ~~~~~~~~~~
 Example 1: Diffusion of nitrate
 ~~~~~~~~~~

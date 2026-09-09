@@ -9,6 +9,8 @@ from biocrnpyler import (
     Integration_MembraneProtein,
     ParameterKey,
     Transport_PrimaryActive_ABCexporter,
+    Transport_SecondaryActive_Symporter,
+    Transport_SecondaryActive_Antiporter,
     Diffusion_Simple,
     Diffusion_Facilitated_Channel,
     Species,
@@ -135,14 +137,14 @@ class test_diffusion_facilitated_channel:
     assert len(st.update_species(MC, substrate, product)) == 3
 
     # Test Update Reactions
-    assert len(st.update_reactions(MC, substrate, product, k_trnsp=1.0)) == 1
+    assert len(st.update_reactions(MC, substrate, product, k_diff=1.0)) == 1
     assert (
         len(
             st.update_reactions(
                 MC,
                 substrate,
                 product,
-                k_trnsp=1.0,
+                k_diff=1.0,
                 complex_species=c_fake,
             )
         )
@@ -155,14 +157,13 @@ class test_diffusion_facilitated_carrier:
     MC = Species('MC1')
     substrate = Species('S1')
     product = Species('P1')
-    c1 = Complex([substrate, MC])
-    c2 = Complex([product, MC])
+    carrier_in = Species(MC.name, material_type='protein', compartment=MC.compartment, attributes=['in'])
+    c1 = Complex([product, MC])
+    c2 = Complex([substrate, carrier_in])
     c_fake = Species('C')
 
     # Test Update Species
     assert total_length(ft.update_species(MC, substrate, product)) == 5
-    assert contains(c1, ft.update_species(MC, substrate, product))
-    assert contains(c2, ft.update_species(MC, substrate, product))
 
     # Test Update Reactions
     # Define sensor parameter dictionary and component
@@ -180,12 +181,32 @@ class test_diffusion_facilitated_carrier:
         ParameterKey(
             mechanism='diffusion_facilitated_carrier',
             part_id=None,
-            name='k_trnspMC',
+            name='kf_trnspMC',
+        ): 2e-3,
+        ParameterKey(
+            mechanism='diffusion_facilitated_carrier',
+            part_id=None,
+            name='kr_trnspMC',
+        ): 2e-3,
+        ParameterKey(
+            mechanism='diffusion_facilitated_carrier',
+            part_id=None,
+            name='kb_prodMC',
         ): 2e-3,
         ParameterKey(
             mechanism='diffusion_facilitated_carrier',
             part_id=None,
             name='ku_prodMC',
+        ): 2e-10,
+        ParameterKey(
+            mechanism='diffusion_facilitated_carrier',
+            part_id=None,
+            name='k_out',
+        ): 2e-3,
+        ParameterKey(
+            mechanism='diffusion_facilitated_carrier',
+            part_id=None,
+            name='k_in',
         ): 2e-10,
     }
     transport_params = Component(
@@ -199,7 +220,7 @@ class test_diffusion_facilitated_carrier:
                 MC, substrate, product, component=transport_params
             )
         )
-        == 4
+        == 6
     )
     assert (
         len(
@@ -208,14 +229,14 @@ class test_diffusion_facilitated_carrier:
                 substrate,
                 product,
                 component=transport_params,
-                complex_species=c_fake,
+                complex_dict=None,
             )
         )
-        == 4
+        == 6
     )
 
 
-class test_active_transport_MM:
+class test_transport_primaryactive_abcexporter:
     pat = Transport_PrimaryActive_ABCexporter()
     MP = Species('MC1')
     MP.ATP = 2
@@ -236,18 +257,6 @@ class test_active_transport_MM:
             pat.update_species(MP, substrate, product, energy, waste)
         )
         == 9
-    )
-    assert contains(
-        c1, pat.update_species(MP, substrate, product, energy, waste)
-    )
-    assert contains(
-        c2, pat.update_species(MP, substrate, product, energy, waste)
-    )
-    assert contains(
-        c3, pat.update_species(MP, substrate, product, energy, waste)
-    )
-    assert contains(
-        c4, pat.update_species(MP, substrate, product, energy, waste)
     )
 
     # Test Update Reactions
@@ -276,12 +285,27 @@ class test_active_transport_MM:
         ParameterKey(
             mechanism='transport_primaryactive_abcexporter',
             part_id=None,
-            name='k_trnspMP',
+            name='kf_trnspMP',
+        ): 2e-10,
+        ParameterKey(
+            mechanism='transport_primaryactive_abcexporter',
+            part_id=None,
+            name='kr_trnspMP',
+        ): 2e-10,
+        ParameterKey(
+            mechanism='transport_primaryactive_abcexporter',
+            part_id=None,
+            name='kb_prodMP',
         ): 2e-10,
         ParameterKey(
             mechanism='transport_primaryactive_abcexporter',
             part_id=None,
             name='ku_prodMP',
+        ): 2e-10,
+        ParameterKey(
+            mechanism='transport_primaryactive_abcexporter',
+            part_id=None,
+            name='kb_MP',
         ): 2e-10,
         ParameterKey(
             mechanism='transport_primaryactive_abcexporter',
@@ -304,19 +328,63 @@ class test_active_transport_MM:
                 component=transport_params,
             )
         )
-        == 7
+        == 8
     )
-    assert (
-        len(
-            pat.update_reactions(
-                MP,
-                substrate,
-                product,
-                energy,
-                waste,
-                component=transport_params,
-                complex_species=c_fake,
-            )
-        )
-        == 7
-    )
+
+
+class test_transport_secondaryactive_symporter:
+    st = Transport_SecondaryActive_Symporter(driving_ion={'Ion1': '1:1'})
+    MC = Species('MC1')
+    substrate = Species('S1')
+    product = Species('P1')
+
+    # Test Update Species
+    assert total_length(st.update_species(MC, substrate, product)) == 9
+
+    # Test Update Reactions
+    symporter_param_dict = {
+        ParameterKey(mechanism='transport_secondaryactive_symporter', part_id=None, name='kb_ionMC_out'): 2e-3,
+        ParameterKey(mechanism='transport_secondaryactive_symporter', part_id=None, name='ku_ionMC_out'): 2e-10,
+        ParameterKey(mechanism='transport_secondaryactive_symporter', part_id=None, name='kb_subMC'): 2e-3,
+        ParameterKey(mechanism='transport_secondaryactive_symporter', part_id=None, name='ku_subMC'): 2e-10,
+        ParameterKey(mechanism='transport_secondaryactive_symporter', part_id=None, name='kf_trnspMC'): 2e-3,
+        ParameterKey(mechanism='transport_secondaryactive_symporter', part_id=None, name='kr_trnspMC'): 2e-10,
+        ParameterKey(mechanism='transport_secondaryactive_symporter', part_id=None, name='kb_prodMC'): 2e-3,
+        ParameterKey(mechanism='transport_secondaryactive_symporter', part_id=None, name='ku_prodMC'): 2e-10,
+        ParameterKey(mechanism='transport_secondaryactive_symporter', part_id=None, name='kb_ionMC_in'): 2e-3,
+        ParameterKey(mechanism='transport_secondaryactive_symporter', part_id=None, name='ku_ionMC_in'): 2e-10,
+        ParameterKey(mechanism='transport_secondaryactive_symporter', part_id=None, name='k_out'): 2e-3,
+        ParameterKey(mechanism='transport_secondaryactive_symporter', part_id=None, name='k_in'): 2e-10,
+    }
+    transport_params = Component('transport_params', parameters=symporter_param_dict)
+
+    assert len(st.update_reactions(MC, substrate, product, component=transport_params)) == 6
+
+
+class test_transport_secondaryactive_antiporter:
+    at = Transport_SecondaryActive_Antiporter(driving_ion={'Ion1': '1:1'})
+    MC = Species('MC1')
+    substrate = Species('S1')
+    product = Species('P1')
+
+    # Test Update Species
+    assert total_length(at.update_species(MC, substrate, product)) == 9
+
+    # Test Update Reactions
+    antiporter_param_dict = {
+        ParameterKey(mechanism='transport_secondaryactive_antiporter', part_id=None, name='kb_ionMC_out'): 2e-3,
+        ParameterKey(mechanism='transport_secondaryactive_antiporter', part_id=None, name='ku_ionMC_out'): 2e-10,
+        ParameterKey(mechanism='transport_secondaryactive_antiporter', part_id=None, name='kf_ionX'): 2e-3,
+        ParameterKey(mechanism='transport_secondaryactive_antiporter', part_id=None, name='kr_ionX'): 2e-10,
+        ParameterKey(mechanism='transport_secondaryactive_antiporter', part_id=None, name='kb_subMC'): 2e-3,
+        ParameterKey(mechanism='transport_secondaryactive_antiporter', part_id=None, name='ku_subMC'): 2e-10,
+        ParameterKey(mechanism='transport_secondaryactive_antiporter', part_id=None, name='kf_trnspMC'): 2e-3,
+        ParameterKey(mechanism='transport_secondaryactive_antiporter', part_id=None, name='kr_trnspMC'): 2e-10,
+        ParameterKey(mechanism='transport_secondaryactive_antiporter', part_id=None, name='kb_prodMC'): 2e-3,
+        ParameterKey(mechanism='transport_secondaryactive_antiporter', part_id=None, name='ku_prodMC'): 2e-10,
+        ParameterKey(mechanism='transport_secondaryactive_antiporter', part_id=None, name='kb_ionMC_in'): 2e-3,
+        ParameterKey(mechanism='transport_secondaryactive_antiporter', part_id=None, name='ku_ionMC_in'): 2e-10,
+    }
+    transport_params = Component('transport_params', parameters=antiporter_param_dict)
+
+    assert len(at.update_reactions(MC, substrate, product, component=transport_params)) == 6

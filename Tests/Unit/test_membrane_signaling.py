@@ -10,7 +10,6 @@ from biocrnpyler import (
     Species,
 )
 
-
 def contains(element, nested_array):
     """Recursively checks if an element is in a nested list."""
     return any(
@@ -19,7 +18,6 @@ def contains(element, nested_array):
         else element == sublist
         for sublist in nested_array
     )
-
 
 def total_length(nested_array):
     """Recursively counts the total number of elements in a nested list."""
@@ -31,11 +29,10 @@ def total_length(nested_array):
             count += 1  # Count individual elements
     return count
 
-
 class test_sensor_twocomponentsignaling:
     tcs = Sensor_TwoComponentSignaling()
-    MSP = Species('MSP1')
-    MSP.ATP = 2
+    MS = Species('MS1')
+    MS.ATP = 2
     RP = Species('RP1')
     sub_assign = Species('S1')
     sub_signal = Species('S2')
@@ -46,26 +43,26 @@ class test_sensor_twocomponentsignaling:
     # Create empty dictionary for complexes
     complex_dict = {}
     # Complex1
-    complex_dict['Activated_MP'] = Complex([sub_signal, MSP])
+    complex_dict['Activated_MS'] = Complex([sub_signal, MS])
     # Complex2
-    complex_dict['ATP:Activated_MP'] = Complex(
-        [MSP.ATP * [energy], complex_dict['Activated_MP']]
+    complex_dict['ATP:Activated_MS'] = Complex(
+        [MS.ATP * [energy], complex_dict['Activated_MS']]
     )
     # Complex3
-    complex_dict['ADP:Activated_MP:Sub'] = Complex(
-        [complex_dict['Activated_MP'], MSP.ATP * [waste], sub_assign]
+    complex_dict['ADP:Activated_MS:sub'] = Complex(
+        [complex_dict['Activated_MS'], MS.ATP * [waste], sub_assign]
     )
     # Complex4
-    complex_dict['Activated_MP:Sub'] = Complex(
-        [complex_dict['Activated_MP'], sub_assign]
+    complex_dict['Activated_MS:sub'] = Complex(
+        [complex_dict['Activated_MS'], sub_assign]
     )
     # Complex5
-    complex_dict['Activated_MP:Sub:RP'] = Complex(
-        [complex_dict['Activated_MP:Sub'], RP]
+    complex_dict['Activated_MS:sub:RP'] = Complex(
+        [complex_dict['Activated_MS:sub'], RP]
     )
     # Complex6
-    complex_dict['Activated_MP:RP:Sub'] = Complex(
-        [complex_dict['Activated_MP'], RP, sub_assign]
+    complex_dict['Activated_MS:RP:sub'] = Complex(
+        [complex_dict['Activated_MS'], RP, sub_assign]
     )
     # Complex7
     complex_dict['Activated_RP'] = Complex(
@@ -76,45 +73,45 @@ class test_sensor_twocomponentsignaling:
     assert (
         total_length(
             tcs.update_species(
-                MSP, RP, sub_assign, sub_signal, product, energy, waste
+                MS, RP, sub_assign, sub_signal, product, energy, waste
             )
         )
-        == 14
+        == 13
     )
     assert contains(
-        complex_dict['Activated_MP'],
+        complex_dict['Activated_MS'],
         tcs.update_species(
-            MSP, RP, sub_assign, sub_signal, product, energy, waste
+            MS, RP, sub_assign, sub_signal, product, energy, waste
         ),
     )
     assert contains(
-        complex_dict['ATP:Activated_MP'],
+        complex_dict['ATP:Activated_MS'],
         tcs.update_species(
-            MSP, RP, sub_assign, sub_signal, product, energy, waste
+            MS, RP, sub_assign, sub_signal, product, energy, waste
         ),
     )
     assert contains(
-        complex_dict['ADP:Activated_MP:Sub'],
+        complex_dict['ADP:Activated_MS:sub'],
         tcs.update_species(
-            MSP, RP, sub_assign, sub_signal, product, energy, waste
+            MS, RP, sub_assign, sub_signal, product, energy, waste
         ),
     )
     assert contains(
-        complex_dict['Activated_MP:Sub'],
+        complex_dict['Activated_MS:sub'],
         tcs.update_species(
-            MSP, RP, sub_assign, sub_signal, product, energy, waste
+            MS, RP, sub_assign, sub_signal, product, energy, waste
         ),
     )
     assert contains(
-        complex_dict['Activated_MP:Sub:RP'],
+        complex_dict['Activated_MS:sub:RP'],
         tcs.update_species(
-            MSP, RP, sub_assign, sub_signal, product, energy, waste
+            MS, RP, sub_assign, sub_signal, product, energy, waste
         ),
     )
     assert contains(
-        complex_dict['Activated_MP:RP:Sub'],
+        complex_dict['Activated_RP'],
         tcs.update_species(
-            MSP, RP, sub_assign, sub_signal, product, energy, waste
+            MS, RP, sub_assign, sub_signal, product, energy, waste
         ),
     )
 
@@ -187,7 +184,7 @@ class test_sensor_twocomponentsignaling:
     assert (
         len(
             tcs.update_reactions(
-                MSP,
+                MS,
                 RP,
                 sub_assign,
                 sub_signal,
@@ -203,7 +200,7 @@ class test_sensor_twocomponentsignaling:
     assert (
         len(
             tcs.update_reactions(
-                MSP,
+                MS,
                 RP,
                 sub_assign,
                 sub_signal,

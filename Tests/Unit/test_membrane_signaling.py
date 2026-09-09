@@ -32,7 +32,7 @@ def total_length(nested_array):
     return count
 
 
-class test_sensor_twocomponentsignalling:
+class test_sensor_twocomponentsignaling:
     tcs = Sensor_TwoComponentSignaling()
     MSP = Species('MSP1')
     MSP.ATP = 2
@@ -67,6 +67,10 @@ class test_sensor_twocomponentsignalling:
     complex_dict['Activated_MP:RP:Sub'] = Complex(
         [complex_dict['Activated_MP'], RP, sub_assign]
     )
+    # Complex7
+    complex_dict['Activated_RP'] = Complex(
+        [2*[RP]]
+    )
 
     # Test Update Species
     assert (
@@ -75,7 +79,7 @@ class test_sensor_twocomponentsignalling:
                 MSP, RP, sub_assign, sub_signal, product, energy, waste
             )
         )
-        == 12
+        == 14
     )
     assert contains(
         complex_dict['Activated_MP'],
@@ -118,57 +122,62 @@ class test_sensor_twocomponentsignalling:
     # Define sensor parameter dictionary and component
     sensor_param_dict = {
         ParameterKey(
-            mechanism='two_component_membrane_signaling',
+            mechanism='sensor_two_component_signaling',
             part_id=None,
             name='kb_sigMS',
         ): 2e-3,
         ParameterKey(
-            mechanism='two_component_membrane_signaling',
+            mechanism='sensor_two_component_signaling',
             part_id=None,
             name='ku_sigMS',
         ): 2e-10,
         ParameterKey(
-            mechanism='two_component_membrane_signaling',
+            mechanism='sensor_two_component_signaling',
             part_id=None,
             name='kb_autoPhos',
         ): 2e-3,
         ParameterKey(
-            mechanism='two_component_membrane_signaling',
+            mechanism='sensor_two_component_signaling',
             part_id=None,
             name='ku_autoPhos',
         ): 2e-10,
         ParameterKey(
-            mechanism='two_component_membrane_signaling',
+            mechanism='sensor_two_component_signaling',
             part_id=None,
             name='k_hydro',
         ): 1e-1,
         ParameterKey(
-            mechanism='two_component_membrane_signaling',
+            mechanism='sensor_two_component_signaling',
             part_id=None,
             name='ku_waste',
         ): 1e-1,
         ParameterKey(
-            mechanism='two_component_membrane_signaling',
+            mechanism='sensor_two_component_signaling',
             part_id=None,
             name='kb_phosRP',
         ): 2e-3,
         ParameterKey(
-            mechanism='two_component_membrane_signaling',
+            mechanism='sensor_two_component_signaling',
             part_id=None,
             name='ku_phosRP',
         ): 2e-10,
         ParameterKey(
-            mechanism='two_component_membrane_signaling',
+            mechanism='sensor_two_component_signaling',
             part_id=None,
             name='k_phosph',
         ): 1e-1,
         ParameterKey(
-            mechanism='two_component_membrane_signaling',
+            mechanism='sensor_two_component_signaling',
             part_id=None,
             name='ku_activeRP',
         ): 2e-1,
         ParameterKey(
-            mechanism='two_component_membrane_signaling',
+            mechanism='sensor_two_component_signaling',
+            part_id=None,
+            name='ku_activeRP',
+        ): 2e-1,
+        ParameterKey(
+            mechanism='sensor_two_component_signaling',
             part_id=None,
             name='ku_dephos',
         ): 2e-10,
@@ -188,7 +197,7 @@ class test_sensor_twocomponentsignalling:
                 component=sensor_params,
             )
         )
-        == 8
+        == 9
     )
 
     assert (
@@ -204,5 +213,5 @@ class test_sensor_twocomponentsignalling:
                 component=sensor_params,
             )
         )
-        == 8
+        == 9
     )

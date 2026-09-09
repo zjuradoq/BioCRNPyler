@@ -42,7 +42,7 @@ class Sensor_TwoComponentSignaling(Mechanism):
 
     Parameters
     ----------
-    name : str, default='two_component_membrane_signaling'
+    name : str, default='sensor_two_component_signaling'
         Name identifier for this mechanism instance.
     mechanism_type : str, default='membrane_sensor'
         Type classification of this mechanism.
@@ -123,7 +123,7 @@ class Sensor_TwoComponentSignaling(Mechanism):
 
     def __init__(
         self,
-        name='two_component_membrane_signaling',
+        name='sensor_two_component_signaling',
         mechanism_type='membrane_sensor',
         **kwargs,
     ):
@@ -389,6 +389,9 @@ class Sensor_TwoComponentSignaling(Mechanism):
         ku_activeRP = component.get_parameter(
             'ku_activeRP', part_id=part_id, mechanism=self
         )
+        kb_activeRP = component.get_parameter(
+                    'kb_activeRP', part_id=part_id, mechanism=self
+                )
         ku_dephos = component.get_parameter(
             'ku_dephos', part_id=part_id, mechanism=self
         )
@@ -499,7 +502,7 @@ class Sensor_TwoComponentSignaling(Mechanism):
         binding_rxn6 = Reaction.from_massaction(
             inputs=[2*[complex_dict['Activated_RP']]],
             outputs=[product],
-            k_forward=ku_dephos,
+            k_forward=kb_activeRP,
         )
         # Dephosphorylation: RP:Pi--> RP + Pi
         unbinding_rxn6 = Reaction.from_massaction(

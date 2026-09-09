@@ -5,7 +5,7 @@
 from biocrnpyler import (
     Complex,
     Component,
-    Membrane_Signaling_Pathway_MM,
+    Sensor_TwoComponentSignaling,
     ParameterKey,
     Species,
 )
@@ -32,8 +32,8 @@ def total_length(nested_array):
     return count
 
 
-class test_membrane_signaling_MM:
-    tcs = Membrane_Signaling_Pathway_MM()
+class test_sensor_twocomponentsignalling:
+    tcs = Sensor_TwoComponentSignaling()
     MSP = Species('MSP1')
     MSP.ATP = 2
     RP = Species('RP1')

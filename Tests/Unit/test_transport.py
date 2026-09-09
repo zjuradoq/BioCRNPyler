@@ -5,12 +5,12 @@
 from biocrnpyler import (
     Complex,
     Component,
-    Facilitated_Transport_MM,
-    Membrane_Protein_Integration,
+    Diffusion_Facilitated_Carrier,
+    Integration_MembraneProtein,
     ParameterKey,
-    Primary_Active_Transport_MM,
-    Simple_Diffusion,
-    Simple_Transport,
+    Transport_PrimaryActive_ABCexporter,
+    Diffusion_Simple,
+    Diffusion_Facilitated_Channel,
     Species,
 )
 
@@ -36,8 +36,8 @@ def total_length(nested_array):
     return count
 
 
-class test_simple_diffusion:
-    sd = Simple_Diffusion()
+class test_diffusion_simple:
+    sd = Diffusion_Simple()
     substrate = Species('DMi')
     product = Species('DMo')
     c_fake = Species('C')
@@ -72,7 +72,7 @@ class test_simple_diffusion:
 
 
 class test_membrane_integration:
-    mpi = Membrane_Protein_Integration()
+    mpi = Integration_MembraneProtein()
     MP = Species('MP1')
     MP.size = 2
     IMP = Species('IMP1')
@@ -88,20 +88,20 @@ class test_membrane_integration:
     # Define sensor parameter dictionary and component
     insertion_param_dict = {
         ParameterKey(
-            mechanism='membrane_protein_integration',
+            mechanism='integration_membraneprotein',
             part_id=None,
             name='kb_oligomer',
         ): 2e-3,
         ParameterKey(
-            mechanism='membrane_protein_integration',
+            mechanism='integration_membraneprotein',
             part_id=None,
             name='ku_oligomer',
         ): 2e-10,
         ParameterKey(
-            mechanism='membrane_protein_integration', part_id=None, name='kex'
+            mechanism='integration_membraneprotein', part_id=None, name='kex'
         ): 2e-3,
         ParameterKey(
-            mechanism='membrane_protein_integration',
+            mechanism='integration_membraneprotein',
             part_id=None,
             name='kcat',
         ): 2e-10,
@@ -124,10 +124,9 @@ class test_membrane_integration:
     )
 
 
-class test_simple_transport:
-    st = Simple_Transport()
+class test_diffusion_facilitated_channel:
+    st = Diffusion_Facilitated_Channel()
     MC = Species('MC1')
-    MC.attributes = ['Passive']
     substrate = Species('S1')
     product = Species('P1')
     c_fake = Species('C')
@@ -151,10 +150,9 @@ class test_simple_transport:
     )
 
 
-class test_facilitated_transport_MM:
-    ft = Facilitated_Transport_MM()
+class test_diffusion_facilitated_carrier:
+    ft = Diffusion_Facilitated_Carrier()
     MC = Species('MC1')
-    MC.attributes = ['Importer']
     substrate = Species('S1')
     product = Species('P1')
     c1 = Complex([substrate, MC])
@@ -170,22 +168,22 @@ class test_facilitated_transport_MM:
     # Define sensor parameter dictionary and component
     transport_param_dict = {
         ParameterKey(
-            mechanism='facilitated_membrane_protein_transport',
+            mechanism='diffusion_facilitated_carrier',
             part_id=None,
             name='kb_subMC',
         ): 2e-3,
         ParameterKey(
-            mechanism='facilitated_membrane_protein_transport',
+            mechanism='diffusion_facilitated_carrier',
             part_id=None,
             name='ku_subMC',
         ): 2e-10,
         ParameterKey(
-            mechanism='facilitated_membrane_protein_transport',
+            mechanism='diffusion_facilitated_carrier',
             part_id=None,
             name='k_trnspMC',
         ): 2e-3,
         ParameterKey(
-            mechanism='facilitated_membrane_protein_transport',
+            mechanism='diffusion_facilitated_carrier',
             part_id=None,
             name='ku_prodMC',
         ): 2e-10,
@@ -218,10 +216,10 @@ class test_facilitated_transport_MM:
 
 
 class test_active_transport_MM:
-    pat = Primary_Active_Transport_MM()
+    pat = Transport_PrimaryActive_ABCexporter()
     MP = Species('MC1')
     MP.ATP = 2
-    MP.attributes = ['Exporter']
+    MP.attributes = ['exporter']
     substrate = Species('S1')
     product = Species('P1')
     energy = Species('E1')
@@ -256,37 +254,37 @@ class test_active_transport_MM:
     # Define sensor parameter dictionary and component
     transport_param_dict = {
         ParameterKey(
-            mechanism='active_membrane_protein_transport',
+            mechanism='transport_primaryactive_abcexporter',
             part_id=None,
             name='kb_subMP',
         ): 2e-3,
         ParameterKey(
-            mechanism='active_membrane_protein_transport',
+            mechanism='transport_primaryactive_abcexporter',
             part_id=None,
             name='ku_subMP',
         ): 2e-10,
         ParameterKey(
-            mechanism='active_membrane_protein_transport',
+            mechanism='transport_primaryactive_abcexporter',
             part_id=None,
             name='kb_subMPnATP',
         ): 2e-3,
         ParameterKey(
-            mechanism='active_membrane_protein_transport',
+            mechanism='transport_primaryactive_abcexporter',
             part_id=None,
             name='ku_subMPnATP',
         ): 2e-1,
         ParameterKey(
-            mechanism='active_membrane_protein_transport',
+            mechanism='transport_primaryactive_abcexporter',
             part_id=None,
             name='k_trnspMP',
         ): 2e-10,
         ParameterKey(
-            mechanism='active_membrane_protein_transport',
+            mechanism='transport_primaryactive_abcexporter',
             part_id=None,
             name='ku_prodMP',
         ): 2e-10,
         ParameterKey(
-            mechanism='active_membrane_protein_transport',
+            mechanism='transport_primaryactive_abcexporter',
             part_id=None,
             name='ku_MP',
         ): 2e-10,

@@ -7,11 +7,8 @@ from biocrnpyler import (
     Component,
     ParameterKey,
     Species,
-    # Sensor_TwoComponentSignaling,
+    Sensor_TwoComponentSignaling,
 )
-# Assuming the signaling mechanisms are imported from their respective module
-from biocrnpyler.mechanisms.signaling import Sensor_TwoComponentSignaling
-
 
 def contains(element, nested_array):
     """Recursively checks if an element is in a nested list."""
@@ -54,12 +51,12 @@ class test_sensor_twocomponentsignaling:
 
     # Test Update Species
     def test_update_species(self):
-        # The method returns 6 base species + a list of 7 complexes = 13 total species
+        # The method returns 7 base species + a list of 7 complexes = 14 total species
         generated_species = self.tcs.update_species(
             self.MS, self.RP, self.Pi, self.Sig, self.Prod, self.ATP, self.ADP
         )
 
-        assert total_length(generated_species) == 13
+        assert total_length(generated_species) == 14
         assert contains(self.MS, generated_species)
         assert contains(self.c_activated_ms, generated_species)
         assert contains(self.c_atp_activated_ms, generated_species)

@@ -163,7 +163,7 @@ class test_diffusion_facilitated_carrier:
     c_fake = Species('C')
 
     # Test Update Species
-    assert total_length(ft.update_species(MC, substrate, product)) == 5
+    assert total_length(ft.update_species(MC, substrate, product)) == 6
 
     # Test Update Reactions
     # Define sensor parameter dictionary and component
@@ -256,7 +256,7 @@ class test_transport_primaryactive_abcexporter:
         total_length(
             pat.update_species(MP, substrate, product, energy, waste)
         )
-        == 9
+        == 10
     )
 
     # Test Update Reactions
@@ -339,11 +339,15 @@ class test_transport_secondaryactive_symporter:
     product = Species('P1')
 
     # Test Update Species
-    assert total_length(st.update_species(MC, substrate, product)) == 9
+    assert total_length(st.update_species(MC, substrate, product)) == 10
 
     # Test Update Reactions
     symporter_param_dict = {
-        ParameterKey(mechanism='transport_secondaryactive_symporter', part_id=None, name='kb_ionMC_out'): 2e-3,
+        ParameterKey(
+            mechanism='transport_secondaryactive_symporter',
+            part_id=None,
+            name='kb_ionMC_out'
+        ): 2e-3,
         ParameterKey(mechanism='transport_secondaryactive_symporter', part_id=None, name='ku_ionMC_out'): 2e-10,
         ParameterKey(mechanism='transport_secondaryactive_symporter', part_id=None, name='kb_subMC'): 2e-3,
         ParameterKey(mechanism='transport_secondaryactive_symporter', part_id=None, name='ku_subMC'): 2e-10,
@@ -368,7 +372,7 @@ class test_transport_secondaryactive_antiporter:
     product = Species('P1')
 
     # Test Update Species
-    assert total_length(at.update_species(MC, substrate, product)) == 9
+    assert total_length(at.update_species(MC, substrate, product)) == 10
 
     # Test Update Reactions
     antiporter_param_dict = {

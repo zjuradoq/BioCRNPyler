@@ -857,7 +857,7 @@ class Diffusion_Facilitated_Carrier(Mechanism):
         # Make dictionary into array
         complex_array = [value for value in complex_dict.values()]
 
-        return [membrane_carrier, substrate_in, substrate_out] + complex_array
+        return [membrane_carrier, carrier_in, substrate_in, substrate_out] + complex_array
 
     def update_reactions(
         self,
@@ -1183,7 +1183,7 @@ class Transport_SecondaryActive_Symporter(Mechanism):
         # Make dictionary into array
         complex_array = [value for value in complex_dict.values()]
 
-        return [membrane_carrier, substrate_in,
+        return [membrane_carrier, carrier_in, substrate_in,
                 substrate_out] + ions_in + ions_out + complex_array
 
     def update_reactions(
@@ -1558,7 +1558,7 @@ class Transport_SecondaryActive_Antiporter(Mechanism):
         # Make dictionary into array
         complex_array = [value for value in complex_dict.values()]
 
-        return [membrane_carrier, substrate_in,
+        return [membrane_carrier, carrier_in, substrate_in,
                 substrate_out] + ions_in + ions_out + complex_array
 
     def update_reactions(
@@ -2001,7 +2001,7 @@ class Transport_PrimaryActive_ABCexporter(Mechanism):
                 compartment=membrane_pump.compartment,
             )
             # Complex5
-            complex_dict['MP:ATP'] = Complex(
+            complex_dict['MP:ADP'] = Complex(
                 [nATP * [waste], membrane_pump],
                 compartment=membrane_pump.compartment,
             )

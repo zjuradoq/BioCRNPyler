@@ -61,7 +61,7 @@ class test_sensor_twocomponentsignaling:
         [complex_dict['Activated_MS:sub'], RP]
     )
     # Complex6
-    complex_dict['Activated_MS:RP:sub'] = Complex(
+    complex_dict['Activated_MS:Activated_RP'] = Complex(
         [complex_dict['Activated_MS'], RP, sub_assign]
     )
     # Complex7
@@ -76,7 +76,7 @@ class test_sensor_twocomponentsignaling:
                 MS, RP, sub_assign, sub_signal, product, energy, waste
             )
         )
-        == 13
+        == 14
     )
     assert contains(
         complex_dict['Activated_MS'],
@@ -110,6 +110,12 @@ class test_sensor_twocomponentsignaling:
     )
     assert contains(
         complex_dict['Activated_RP'],
+        tcs.update_species(
+            MS, RP, sub_assign, sub_signal, product, energy, waste
+        ),
+    )
+    assert contains(
+        complex_dict['Activated_MS:Activated_RP'],
         tcs.update_species(
             MS, RP, sub_assign, sub_signal, product, energy, waste
         ),
@@ -167,6 +173,11 @@ class test_sensor_twocomponentsignaling:
             mechanism='sensor_two_component_signaling',
             part_id=None,
             name='ku_activeRP',
+        ): 2e-1,
+        ParameterKey(
+            mechanism='sensor_two_component_signaling',
+            part_id=None,
+            name='kb_activeRP',
         ): 2e-1,
         ParameterKey(
             mechanism='sensor_two_component_signaling',

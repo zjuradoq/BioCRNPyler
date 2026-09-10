@@ -242,7 +242,7 @@ class Sensor_TwoComponentSignaling(Mechanism):
                 compartment=membrane_sensor_protein.compartment,
             )
             # Complex7
-            complex_dict['Activated_MS:RP:sub'] = Complex(
+            complex_dict['Activated_MS:Activated_RP'] = Complex(
                 [complex_dict['Activated_MS'], complex_dict['Activated_RP']],
                 compartment=membrane_sensor_protein.compartment,
             )
@@ -255,6 +255,7 @@ class Sensor_TwoComponentSignaling(Mechanism):
             response_protein,
             assigned_substrate,
             signal_substrate,
+            product,
             energy,
             waste,
             complex_array,
@@ -432,7 +433,7 @@ class Sensor_TwoComponentSignaling(Mechanism):
                 compartment=membrane_sensor_protein.compartment,
             )
             # Complex7
-            complex_dict['Activated_MS:RP:sub'] = Complex(
+            complex_dict['Activated_MS:Activated_RP'] = Complex(
                 [complex_dict['Activated_MS'], complex_dict['Activated_RP']],
                 compartment=membrane_sensor_protein.compartment,
             )
@@ -478,12 +479,12 @@ class Sensor_TwoComponentSignaling(Mechanism):
         # P*:Pi:RP --> P*:RP:Pi
         Phosph_rxn1 = Reaction.from_massaction(
             inputs=[complex_dict['Activated_MS:sub:RP']],
-            outputs=[complex_dict['Activated_MS:RP:sub']],
+            outputs=[complex_dict['Activated_MS:Activated_RP']],
             k_forward=k_phosph,
         )
         # P*:RP:Pi--> P* + RP:Pi
         unbinding_rxn5 = Reaction.from_massaction(
-            inputs=[complex_dict['Activated_MS:RP:sub']],
+            inputs=[complex_dict['Activated_MS:Activated_RP']],
             outputs=[
                 complex_dict['Activated_RP'],
                 complex_dict['Activated_MS'],

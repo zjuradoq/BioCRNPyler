@@ -60,13 +60,13 @@ class test_sensor_twocomponentsignaling:
     complex_dict['Activated_MS:sub:RP'] = Complex(
         [complex_dict['Activated_MS:sub'], RP]
     )
-    # Complex6
-    complex_dict['Activated_MS:Activated_RP'] = Complex(
-        [complex_dict['Activated_MS'], RP, sub_assign]
-    )
     # Complex7
     complex_dict['Activated_RP'] = Complex(
-        [2*[RP]]
+        [RP, sub_assign]
+    )
+    # Complex6
+    complex_dict['Activated_MS:Activated_RP'] = Complex(
+        [complex_dict['Activated_MS'], complex_dict['Activated_RP']]
     )
 
     # Test Update Species

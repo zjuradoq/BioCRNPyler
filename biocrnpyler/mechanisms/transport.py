@@ -4,10 +4,10 @@
 from ..core.mechanism import Mechanism
 from ..core.propensities import GeneralPropensity, ProportionalHillNegative
 from ..core.reaction import Reaction
-from ..core.species import Complex
+from ..core.species import Complex, Species
 
 
-class Simple_Diffusion(Mechanism):
+class Diffusion_Simple(Mechanism):
     """Passive diffusion mechanism for substrate transport across membranes.
 
     A 'diffusion' mechanism that models simple passive diffusion of
@@ -24,7 +24,7 @@ class Simple_Diffusion(Mechanism):
 
     Parameters
     ----------
-    name : str, default='simple_diffusion'
+    name : str, default='diffusion_simple'
         Name identifier for this mechanism instance.
     mechanism_type : str, default='diffusion'
         Type classification of this mechanism.
@@ -82,7 +82,7 @@ class Simple_Diffusion(Mechanism):
 
     def __init__(
         self,
-        name='simple_diffusion',
+        name='diffusion_simple',
         mechanism_type='diffusion',
         parameter_file='mechanisms/transport_parameters.tsv',
         **kwargs,
@@ -193,10 +193,10 @@ class Simple_Diffusion(Mechanism):
         return [diffusion_rxn]
 
 
-class Membrane_Protein_Integration(Mechanism):
+class Integration_MembraneProtein(Mechanism):
     """Membrane protein integration mechanism for protein insertion.
 
-    A 'membrane_insertion' mechanism that models the integration of newly
+    A 'membrane_integration' mechanism that models the integration of newly
     synthesized proteins into cellular membranes. Supports both monomeric
     and oligomeric membrane proteins, handling oligomerization before
     membrane insertion when required.
@@ -215,7 +215,7 @@ class Membrane_Protein_Integration(Mechanism):
     ----------
     name : str, default='membrane_protein_integration'
         Name identifier for this mechanism instance.
-    mechanism_type : str, default='membrane_insertion'
+    mechanism_type : str, default='membrane_integration'
         Type classification of this mechanism.
     parameter_file : str, default='mechanisms/transport_parameters.tsv',
         Path to file containing default parameter values for this mechanism.
@@ -225,7 +225,7 @@ class Membrane_Protein_Integration(Mechanism):
     name : str
         Name of the mechanism instance.
     mechanism_type : str
-        Type classification ('membrane_insertion').
+        Type classification ('membrane_integration').
 
     See Also
     --------
@@ -269,7 +269,7 @@ class Membrane_Protein_Integration(Mechanism):
     >>> mechanism = bcp.Membrane_Protein_Integration()
     >>> mixture = bcp.Mixture(
     ...     components=[channel],
-    ...     mechanisms={'membrane_insertion': mechanism},
+    ...     mechanisms={'membrane_integration': mechanism},
     ...     parameters={
     ...         'kb_oligomer': 1.0, 'ku_oligomer': 0.1,
     ...         'kex': 0.5, 'kcat': 10.0
@@ -281,8 +281,8 @@ class Membrane_Protein_Integration(Mechanism):
 
     def __init__(
         self,
-        name='membrane_protein_integration',
-        mechanism_type='membrane_insertion',
+        name='integration_membraneprotein',
+        mechanism_type='membrane_integration',
         parameter_file='mechanisms/transport_parameters.tsv',
         **kwargs,
     ):
@@ -467,12 +467,12 @@ class Membrane_Protein_Integration(Mechanism):
             return [integration_rxn1]
 
 
-class Simple_Transport(Mechanism):
-    """Passive transport mechanism through membrane channel proteins.
+class Diffusion_Facilitated_Channel(Mechanism):
+    """Diffusion mechanism facilitated by a membrane channel.
 
-    A 'transport' mechanism that models passive, bidirectional transport of
-    substrates through membrane channel proteins. Unlike simple diffusion,
-    this mechanism requires a membrane channel protein but does not consume
+    A 'diffusion' mechanism that models passive, bidirectional diffusion of
+    substrates through a membrane channel. Unlike simple diffusion,
+    this mechanism requires a membrane channel but does not consume
     energy. The channel acts catalytically, binding substrate and product
     but not being consumed.
 
@@ -482,9 +482,9 @@ class Simple_Transport(Mechanism):
 
     Parameters
     ----------
-    name : str, default='simple_membrane_protein_transport'
+    name : str, default='diffusion_facilitated_channel'
         Name identifier for this mechanism instance.
-    mechanism_type : str, default='transport'
+    mechanism_type : str, default='diffusion'
         Type classification of this mechanism.
     parameter_file : str, default='mechanisms/transport_parameters.tsv',
         Path to file containing default parameter values for this mechanism.
@@ -494,7 +494,7 @@ class Simple_Transport(Mechanism):
     name : str
         Name of the mechanism instance.
     mechanism_type : str
-        Type classification ('transport').
+        Type classification ('diffusion').
 
     See Also
     --------
@@ -505,14 +505,10 @@ class Simple_Transport(Mechanism):
 
     Notes
     -----
-    This mechanism models passive transport through channel proteins such as
+    This mechanism models diffusion through membrane channels such as
     ion channels, aquaporins, and other pore-forming proteins. The channel
     facilitates movement down concentration gradients without conformational
     changes or energy expenditure.
-
-    The mechanism requires the membrane channel to have the 'Passive'
-    attribute, distinguishing it from active transporters and carriers that
-    require different mechanisms.
 
     Common examples include:
 
@@ -526,7 +522,7 @@ class Simple_Transport(Mechanism):
 
     Required parameters for this mechanism:
 
-    - 'k_trnsp' : Transport rate constant (same for both directions)
+    - 'k_diff' : Transport rate constant (same for both directions)
 
     Examples
     --------
@@ -535,25 +531,22 @@ class Simple_Transport(Mechanism):
     >>> protein = bcp.IntegralMembraneProtein(
     ...     membrane_protein='Knck1',
     ...     product='K_channel',
-    ...     direction='Passive',
     ...     compartment='cytoplasm',
     ...     membrane_compartment='membrane',
-    ...     attributes=['Passive']
     ... )
     >>> channel = bcp.MembraneChannel(
     ...     integral_membrane_protein=protein.membrane_protein,
     ...     substrate='K',
-    ...     direction='Passive',
     ...     internal_compartment='cytoplasm',
     ...     external_compartment='external'
     ... )
     >>> mixture = bcp.Mixture(
     ...     components=[protein, channel],
     ...     mechanisms={
-    ...         'membrane_insertion': bcp.Membrane_Protein_Integration(),
+    ...         'membrane_integration': bcp.Membrane_Protein_Integration(),
     ...         'transport': bcp.Simple_Transport(),
     ...     },
-    ...     parameters={'k_trnsp': 1.0},
+    ...     parameters={'k_diff': 1.0},
     ...     parameter_file='mechanisms/transport_parameters.tsv',
     ... )
     >>> mixture.compile_crn()
@@ -562,8 +555,8 @@ class Simple_Transport(Mechanism):
 
     def __init__(
         self,
-        name='simple_membrane_protein_transport',
-        mechanism_type='transport',
+        name='diffusion_facilitated_channel',
+        mechanism_type='diffusion',
         parameter_file='mechanisms/transport_parameters.tsv',
         **kwargs,
     ):
@@ -575,13 +568,12 @@ class Simple_Transport(Mechanism):
         """Generate species for simple transport.
 
         Returns the membrane channel, substrate, and product species
-        involved in the transport reaction. Validates that the channel has
-        the 'Passive' attribute.
+        involved in the transport reaction.
 
         Parameters
         ----------
         membrane_channel : Species
-            The membrane channel protein through which transport occurs.
+            The membrane channel through which transport occurs.
             Must have 'Passive' as its first attribute.
         substrate : Species
             The substrate species being transported (typically intracellular
@@ -597,21 +589,7 @@ class Simple_Transport(Mechanism):
         list of Species
             List containing [membrane_channel, substrate, product].
 
-        Raises
-        ------
-        ValueError
-            If membrane_channel does not have 'Passive' as its first
-            attribute, indicating it should use Facilitated_Transport_MM
-            instead.
-
         """
-        if membrane_channel.attributes[0] != 'Passive':
-            raise ValueError(
-                "Protein is not classified as a channel with passive "
-                "transport of small molecules. Use mechanism "
-                "Facilitated_Transport_MM instead"
-            )
-
         return [membrane_channel, substrate, product]
 
     def update_reactions(
@@ -621,7 +599,7 @@ class Simple_Transport(Mechanism):
         product,
         component=None,
         part_id=None,
-        k_trnsp=None,
+        k_diff=None,
         **kwargs,
     ):
         r"""Generate reactions for simple membrane protein transport.
@@ -634,18 +612,18 @@ class Simple_Transport(Mechanism):
         Parameters
         ----------
         membrane_channel : Species
-            The membrane channel protein facilitating transport.
+            The membrane channel facilitating transport.
         substrate : Species
             The substrate species being transported.
         product : Species
             The product species after transport.
         component : Component, optional
-            Component containing parameter values. Required if k_trnsp is
+            Component containing parameter values. Required if k_diff is
             not provided directly.
         part_id : str, optional
             Identifier for parameter lookup. If None and component is
             provided, defaults to component.name.
-        k_trnsp : Parameter or float, optional
+        k_diff : Parameter or float, optional
             Transport rate constant. If None, retrieved from component
             parameters. Used as both forward and reverse rate constant.
         **kwargs
@@ -660,14 +638,14 @@ class Simple_Transport(Mechanism):
         Raises
         ------
         ValueError
-            If component is None and k_trnsp is not provided.
+            If component is None and k_diff is not provided.
 
         Notes
         -----
         The reaction has equal forward and reverse rate constants:
         $$
             'membrane_channel' + 'substrate' <--> 'membrane_channel'
-                + 'product' \quad ('rates': 'k_trnsp', 'k_trnsp')
+                + 'product' \quad ('rates': 'k_diff', 'k_diff')
         $$
         The membrane channel appears on both sides of the reaction,
         indicating it acts catalytically and is recycled.
@@ -677,32 +655,32 @@ class Simple_Transport(Mechanism):
         if part_id is None and component is not None:
             part_id = component.name
 
-        if component is None and (k_trnsp is None):
+        if component is None and (k_diff is None):
             raise ValueError(
-                "Must pass in a Component or values for k_trnsp."
+                "Must pass in a Component or values for k_diff."
             )
-        if k_trnsp is None:
-            k_trnsp = component.get_parameter(
-                'k_trnsp', part_id=part_id, mechanism=self
+        if k_diff is None:
+            k_diff = component.get_parameter(
+                'k_diff', part_id=part_id, mechanism=self
             )
         else:
-            k_trnsp = k_trnsp
+            k_diff = k_diff
 
         # Simple membrane protein transport
         # Sub (Internal) <--> Product (External)
         Simple_Transport_rxn = Reaction.from_massaction(
             inputs=[substrate, membrane_channel],
             outputs=[product, membrane_channel],
-            k_forward=k_trnsp,
-            k_reverse=k_trnsp,
+            k_forward=k_diff,
+            k_reverse=k_diff,
         )
         return [Simple_Transport_rxn]
 
 
-class Facilitated_Transport_MM(Mechanism):
+class Diffusion_Facilitated_Carrier(Mechanism):
     r"""Facilitated diffusion mechanism with Michaelis-Menten kinetics.
 
-    A 'transport' mechanism that models facilitated diffusion of substrates
+    A 'diffusion' mechanism that models facilitated diffusion of substrates
     through membrane carrier proteins. Unlike simple channels, carriers
     undergo conformational changes to transport substrates across membranes.
     The mechanism follows Michaelis-Menten kinetics with explicit substrate
@@ -710,15 +688,17 @@ class Facilitated_Transport_MM(Mechanism):
 
     The reaction follows the schema:
     $$
-        'Sub' + 'MC' <--> 'Sub':'MC' --> 'Prod':'MC' --> 'Prod' + 'MC'
+        'sub_out' + 'MC_out' & <--> 'sub_out':'MC_out' \\
+        & <--> 'sub_in':'MC_in' \\
+        & <--> 'sub_in' + 'MC_in'
     $$
     where MC is the membrane carrier protein.
 
     Parameters
     ----------
-    name : str, default='facilitated_membrane_protein_transport'
+    name : str, default='diffusion_facilitated_carrier'
         Name identifier for this mechanism instance.
-    mechanism_type : str, default='transport'
+    mechanism_type : str, default='diffusion'
         Type classification of this mechanism.
     parameter_file : str, default='mechanisms/transport_parameters.tsv',
         Path to file containing default parameter values for this mechanism.
@@ -728,7 +708,7 @@ class Facilitated_Transport_MM(Mechanism):
     name : str
         Name of the mechanism instance.
     mechanism_type : str
-        Type classification ('transport').
+        Type classification ('diffusion').
 
     See Also
     --------
@@ -781,12 +761,11 @@ class Facilitated_Transport_MM(Mechanism):
     ...     substrate=glc_out,
     ...     external_compartment='external',
     ...     internal_compartment='cytoplasm',
-    ...     direction='Importer'
     ... )
     >>> mechanism = bcp.Facilitated_Transport_MM()
     >>> mixture = bcp.Mixture(
     ...     components=[carrier],
-    ...     mechanisms={'transport': mechanism},
+    ...     mechanisms={'diffusion': mechanism},
     ...     parameters={
     ...         'kb_subMC': 1.0, 'ku_subMC': 0.5,
     ...         'k_trnspMC': 0.8, 'ku_prodMC': 0.5
@@ -798,8 +777,8 @@ class Facilitated_Transport_MM(Mechanism):
 
     def __init__(
         self,
-        name='facilitated_membrane_protein_transport',
-        mechanism_type='transport',
+        name='diffusion_facilitated_carrier',
+        mechanism_type='diffusion',
         parameter_file='mechanisms/transport_parameters.tsv',
         **kwargs,
     ):
@@ -810,8 +789,8 @@ class Facilitated_Transport_MM(Mechanism):
     def update_species(
         self,
         membrane_carrier,
-        substrate,
-        product,
+        substrate_in,
+        substrate_out,
         complex_dict=None,
         **kwargs,
     ):
@@ -853,30 +832,38 @@ class Facilitated_Transport_MM(Mechanism):
         2. prod:MC : product:membrane_carrier complex
 
         """
+        carrier_in = Species(
+            membrane_carrier.name,
+            material_type='protein',
+            compartment=membrane_carrier.compartment,
+            attributes=['in']
+        )
+        membrane_carrier.add_attribute('out')
+
         if complex_dict is None:
             # Create empty dictionary for complexes
             complex_dict = {}
             # Complex1
             complex_dict['sub:MC'] = Complex(
-                [substrate, membrane_carrier],
+                [substrate_out, membrane_carrier],
                 compartment=membrane_carrier.compartment,
             )
             # Complex2
             complex_dict['prod:MC'] = Complex(
-                [product, membrane_carrier],
+                [substrate_in, carrier_in],
                 compartment=membrane_carrier.compartment,
             )
 
         # Make dictionary into array
         complex_array = [value for value in complex_dict.values()]
 
-        return [membrane_carrier, substrate, product, complex_array]
+        return [membrane_carrier, carrier_in, substrate_in, substrate_out] + complex_array
 
     def update_reactions(
         self,
         membrane_carrier,
-        substrate,
-        product,
+        substrate_in,
+        substrate_out,
         complex_dict=None,
         component=None,
         part_id=None,
@@ -924,7 +911,7 @@ class Facilitated_Transport_MM(Mechanism):
         -----
         The reaction scheme follows this pathway:
 
-        1. MC + Sub <--> MC:Sub (GeneralPropensity with Heaviside function
+        1. MC + Sub --> MC:Sub (GeneralPropensity with Heaviside function
            using 'kb_subMC')
         2. MC:Sub --> MC + Sub (irreversible, rate: 'ku_subMC')
         3. MC:Sub --> MC:Prod (conformational change, rate: 'k_trnspMC')
@@ -943,11 +930,31 @@ class Facilitated_Transport_MM(Mechanism):
         ku_subMC = component.get_parameter(
             'ku_subMC', part_id=part_id, mechanism=self
         )
-        k_trnspMC = component.get_parameter(
-            'k_trnspMC', part_id=part_id, mechanism=self
+        kf_trnspMC = component.get_parameter(
+            'kf_trnspMC', part_id=part_id, mechanism=self
+        )
+        kr_trnspMC = component.get_parameter(
+            'kr_trnspMC', part_id=part_id, mechanism=self
+        )
+        kb_prodMC = component.get_parameter(
+            'kb_prodMC', part_id=part_id, mechanism=self
         )
         ku_prodMC = component.get_parameter(
             'ku_prodMC', part_id=part_id, mechanism=self
+        )
+        k_out = component.get_parameter(
+            'k_out', part_id=part_id, mechanism=self
+                )
+        k_in = component.get_parameter(
+            'k_in', part_id=part_id, mechanism=self
+        )
+
+        # Carrier in a differernt configuration
+        carrier_in = Species(
+            membrane_carrier.name,
+            material_type='protein',
+            compartment=membrane_carrier.compartment,
+            attributes=['in']
         )
 
         if complex_dict is None:
@@ -955,27 +962,34 @@ class Facilitated_Transport_MM(Mechanism):
             complex_dict = {}
             # Complex1
             complex_dict['sub:MC'] = Complex(
-                [substrate, membrane_carrier],
+                [substrate_out, membrane_carrier],
                 compartment=membrane_carrier.compartment,
             )
             # Complex2
             complex_dict['prod:MC'] = Complex(
-                [product, membrane_carrier],
+                [substrate_in, carrier_in],
                 compartment=membrane_carrier.compartment,
             )
+
+        # TODO: Test to see if making all the reaction mass-action breaks the
+        # simulation (i suspect it will)
 
         # Facilitated membrane protein transport
         # Sub + MC --> Sub:MC
         prop_subMC = GeneralPropensity(
-            f"kb_subMC * {substrate} * {membrane_carrier} * "
-            f"Heaviside({substrate}-{product}) "
-            f"- kb_subMC * {product} * {membrane_carrier} * "
-            f"Heaviside({substrate}-{product})",
-            propensity_species=[product, substrate, membrane_carrier],
+            # f"kb_subMC * {substrate_in} * {membrane_carrier} * "
+            # f"Heaviside({substrate_in}-{substrate_out}) "
+            # f"kb_subMC * {substrate_out} * {membrane_carrier} * "
+            # f"Heaviside({substrate_out}-{substrate_in})",
+            f"kb_subMC * {substrate_out} * {membrane_carrier} *"
+            f"(1 / (1 + exp(-10 * ({substrate_out} - {substrate_in}))))",
+            propensity_species=[
+                substrate_out, substrate_in, membrane_carrier
+            ],
             propensity_parameters=[kb_subMC],
         )
         binding_rxn1 = Reaction(
-            [substrate, membrane_carrier],
+            [substrate_out, membrane_carrier],
             [complex_dict['sub:MC']],
             propensity_type=prop_subMC,
         )
@@ -983,28 +997,867 @@ class Facilitated_Transport_MM(Mechanism):
         # Sub:MC --> Sub + MC
         unbinding_rxn1 = Reaction.from_massaction(
             inputs=[complex_dict['sub:MC']],
-            outputs=[membrane_carrier, substrate],
+            outputs=[membrane_carrier, substrate_out],
             k_forward=ku_subMC,
         )
 
-        # Sub:MC --> Prod:MC
+        # Sub:MC <--> Prod:MC
         transport_rxn = Reaction.from_massaction(
             inputs=[complex_dict['sub:MC']],
             outputs=[complex_dict['prod:MC']],
-            k_forward=k_trnspMC,
+            k_forward=kf_trnspMC, k_reverse=kr_trnspMC
         )
 
         # MC:Prod --> MC + Prod
         unbinding_rxn2 = Reaction.from_massaction(
             inputs=[complex_dict['prod:MC']],
-            outputs=[product, membrane_carrier],
+            outputs=[substrate_in, carrier_in],
             k_forward=ku_prodMC,
         )
+        prop_probMC = GeneralPropensity(
+            # f"kb_prodMC * {substrate_out} * {carrier_in} * "
+            # f"Heaviside({substrate_out}-{substrate_in}) "
+            # f"kb_prodMC * {substrate_in} * {carrier_in} * "
+            # f"Heaviside({substrate_in}-{substrate_out})",
+            f"kb_prodMC * {substrate_in} * {carrier_in} *"
+            f" (1 / (1 + exp(-10 * ({substrate_in} - {substrate_out}))))",
+            propensity_species=[substrate_in, substrate_out, carrier_in],
+            propensity_parameters=[kb_prodMC],
+        )
 
-        return [binding_rxn1, unbinding_rxn1, transport_rxn, unbinding_rxn2]
+        # MC + Prod --> MC:Prod
+        binding_rxn2 = Reaction(
+            [substrate_in, carrier_in],
+            [complex_dict['prod:MC']],
+            propensity_type=prop_probMC,
+        )
+
+        # MC_in <--> MC
+        config_rxn = Reaction.from_massaction(
+            inputs=[carrier_in],
+            outputs=[membrane_carrier],
+            k_forward=k_out, k_reverse=k_in
+        )
+
+        return [binding_rxn1, unbinding_rxn1, transport_rxn,
+                unbinding_rxn2, binding_rxn2, config_rxn]
+
+class Transport_SecondaryActive_Symporter(Mechanism):
+    r"""Secondary active transport mechanism with Michaelis-Menten kinetics.
+
+    Raises
+    ------
+    AttributeError
+        If component or part_id is None (required for parameter lookup).
+
+    Notes
+    -----
+    holder
+    """
+
+    def __init__(
+        self,
+        driving_ion=None,
+        name='transport_secondaryactive_symporter',
+        mechanism_type='transport',
+        parameter_file='mechanisms/transport_parameters.tsv',
+        **kwargs,
+    ):
+        Mechanism.__init__(
+            self, name, mechanism_type, parameter_file=parameter_file
+        )
+        self.driving_ion = driving_ion
+
+    def update_species(
+        self,
+        membrane_carrier,
+        substrate_in,
+        substrate_out,
+        driving_ion=None,
+        complex_dict=None,
+        component=None,
+        part_id=None,
+        **kwargs,
+    ):
+        """Generate species for facilitated transport.
+
+        Creates species for the membrane carrier, substrate, product, and
+        the two intermediate complexes formed during the transport cycle.
+
+        Parameters
+        ----------
+        membrane_carrier : Species
+            The membrane carrier protein that facilitates transport.
+        substrate : Species
+            The substrate species being transported (typically intracellular
+            side).
+        product : Species
+            The product species after transport (typically extracellular
+            side). Usually the same molecular species as substrate but in a
+            different compartment.
+        complex_dict : dict, optional
+            Pre-defined dictionary of complex species with keys 'sub:MC' and
+            'prod:MC'. If None, complexes are automatically created.
+        **kwargs
+            Additional keyword arguments (unused).
+
+        Returns
+        -------
+        list
+            List containing [membrane_carrier, substrate, product,
+            complex_array] where complex_array is a list of two Complex
+            species: [substrate:carrier, product:carrier].
+
+        Notes
+        -----
+        The method creates two complex species representing intermediates in
+        the transport cycle:
+
+        1. sub:MC : substrate:membrane_carrier complex
+        2. prod:MC : product:membrane_carrier complex
+
+        """
+        if driving_ion is None:
+            driving_ion = self.driving_ion
+        if driving_ion is None:
+            raise ValueError("A driving_ion must be provided to the " \
+            "mechanism.")
+
+        carrier_in = Species(
+            membrane_carrier.name,
+            material_type='protein',
+            compartment=membrane_carrier.compartment,
+            attributes=['in']
+        )
+        membrane_carrier.add_attribute('out')
+
+        # Create empty lists
+        ions_in = []
+        ions_out = []
+
+        for ion in self.driving_ion.keys():
+            ion_in = Species(ion,
+                            compartment=substrate_in.compartment,
+            )
+            ion_out = Species(ion,
+                            compartment=substrate_out.compartment,
+            )
+            ions_in.append(ion_in)
+            ions_out.append(ion_out)
+
+        if complex_dict is None:
+            # Create empty dictionary for complexes
+            complex_dict = {}
+            # Complex1
+            for key, ionI, ionO in zip(
+                self.driving_ion.keys(), ions_in, ions_out
+            ):
+                # Parse dictionary for ratios
+                # The string '3:1' into a list ['3', '1']
+                ratio_parts = driving_ion[key].split(':')
+                # Convert the string pieces into integers
+                ion_num = int(ratio_parts[0])
+                sub_num = int(ratio_parts[1])
+
+                # Complex 1
+                complex_dict[f'{key}_out:MC'] = Complex(
+                    [ion_num*[ionO], membrane_carrier],
+                    compartment=membrane_carrier.compartment,
+                )
+                # Complex2
+                complex_dict[f'sub:{key}:MC'] = Complex(
+                    [sub_num*[substrate_out], complex_dict[f'{key}_out:MC']],
+                    compartment=membrane_carrier.compartment,
+                )
+                # Complex4
+                complex_dict[f'{key}_in:MC'] = Complex(
+                    [ion_num*[ionI], carrier_in],
+                    compartment=membrane_carrier.compartment,
+                )
+                # Complex3
+                complex_dict[f'prod:{key}:MC'] = Complex(
+                    [sub_num*[substrate_in], complex_dict[f'{key}_in:MC']],
+                    compartment=membrane_carrier.compartment,
+                )
+
+        # Make dictionary into array
+        complex_array = [value for value in complex_dict.values()]
+
+        return [membrane_carrier, carrier_in, substrate_in,
+                substrate_out] + ions_in + ions_out + complex_array
+
+    def update_reactions(
+        self,
+        membrane_carrier,
+        substrate_in,
+        substrate_out,
+        driving_ion=None,
+        complex_dict=None,
+        component=None,
+        part_id=None,
+        **kwargs,
+    ):
+        """Generate reactions for facilitated transport.
+
+        Creates four reactions representing the complete transport cycle:
+        substrate binding, substrate unbinding, conformational change
+        (transport), and product release.
+
+        Parameters
+        ----------
+        membrane_carrier : Species
+            The membrane carrier protein facilitating transport.
+        substrate : Species
+            The substrate species being transported.
+        product : Species
+            The product species after transport.
+        complex_dict : dict, optional
+            Pre-defined dictionary of complex species. If None, complexes
+            are automatically created using the same logic as in
+            update_species.
+        component : Component
+            Component containing parameter values. Required for parameter
+            lookup.
+        part_id : str
+            Identifier for parameter lookup in the component's parameter
+            database. Required for parameter lookup.
+        **kwargs
+            Additional keyword arguments (unused).
+
+        Returns
+        -------
+        list of Reaction
+            List of four reactions: [substrate_binding, substrate_unbinding,
+            transport_step, product_release].
+
+        Raises
+        ------
+        AttributeError
+            If component or part_id is None (required for parameter lookup).
+
+        Notes
+        -----
+        The reaction scheme follows this pathway:
+
+        1. MC + Sub --> MC:Sub (GeneralPropensity with Heaviside function
+           using 'kb_subMC')
+        2. MC:Sub --> MC + Sub (irreversible, rate: 'ku_subMC')
+        3. MC:Sub --> MC:Prod (conformational change, rate: 'k_trnspMC')
+        4. MC:Prod --> MC + Prod (irreversible, rate: 'ku_prodMC')
+
+        The initial binding step uses a GeneralPropensity with a Heaviside
+        function to enforce concentration gradient-driven directionality.
+        The Heaviside function ensures transport only occurs when substrate
+        concentration exceeds product concentration.
+
+        """
+        if driving_ion is None:
+            driving_ion = self.driving_ion
+        if driving_ion is None:
+            raise ValueError("A driving_ion must be provided to the" \
+            "mechanism.")
+
+        # Get Parameters
+        kb_ionMC_out = component.get_parameter(
+            'kb_ionMC_out', part_id=part_id, mechanism=self
+        )
+        ku_ionMC_out = component.get_parameter(
+            'ku_ionMC_out', part_id=part_id, mechanism=self
+        )
+        kb_subMC = component.get_parameter(
+            'kb_subMC', part_id=part_id, mechanism=self
+        )
+        ku_subMC = component.get_parameter(
+            'ku_subMC', part_id=part_id, mechanism=self
+        )
+        kf_trnspMC = component.get_parameter(
+            'kf_trnspMC', part_id=part_id, mechanism=self
+        )
+        kr_trnspMC = component.get_parameter(
+            'kr_trnspMC', part_id=part_id, mechanism=self
+        )
+        kb_prodMC = component.get_parameter(
+            'kb_prodMC', part_id=part_id, mechanism=self
+        )
+        ku_prodMC = component.get_parameter(
+            'ku_prodMC', part_id=part_id, mechanism=self
+        )
+        kb_ionMC_in = component.get_parameter(
+            'kb_ionMC_in', part_id=part_id, mechanism=self
+        )
+        ku_ionMC_in = component.get_parameter(
+            'ku_ionMC_in', part_id=part_id, mechanism=self
+        )
+        k_out = component.get_parameter(
+            'k_out', part_id=part_id, mechanism=self
+                )
+        k_in = component.get_parameter(
+            'k_in', part_id=part_id, mechanism=self
+        )
+
+        # Carrier in a differernt configuration
+        carrier_in = Species(
+            membrane_carrier.name,
+            material_type='protein',
+            compartment=membrane_carrier.compartment,
+            attributes=['in']
+        )
+        membrane_carrier.add_attribute('out')
+
+        # Create empty list
+        ions_in = []
+        ions_out = []
+
+        for ion in self.driving_ion.keys():
+            ion_in = Species(ion,
+                            compartment=substrate_in.compartment,
+            )
+            ion_out = Species(ion,
+                            compartment=substrate_out.compartment,
+            )
+            ions_in.append(ion_in)
+            ions_out.append(ion_out)
+
+        if complex_dict is None:
+            # Create empty dictionary for complexes
+            complex_dict = {}
+            # Complex1
+            for key, ionI, ionO in zip(
+                self.driving_ion.keys(), ions_in, ions_out
+            ):
+                # Parse dictionary for ratios
+                # The string '3:1' into a list ['3', '1']
+                ratio_parts = driving_ion[key].split(':')
+                # Convert the string pieces into integers
+                ion_num = int(ratio_parts[0])
+                sub_num = int(ratio_parts[1])
+
+                # Complex 1
+                complex_dict[f'{key}_out:MC'] = Complex(
+                    [ion_num*[ionO], membrane_carrier],
+                    compartment=membrane_carrier.compartment,
+                )
+                # Complex2
+                complex_dict[f'sub:{key}:MC'] = Complex(
+                    [sub_num*[substrate_out], complex_dict[f'{key}_out:MC']],
+                    compartment=membrane_carrier.compartment,
+                )
+                # Complex4
+                complex_dict[f'{key}_in:MC'] = Complex(
+                    [ion_num*[ionI], carrier_in],
+                    compartment=membrane_carrier.compartment,
+                )
+                # Complex3
+                complex_dict[f'prod:{key}:MC'] = Complex(
+                    [sub_num*[substrate_in], complex_dict[f'{key}_in:MC']],
+                    compartment=membrane_carrier.compartment,
+                )
+
+        # TODO: Test to see if making all the reaction mass-action breaks the
+        # simulation (i suspect it will)
+        # Secondary Active Transport
+        secondaryactive_rxns = [] # Create an empty list
+
+        for key, ionI, ionO in zip(
+            self.driving_ion.keys(), ions_in, ions_out
+        ):
+            # Parse dictionary for ratios
+            # The string '3:1' into a list ['3', '1']
+            ratio_parts = driving_ion[key].split(':')
+            # Convert the string pieces into integers
+            ion_num = int(ratio_parts[0])
+            sub_num = int(ratio_parts[1])
+
+            # ion_out + MC --> ion:MC
+            prop_ionMC_out = GeneralPropensity(
+                f"kb_ionMC_out * {ionO} * {membrane_carrier} *"
+                f"(1 / (1 + exp(-10 * ({ionO} - {ionI}))))",
+                propensity_species=[
+                    ionO, ionI, membrane_carrier
+                ],
+                propensity_parameters=[kb_ionMC_out],
+            )
+            rxn_binding_ionMC = Reaction(
+                        [ion_num*[ionO], membrane_carrier],
+                        [complex_dict[f'{key}_out:MC']],
+                        propensity_type=prop_ionMC_out,
+                    )
+            secondaryactive_rxns.append(rxn_binding_ionMC)
+
+            # ion_out + MC <-- ion:MC
+            rxn_unbinding_ionMC = Reaction.from_massaction(
+                [complex_dict[f'{key}_out:MC']],
+                [ion_num*[ionO], membrane_carrier],
+                k_forward=ku_ionMC_out,
+            )
+            secondaryactive_rxns.append(rxn_unbinding_ionMC)
+
+            # sub_out + ion:MC <--> sub_out:ion:MC
+            rxn_subMC = Reaction.from_massaction(
+                [sub_num*[substrate_out], complex_dict[f'{key}_out:MC']],
+                [complex_dict[f'sub:{key}:MC']],
+                k_forward=kb_subMC,
+                k_reverse=ku_subMC,
+            )
+            secondaryactive_rxns.append(rxn_subMC)
+
+            # sub_out:ion:MC <--> sub_in:ion:MC
+            rxn_transport = Reaction.from_massaction(
+                [complex_dict[f'sub:{key}:MC']],
+                [complex_dict[f'prod:{key}:MC']],
+                k_forward=kf_trnspMC,
+                k_reverse=kr_trnspMC,
+            )
+            secondaryactive_rxns.append(rxn_transport)
+
+            # sub_in:ion:MC <--> sub_in + ion:MC
+            rxn_subrealase = Reaction.from_massaction(
+                [complex_dict[f'prod:{key}:MC']],
+                [complex_dict[f'{key}_in:MC'], sub_num*[substrate_in]],
+                k_forward=kb_prodMC,
+                k_reverse=ku_prodMC,
+            )
+            secondaryactive_rxns.append(rxn_subrealase)
+
+            # ion:MC --> ion_in + MC
+            rxn_ionrealase = Reaction.from_massaction(
+                [complex_dict[f'{key}_in:MC']],
+                 [ion_num*[ionI], carrier_in],
+                k_forward=kb_ionMC_in,
+                # k_reverse=ku_ionMC_in,
+            )
+            secondaryactive_rxns.append(rxn_ionrealase)
+
+            # ion:MC <-- ion_in + MC
+            prop_ionMC_in = GeneralPropensity(
+                f"ku_ionMC_in * {ionI} * {carrier_in} *"
+                f" (1 / (1 + exp(-10 * ({ionI} - {ionO}))))",
+                propensity_species=[ionI, ionO, carrier_in],
+                propensity_parameters=[ku_ionMC_in],
+            )
+            rxn_binding_ionMC2 = Reaction(
+                [ion_num*[ionI], carrier_in],
+                [complex_dict[f'{key}_in:MC']],
+                propensity_type=prop_ionMC_in,
+            )
+            secondaryactive_rxns.append(rxn_binding_ionMC2)
+
+        # MC_in <--> MC
+        config_rxn = Reaction.from_massaction(
+            inputs=[carrier_in],
+            outputs=[membrane_carrier],
+            k_forward=k_out, k_reverse=k_in
+        )
+
+        return secondaryactive_rxns + [config_rxn]
+
+class Transport_SecondaryActive_Antiporter(Mechanism):
+    r"""Secondary active transport mechanism with Michaelis-Menten kinetics.
+
+    Notes
+    -----
+    holder
+
+    """
+
+    def __init__(
+        self,
+        driving_ion=None,
+        name='transport_secondaryactive_antiporter',
+        mechanism_type='transport',
+        parameter_file='mechanisms/transport_parameters.tsv',
+        **kwargs,
+    ):
+        Mechanism.__init__(
+            self, name, mechanism_type, parameter_file=parameter_file
+        )
+        self.driving_ion = driving_ion
+
+    def update_species(
+        self,
+        membrane_carrier,
+        substrate_in,
+        substrate_out,
+        driving_ion=None,
+        complex_dict=None,
+        component=None,
+        part_id=None,
+        **kwargs,
+    ):
+        """Generate species for facilitated transport.
+
+        Creates species for the membrane carrier, substrate, product, and
+        the two intermediate complexes formed during the transport cycle.
+
+        Parameters
+        ----------
+        membrane_carrier : Species
+            The membrane carrier protein that facilitates transport.
+        substrate : Species
+            The substrate species being transported (typically intracellular
+            side).
+        product : Species
+            The product species after transport (typically extracellular
+            side). Usually the same molecular species as substrate but in a
+            different compartment.
+        complex_dict : dict, optional
+            Pre-defined dictionary of complex species with keys 'sub:MC' and
+            'prod:MC'. If None, complexes are automatically created.
+        **kwargs
+            Additional keyword arguments (unused).
+
+        Returns
+        -------
+        list
+            List containing [membrane_carrier, substrate, product,
+            complex_array] where complex_array is a list of two Complex
+            species: [substrate:carrier, product:carrier].
+
+        Notes
+        -----
+        The method creates two complex species representing intermediates in
+        the transport cycle:
+
+        1. sub:MC : substrate:membrane_carrier complex
+        2. prod:MC : product:membrane_carrier complex
+
+        """
+        if driving_ion is None:
+            driving_ion = self.driving_ion
+        if driving_ion is None:
+            raise ValueError("A driving_ion must be provided to the " \
+            "mechanism.")
+
+        carrier_in = Species(
+            membrane_carrier.name,
+            material_type='protein',
+            compartment=membrane_carrier.compartment,
+            attributes=['in']
+        )
+        membrane_carrier.add_attribute('out')
+
+        # Create empty lists
+        ions_in = []
+        ions_out = []
+
+        for ion in self.driving_ion.keys():
+            ion_in = Species(ion,
+                            compartment=substrate_in.compartment,
+            )
+            ion_out = Species(ion,
+                            compartment=substrate_out.compartment,
+            )
+            ions_in.append(ion_in)
+            ions_out.append(ion_out)
+
+        if complex_dict is None:
+            # Create empty dictionary for complexes
+            complex_dict = {}
+            for key, ionI, ionO in zip(
+                self.driving_ion.keys(), ions_in, ions_out
+            ):
+                # Parse dictionary for ratios
+                # the string '3:1' into a list ['3', '1']
+                ratio_parts = driving_ion[key].split(':')
+                # Convert the string pieces into integers
+                ion_num = int(ratio_parts[0])
+                sub_num = int(ratio_parts[1])
+
+                # Complex1
+                complex_dict[f'{key}_out:MC'] = Complex(
+                    [ion_num*[ionO], membrane_carrier],
+                    compartment=membrane_carrier.compartment,
+                )
+                # Complex2
+                complex_dict[f'{key}_in:MC'] = Complex(
+                    [ion_num*[ionI], carrier_in],
+                    compartment=membrane_carrier.compartment,
+                )
+                # Complex3
+                complex_dict['sub:MC'] = Complex(
+                    [sub_num*[substrate_in], carrier_in],
+                    compartment=membrane_carrier.compartment,
+                )
+                # Complex4
+                complex_dict['prod:MC'] = Complex(
+                    [sub_num*[substrate_out], membrane_carrier],
+                    compartment=membrane_carrier.compartment,
+                )
+
+        # Make dictionary into array
+        complex_array = [value for value in complex_dict.values()]
+
+        return [membrane_carrier, carrier_in, substrate_in,
+                substrate_out] + ions_in + ions_out + complex_array
+
+    def update_reactions(
+        self,
+        membrane_carrier,
+        substrate_in,
+        substrate_out,
+        driving_ion=None,
+        complex_dict=None,
+        component=None,
+        part_id=None,
+        **kwargs,
+    ):
+        """Generate reactions for facilitated transport.
+
+        Creates four reactions representing the complete transport cycle:
+        substrate binding, substrate unbinding, conformational change
+        (transport), and product release.
+
+        Parameters
+        ----------
+        membrane_carrier : Species
+            The membrane carrier protein facilitating transport.
+        substrate : Species
+            The substrate species being transported.
+        product : Species
+            The product species after transport.
+        complex_dict : dict, optional
+            Pre-defined dictionary of complex species. If None, complexes
+            are automatically created using the same logic as in
+            update_species.
+        component : Component
+            Component containing parameter values. Required for parameter
+            lookup.
+        part_id : str
+            Identifier for parameter lookup in the component's parameter
+            database. Required for parameter lookup.
+        **kwargs
+            Additional keyword arguments (unused).
+
+        Returns
+        -------
+        list of Reaction
+            List of four reactions: [substrate_binding, substrate_unbinding,
+            transport_step, product_release].
+
+        Raises
+        ------
+        AttributeError
+            If component or part_id is None (required for parameter lookup).
+
+        Notes
+        -----
+        The reaction scheme follows this pathway:
+
+        1. MC + Sub --> MC:Sub (GeneralPropensity with Heaviside function
+           using 'kb_subMC')
+        2. MC:Sub --> MC + Sub (irreversible, rate: 'ku_subMC')
+        3. MC:Sub --> MC:Prod (conformational change, rate: 'k_trnspMC')
+        4. MC:Prod --> MC + Prod (irreversible, rate: 'ku_prodMC')
+
+        The initial binding step uses a GeneralPropensity with a Heaviside
+        function to enforce concentration gradient-driven directionality.
+        The Heaviside function ensures transport only occurs when substrate
+        concentration exceeds product concentration.
+
+        """
+        if driving_ion is None:
+            driving_ion = self.driving_ion
+        if driving_ion is None:
+            raise ValueError("A driving_ion must be provided to the " \
+            "mechanism.")
+
+        # Get Parameters
+        kb_ionMC_out = component.get_parameter(
+            'kb_ionMC_out', part_id=part_id, mechanism=self
+        )
+        ku_ionMC_out = component.get_parameter(
+            'ku_ionMC_out', part_id=part_id, mechanism=self
+        )
+        kf_ionX = component.get_parameter(
+            'kf_ionX', part_id=part_id, mechanism=self
+        )
+        kr_ionX = component.get_parameter(
+            'kr_ionX', part_id=part_id, mechanism=self
+        )
+        kb_subMC = component.get_parameter(
+            'kb_subMC', part_id=part_id, mechanism=self
+        )
+        ku_subMC = component.get_parameter(
+            'ku_subMC', part_id=part_id, mechanism=self
+        )
+        kf_trnspMC = component.get_parameter(
+            'kf_trnspMC', part_id=part_id, mechanism=self
+        )
+        kr_trnspMC = component.get_parameter(
+            'kr_trnspMC', part_id=part_id, mechanism=self
+        )
+        kb_prodMC = component.get_parameter(
+            'kb_prodMC', part_id=part_id, mechanism=self
+        )
+        ku_prodMC = component.get_parameter(
+            'ku_prodMC', part_id=part_id, mechanism=self
+        )
+        kb_ionMC_in = component.get_parameter(
+            'kb_ionMC_in', part_id=part_id, mechanism=self
+        )
+        ku_ionMC_in = component.get_parameter(
+            'ku_ionMC_in', part_id=part_id, mechanism=self
+        )
+
+        # Carrier in a differernt configuration
+        carrier_in = Species(
+            membrane_carrier.name,
+            material_type='protein',
+            compartment=membrane_carrier.compartment,
+            attributes=['in']
+        )
+        membrane_carrier.add_attribute('out')
+
+        # Create empty list
+        ions_in = []
+        ions_out = []
+
+        for ion in self.driving_ion.keys():
+            ion_in = Species(ion,
+                            compartment=substrate_in.compartment,
+            )
+            ion_out = Species(ion,
+                            compartment=substrate_out.compartment,
+            )
+            ions_in.append(ion_in)
+            ions_out.append(ion_out)
+
+        if complex_dict is None:
+            # Create empty dictionary for complexes
+            complex_dict = {}
+            # Complex1
+            for key, ionI, ionO in zip(
+                self.driving_ion.keys(), ions_in, ions_out
+            ):
+                # Parse dictionary for ratios
+                # The string '3:1' into a list ['3', '1']
+                ratio_parts = driving_ion[key].split(':')
+                # Convert the string pieces into integers
+                ion_num = int(ratio_parts[0])
+                sub_num = int(ratio_parts[1])
+
+                # Complex1
+                complex_dict[f'{key}_out:MC'] = Complex(
+                    [ion_num*[ionO], membrane_carrier],
+                    compartment=membrane_carrier.compartment,
+                )
+                # Complex2
+                complex_dict[f'{key}_in:MC'] = Complex(
+                    [ion_num*[ionI], carrier_in],
+                    compartment=membrane_carrier.compartment,
+                )
+                # Complex3
+                complex_dict['sub:MC'] = Complex(
+                    [sub_num*[substrate_in], carrier_in],
+                    compartment=membrane_carrier.compartment,
+                )
+                # Complex4
+                complex_dict['prod:MC'] = Complex(
+                    [sub_num*[substrate_out], membrane_carrier],
+                    compartment=membrane_carrier.compartment,
+                )
+
+        # TODO: Test to see if making all the reaction mass-action breaks the
+        # simulation (i suspect it will)
+        # Secondary Active Transport
+        secondaryactive_rxns = [] # Create an empty list
+
+        for key, ionI, ionO in zip(
+            self.driving_ion.keys(), ions_in, ions_out
+        ):
+            # Parse dictionary for ratios
+            # The string '3:1' into a list ['3', '1']
+            ratio_parts = driving_ion[key].split(':')
+            # Convert the string pieces into integers
+            ion_num = int(ratio_parts[0])
+            sub_num = int(ratio_parts[1])
+
+            # ion_out + MC <--> ion_out:MC
+            prop_ionMC_out = GeneralPropensity(
+                f"kb_ionMC_out * {ionO} * {membrane_carrier} *"
+                f"(1 / (1 + exp(-10 * ({ionO} - {ionI}))))",
+                propensity_species=[
+                    ionO, ionI, membrane_carrier
+                ],
+                propensity_parameters=[kb_ionMC_out],
+            )
+            
+            rxn_binding_ionMC = Reaction( 
+                [ion_num*[ionO], membrane_carrier],
+                [complex_dict[f'{key}_out:MC']],
+                propensity_type=prop_ionMC_out,
+            )
+            secondaryactive_rxns.append(rxn_binding_ionMC)
+
+            # ion_out + MC <-- ion_out:MC
+            rxn_unbinding_ionMC = Reaction.from_massaction( 
+                [complex_dict[f'{key}_out:MC']],
+                [ion_num*[ionO], membrane_carrier],
+                k_forward=ku_ionMC_out,
+            )
+            secondaryactive_rxns.append(rxn_unbinding_ionMC)
 
 
-class Primary_Active_Transport_MM(Mechanism):
+            # ion_out:MC_out <--> ion_in:MC_in
+            rxn_ionx = Reaction.from_massaction(
+                [complex_dict[f'{key}_out:MC']],
+                [complex_dict[f'{key}_in:MC']],
+                k_forward=kf_ionX,
+                k_reverse=kr_ionX,
+            )
+            secondaryactive_rxns.append(rxn_ionx)
+
+            # ion_in:MC_in --> ion_in + MC_in
+            rxn_ionMC_inF = Reaction.from_massaction(
+                [complex_dict[f'{key}_in:MC']],
+                [ion_num*[ionI], carrier_in],
+                k_forward=kb_ionMC_in,
+            )
+            secondaryactive_rxns.append(rxn_ionMC_inF)
+            # ion_in:MC_in <-- ion_in + MC_in
+            prop_ionMC_in = GeneralPropensity(
+                f"ku_ionMC_in * {ionI} * {carrier_in} *"
+                f" (1 / (1 + exp(-10 * ({ionI} - {ionO}))))",
+                propensity_species=[ionI, ionO, carrier_in],
+                propensity_parameters=[ku_ionMC_in],
+            )
+            rxn_ionMC_inR = Reaction(
+                [ion_num*[ionI], carrier_in],
+                [complex_dict[f'{key}_in:MC']],
+                propensity_type=prop_ionMC_in,
+            )
+            secondaryactive_rxns.append(rxn_ionMC_inR)
+
+            # sub_in + MC_in <--> sub_in:MC_in
+            rxn_subMC = Reaction.from_massaction(
+                [sub_num*[substrate_in], carrier_in],
+                [complex_dict['sub:MC']],
+                k_forward=kb_subMC,
+                k_reverse=ku_subMC,
+            )
+            secondaryactive_rxns.append(rxn_subMC)
+
+            # sub_in:MC_in <--> sub_out:MC_out
+            rxn_transport = Reaction.from_massaction(
+                [complex_dict['sub:MC']],
+                [complex_dict['prod:MC']],
+                k_forward=kf_trnspMC,
+                k_reverse=kr_trnspMC,
+            )
+            secondaryactive_rxns.append(rxn_transport)
+
+            # sub_out:MC_out <--> sub_out + MC_out
+            rxn_prodMC = Reaction.from_massaction(
+                [complex_dict['prod:MC']],
+                [sub_num*[substrate_out], membrane_carrier],
+                k_forward=kb_prodMC,
+                k_reverse=ku_prodMC,
+            )
+            secondaryactive_rxns.append(rxn_prodMC)
+
+        return secondaryactive_rxns
+
+class Transport_PrimaryActive_ABCexporter(Mechanism):
     r"""Primary active transport mechanism with ATP-dependent pumping.
 
     A 'transport' mechanism that models primary active transport where
@@ -1023,7 +1876,7 @@ class Primary_Active_Transport_MM(Mechanism):
 
     Parameters
     ----------
-    name : str, default='active_membrane_protein_transport'
+    name : str, default='transport_primaryactive_abcexporter'
         Name identifier for this mechanism instance.
     mechanism_type : str, default='transport'
         Type classification of this mechanism.
@@ -1110,7 +1963,7 @@ class Primary_Active_Transport_MM(Mechanism):
 
     def __init__(
         self,
-        name='active_membrane_protein_transport',
+        name='transport_primaryactive_abcexporter',
         mechanism_type='transport',
         parameter_file='mechanisms/transport_parameters.tsv',
         **kwargs,
@@ -1186,22 +2039,27 @@ class Primary_Active_Transport_MM(Mechanism):
             # Create empty dictionary for complexes
             complex_dict = {}
             # Complex1
-            complex_dict['Pump:Sub'] = Complex(
+            complex_dict['MP:sub'] = Complex(
                 [substrate, membrane_pump],
                 compartment=membrane_pump.compartment,
             )
             # Complex2
-            complex_dict['Pump:Sub:ATP'] = Complex(
-                [nATP * [energy], complex_dict['Pump:Sub']],
+            complex_dict['MP:sub:ATP'] = Complex(
+                [nATP * [energy], complex_dict['MP:sub']],
                 compartment=membrane_pump.compartment,
             )
             # Complex3
-            complex_dict['Pump:Prod:ATP'] = Complex(
+            complex_dict['MP:prod:ATP'] = Complex(
                 [nATP * [energy], product, membrane_pump],
                 compartment=membrane_pump.compartment,
             )
             # Complex4
-            complex_dict['Pump:ADP'] = Complex(
+            complex_dict['MP:ATP'] = Complex(
+                [nATP * [energy], membrane_pump],
+                compartment=membrane_pump.compartment,
+            )
+            # Complex5
+            complex_dict['MP:ADP'] = Complex(
                 [nATP * [waste], membrane_pump],
                 compartment=membrane_pump.compartment,
             )
@@ -1214,9 +2072,7 @@ class Primary_Active_Transport_MM(Mechanism):
             substrate,
             product,
             energy,
-            waste,
-            complex_array,
-        ]
+            waste] + complex_array
 
     def update_reactions(
         self,
@@ -1310,14 +2166,23 @@ class Primary_Active_Transport_MM(Mechanism):
         ku_subMPnATP = component.get_parameter(
             'ku_subMPnATP', part_id=part_id, mechanism=self
         )
-        k_trnspMP = component.get_parameter(
-            'k_trnspMP', part_id=part_id, mechanism=self
+        kf_trnspMP = component.get_parameter(
+            'kf_trnspMP', part_id=part_id, mechanism=self
+        )
+        kr_trnspMP = component.get_parameter(
+            'kr_trnspMP', part_id=part_id, mechanism=self
         )
         ku_prodMP = component.get_parameter(
             'ku_prodMP', part_id=part_id, mechanism=self
         )
+        kb_prodMP = component.get_parameter(
+            'kb_prodMP', part_id=part_id, mechanism=self
+        )
         ku_MP = component.get_parameter(
             'ku_MP', part_id=part_id, mechanism=self
+        )
+        kb_MP = component.get_parameter(
+            'kb_MP', part_id=part_id, mechanism=self
         )
 
         nATP = membrane_pump.ATP
@@ -1327,25 +2192,29 @@ class Primary_Active_Transport_MM(Mechanism):
             complex_dict = {}
 
             # Complex1
-            complex_dict['Pump:Sub'] = Complex(
+            complex_dict['MP:sub'] = Complex(
                 [substrate, membrane_pump],
                 compartment=membrane_pump.compartment,
             )
-            complex1 = complex_dict['Pump:Sub']
+            complex1 = complex_dict['MP:sub']
 
             # Complex2
-            complex_dict['Pump:Sub:ATP'] = Complex(
-                [nATP * [energy], complex_dict['Pump:Sub']],
+            complex_dict['MP:sub:ATP'] = Complex(
+                [nATP * [energy], complex_dict['MP:sub']],
                 compartment=membrane_pump.compartment,
             )
             # Complex3
-            complex_dict['Pump:Prod:ATP'] = Complex(
+            complex_dict['MP:prod:ATP'] = Complex(
                 [nATP * [energy], product, membrane_pump],
                 compartment=membrane_pump.compartment,
             )
-
             # Complex4
-            complex_dict['Pump:ADP'] = Complex(
+            complex_dict['MP:ATP'] = Complex(
+                [nATP * [energy], membrane_pump],
+                compartment=membrane_pump.compartment,
+            )
+            # Complex5
+            complex_dict['MP:ADP'] = Complex(
                 [nATP * [waste], membrane_pump],
                 compartment=membrane_pump.compartment,
             )
@@ -1358,62 +2227,74 @@ class Primary_Active_Transport_MM(Mechanism):
             propensity_species=[substrate, membrane_pump],
             propensity_parameters=[kb_subMP],
         )
-        binding_rxn1 = Reaction(
+        rxn1_SubBinding = Reaction(
             [substrate, membrane_pump],
-            [complex_dict['Pump:Sub']],
+            [complex_dict['MP:sub']],
             propensity_type=prop_subMP,
         )
 
-        unbinding_rxn1 = Reaction.from_massaction(
-            inputs=[complex_dict['Pump:Sub']],
+        rxn1_SubUnbinding = Reaction.from_massaction(
+            inputs=[complex_dict['MP:sub']],
             outputs=[substrate, membrane_pump],
             k_forward=ku_subMP,
         )
 
         # Sub:MP + E <--> Sub:MP:E
-
         prop_subMPnATP = GeneralPropensity(
             f"kb_subMPnATP*{complex1}*{energy}*Heaviside({complex1})",
             propensity_species=[complex1, energy],
             propensity_parameters=[kb_subMPnATP],
         )
-        binding_rxn2 = Reaction(
+        rxn2_ATPbinding = Reaction(
             [complex1, nATP * [energy]],
-            [complex_dict['Pump:Sub:ATP']],
+            [complex_dict['MP:sub:ATP']],
             propensity_type=prop_subMPnATP,
         )
 
-        unbinding_rxn2 = Reaction.from_massaction(
-            inputs=[complex_dict['Pump:Sub:ATP']],
-            outputs=[complex_dict['Pump:Sub'], nATP * [energy]],
+        rxn2_ATPunbinding = Reaction.from_massaction(
+            inputs=[complex_dict['MP:sub:ATP']],
+            outputs=[complex_dict['MP:sub'], nATP * [energy]],
             k_forward=ku_subMPnATP,
         )
 
-        # Sub:MP:E --> Prod:MP:E
-        transport_rxn = Reaction.from_massaction(
-            inputs=[complex_dict['Pump:Sub:ATP']],
-            outputs=[complex_dict['Pump:Prod:ATP']],
-            k_forward=k_trnspMP,
+        # Sub:MP:E <--> Prod:MP:E
+        rxn3_transport = Reaction.from_massaction(
+            inputs=[complex_dict['MP:sub:ATP']],
+            outputs=[complex_dict['MP:prod:ATP']],
+            k_forward=kf_trnspMP,
+            k_reverse=kr_trnspMP
         )
-        # Prod:MP:E--> Prod+MP:W
-        unbinding_rxn3 = Reaction.from_massaction(
-            inputs=[complex_dict['Pump:Prod:ATP']],
-            outputs=[complex_dict['Pump:ADP'], product],
+
+        # Prod:MP:E <--> Prod + MP:E
+        rxn4_SubRelease = Reaction.from_massaction(
+            inputs=[complex_dict['MP:prod:ATP']],
+            outputs=[complex_dict['MP:ATP'], product],
             k_forward=ku_prodMP,
+            k_reverse=kb_prodMP,
         )
-        # MP:W --> MP+W
-        unbinding_rxn4 = Reaction.from_massaction(
-            inputs=[complex_dict['Pump:ADP']],
-            outputs=[nATP * [waste], membrane_pump],
+
+        # MP:E --> MP:W
+        rxn5_atpHydro = Reaction.from_massaction(
+            inputs=[complex_dict['MP:ATP']],
+            outputs=[complex_dict['MP:ADP']],
             k_forward=ku_MP,
         )
 
+        # MP:W <--> MP + W
+        rxn6_reset = Reaction.from_massaction(
+            inputs=[complex_dict['MP:ADP']],
+            outputs=[nATP * [waste], membrane_pump],
+            k_forward=ku_MP,
+            k_reverse=kb_MP,
+        )
+
         return [
-            binding_rxn1,
-            unbinding_rxn1,
-            binding_rxn2,
-            unbinding_rxn2,
-            transport_rxn,
-            unbinding_rxn3,
-            unbinding_rxn4,
+            rxn1_SubBinding,
+            rxn1_SubUnbinding,
+            rxn2_ATPbinding,
+            rxn2_ATPunbinding,
+            rxn3_transport,
+            rxn4_SubRelease,
+            rxn5_atpHydro,
+            rxn6_reset,
         ]

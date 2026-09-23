@@ -2,7 +2,7 @@
 venv/*
 .eggs/*
 biocrnpyler.egg-info/
-
+biocrnpyler/_version.py
 __pycache__/*
 *.pyc
 
@@ -76,3 +76,5 @@ docs/build/
 
 ### Emacs backup files
 *~
+TAGS
+.DS_Store

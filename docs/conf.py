@@ -10,21 +10,40 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
+import inspect
 import os
+import re
 import sys
+import sphinx
+
 sys.path.insert(0, os.path.abspath('..'))
 
+# Use the readthedocs.org theme if installed
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+
+if not on_rtd:  # only import and set the theme if we're building docs locally
+    try:
+        import sphinx_rtd_theme  # noqa: F401
+
+        html_theme = 'sphinx_rtd_theme'
+    except ImportError:
+        html_theme = 'default'
 
 # -- Project information -----------------------------------------------------
 
 project = 'BioCRNPyler'
 copyright = '2025, Build-a-Cell'
-author = 'William Poole, Ayush Pandey, Andrey Shur, Zoltan Tuza, Richard M. Murray'
+author = """Zoila Jurado, William Poole, Ayush Pandey, Andrey Shur, Zoltan
+    Tuza, Richard M. Murray"""
 
-# The short X.Y version
-version = '1.3'
-# The full version, including alpha/beta/rc tags
-release = '1.3.0'
+# Import the package
+import biocrnpyler
+from setuptools_scm import get_version
+
+release = get_version(root="..", relative_to=__file__)
+
+# Short X.Y
+version = ".".join(release.split(".", 2)[:2])
 
 
 # -- General configuration ---------------------------------------------------
@@ -34,12 +53,18 @@ release = '1.3.0'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.linkcode',
+    'sphinx.ext.doctest',
+    'sphinx_math_dollar',
+    'sphinx.ext.mathjax',
     'sphinx.ext.autosummary',
+    'sphinx.ext.napoleon',
     'sphinx_copybutton',
     'sphinx_toggleprompt',
     'nbsphinx',
     'nbsphinx_link',
-    'recommonmark'
+    'recommonmark',
+    'numpydoc',
 ]
 
 source_suffix = ['.rst']
@@ -50,10 +75,14 @@ autosummary_generate = True
 # list of autodoc directive flags that should be automatically applied
 # to all autodoc directives.
 autodoc_default_options = {
-    'members': True,
-    'inherited-members': True,
-    'exclude-members': '__init__, __weakref__, __repr__, __str__'
+    #    'members': True,
+    #    'inherited-members': True,
+    #    'special-members': True,
+    'exclude-members': '__init__, __weakref__, __repr__, __str__, __hash__',
 }
+
+# For classes, include both the class docstring and the init docstring
+autoclass_content = 'class'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -61,8 +90,29 @@ templates_path = ['_templates']
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = []
+exclude_patterns = ['_build', '_autogen_*.rst']
 
+# We ignore _autogen_*.rst since it is included in library.rst, but we
+# need to make sure to process autosummary comments from those files...
+autosummary_generate = [
+    'library.rst', '_autogen_components.rst', '_autogen_mechanisms.rst',
+    '_autogen_mixtures.rst'
+]
+
+# The name of the Pygments (syntax highlighting) style to use.
+pygments_style = 'sphinx'
+
+# This config value contains the locations and names of other projects that
+# should be linked to in this documentation.
+intersphinx_mapping = {
+    'scipy': ('https://docs.scipy.org/doc/scipy', None),
+    'numpy': ('https://numpy.org/doc/stable', None),
+    'matplotlib': ('https://matplotlib.org/stable/', None),
+    'python': ('https://docs.python.org/3/', None),
+}
+
+# Don't generate external links to (local) keywords
+intersphinx_disabled_reftypes = ["py:keyword"]
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -71,7 +121,233 @@ exclude_patterns = []
 #
 html_theme = 'sphinx_rtd_theme'
 
+# Set the default role to render items in backticks as code
+default_role = 'py:obj'
+
+# Use mathjax for formatting equations
+sphinx_version = tuple(int(x) for x in sphinx.__version__.split('.')[:2])
+if sphinx_version >= (4, 0):
+    mathjax3_config = {
+        "tex": {
+            "inlineMath": [['\\(', '\\)']],
+            "displayMath": [["\\[", "\\]"]],
+        }
+    }
+else:
+    mathjax_config = {
+        'tex2jax': {
+            'inlineMath': [["\\(", "\\)"]],
+            'displayMath': [["\\[", "\\]"]],
+        },
+    }
+
+# Skip prompts when using copy button
+copybutton_prompt_text = r'>>> |\.\.\. '
+copybutton_prompt_is_regexp = True
+
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
+
 html_static_path = ['_static']
+html_css_files = ['css/custom.css']
+
+# Don't automatically show all members of class in Methods & Attributes section
+numpydoc_show_class_members = False
+
+# Don't create a Sphinx TOC for the lists of class methods and attributes
+numpydoc_class_members_toctree = False
+
+# Leave Attributes documentation right after Parameters
+napoleon_use_ivar = False
+napoleon_custom_sections = [
+    ('Attributes', 'params_style'),
+]
+
+# Aliases to allow objects to avoid including module names
+napoleon_use_param = True
+napoleon_preprocess_types = True  # convert refs in types to std form
+napoleon_type_aliases = dict()
+for name, obj in inspect.getmembers(biocrnpyler):
+    if inspect.isclass(obj):
+        parent_path = os.path.dirname(obj.__module__.replace('.', os.sep))
+        parent_subpkg = parent_path.replace(os.sep, '.')
+        napoleon_type_aliases[name] = f":class:`~{parent_subpkg}.{name}`"
+
+# Set autodoc aliases here to avoid recompiling everything every time
+autodoc_type_aliases = {
+    k: napoleon_type_aliases[k] for k in sorted(napoleon_type_aliases)
+}
+
+#
+# Docstring pre-processing
+#
+
+eqn_substitutions = [
+    (r'<-->', r'\\rightleftharpoons'),
+    (r'-->', r'\\rightarrow'),
+    (r'\.\.\.', r'\\dots'),
+    (r':', r'\\mathord{:}'),
+    (r'\{\}', r'\\emptyset'),
+    (r' >> ', r' \\gg '),
+    (r' << ', r' \\ll '),
+    (r"'([\w -]+)'", r'{\\text{\1}}'),  # literal text (incl _, -)
+    (r"\[([\w -]+)\]", r'[\\text{\1}]'),  # concentration
+    (r'^[ ]+', r''),  # remove leading blanks
+    (r'\$[ ]+', r'$'),  # remove blanks after $
+    (r'&    ', r'& \\qquad'),  # indented text
+]
+
+txt_substitutions = [
+    (r'<-->', r'$\\rightleftharpoons$'),
+    (r'-->', r'$\\rightarrow$'),
+    (r'\{\}', r'$\\emptyset$'),
+    (r' >> ', r' $\\gg$ '),
+    (r' << ', r' $\\ll$ '),
+]
+
+
+def _process_string(s, subs):
+    for pattern, repl in subs:
+        s = re.sub(pattern, repl, s)
+    return s
+
+
+def preprocess_docstring(app, what, name, obj, options, lines):
+    """
+    Preprocess docstrings before Sphinx renders them.
+
+    Parameters
+    ----------
+    app : Sphinx application object
+    what : the type of object (e.g., 'module', 'class', 'function')
+    name : the fully qualified name of the object
+    obj : the object itself
+    options : the options given to the directive
+    lines : the lines of the docstring (list of strings, modified in-place)
+    """
+    in_equation = False
+    for i, line in enumerate(lines):
+        # Keep track of whether we are in "math" mode
+        eqn_iter = re.finditer(r'\$[^$]+\$', line)  # $...$ or $$...$$
+        eqn_list = list(eqn_iter)
+        if re.match(r'^[ ]*\$\$$', line):  # $$ on its own line
+            in_equation = not in_equation
+
+        if in_equation:
+            # Process everything in this line
+            line = _process_string(line, eqn_substitutions)
+        elif eqn_list:
+            # Process each equation separately
+            line, offset = '', 0
+            for m in eqn_list:
+                # Include the text up to this point
+                line += _process_string(
+                    lines[i][offset : m.start()], txt_substitutions
+                )
+                offset = m.end()
+
+                # Process the text in the equation
+                eqn = _process_string(m.group(0), eqn_substitutions)
+                line += eqn
+
+            # Add the suffix
+            line += _process_string(
+                lines[i][eqn_list[-1].end() :], txt_substitutions
+            )
+        else:
+            line = _process_string(line, txt_substitutions)
+
+        lines[i] = line
+
+
+def setup(app):
+    """Connect the preprocessing function to Sphinx."""
+    app.connect('autodoc-process-docstring', preprocess_docstring)
+
+
+# -----------------------------------------------------------------------------
+# Source code links (from numpy)
+# -----------------------------------------------------------------------------
+
+import inspect
+from os.path import dirname, relpath
+
+
+def linkcode_resolve(domain, info):
+    """
+    Determine the URL corresponding to Python object
+    """
+    # print(f"{domain=}, {info=}")
+    if domain != 'py':
+        # print("  domain != 'py'")
+        return None
+
+    modname = info['module']
+    fullname = info['fullname']
+
+    submod = sys.modules.get(modname)
+    if submod is None:
+        # print("  submod is None")
+        return None
+
+    obj = submod
+    for part in fullname.split('.'):
+        try:
+            obj = getattr(obj, part)
+        except Exception:
+            # print("  getattr Exception")
+            return None
+
+    # strip decorators, which would resolve to the source of the decorator
+    # possibly an upstream bug in getsourcefile, bpo-1764286
+    try:
+        unwrap = inspect.unwrap
+    except AttributeError:
+        pass
+    else:
+        obj = unwrap(obj)
+
+    # Get the filename for the function
+    try:
+        fn = inspect.getsourcefile(obj)
+    except Exception:
+        fn = None
+    if not fn:
+        # print("  not fn")
+        return None
+
+    # Ignore re-exports as their source files are not within the numpy repo
+    module = inspect.getmodule(obj)
+    if module is not None and not module.__name__.startswith('biocrnpyler'):
+        # print("module is not None but doesnt start with biocrnpyler")
+        return None
+
+    try:
+        source, lineno = inspect.getsourcelines(obj)
+    except Exception:
+        lineno = None
+
+    fn = relpath(fn, start=dirname(biocrnpyler.__file__))
+
+    if lineno:
+        linespec = '#L%d-L%d' % (lineno, lineno + len(source) - 1)
+    else:
+        linespec = ''
+
+    base_url = "https://github.com/BuildACell/BioCRNPyler/blob/"
+    if release != version:  # development release
+        # TODO: replace 'refactor-modules' with 'master' -> replaced with main
+        # print("  --> ", base_url + "refactor-modules/control/%s%s" % (fn, linespec))
+        return base_url + 'main/biocrnpyler/%s%s' % (fn, linespec)
+    else:  # specific version
+        return base_url + '%s/biocrnpyler/%s%s' % (version, fn, linespec)
+
+
+# -- Options for doctest ----------------------------------------------
+
+# Import biocrnpyler as bcp
+doctest_global_setup = """
+import numpy as np
+import biocrnpyler as bcp
+"""

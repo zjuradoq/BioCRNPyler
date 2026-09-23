@@ -1,0 +1,48 @@
+# binding_parameters.tsv - default parameters for binding mechanisms
+#
+# This file contains default parameters used by the mechanisms.binding
+# classes.  The parameters are set for very fast binding rates, but with 90%
+# steady state binding (so low K_d).
+mechanism_id	part_id	param_name	param_val	units	comments
+
+#
+# One step (and cooperative) binding
+#
+
+# The first step in various binding mechanisms is the initial binding
+# of the substrates.  We define binding and unbinding reaction rates
+# here for two different situations: a chemical complex and a
+# regulator (activator or repressor) binding to DNA.
+#
+# We use TetR and aTc as the "generic" case and use the rate constants
+# from the following paper:
+#
+#   [SK07] V. Sotiropoulos and Y. N. Kaznessis.  "Synthetic
+#   Tetracycline-Inducible Regulatory Networks: Computer-Aided Design
+#   of Dynamic Phenotypes."  BMC Systems Biology 1, no. 1 (2007): 7.
+#   https://doi.org/10.1186/1752-0509-1-7.
+#
+# Table 1 presents rates for a large set of reactions (using Tc instead
+# of aTc) in units of (M s)^{-1} (converted to (uM s)^{-1} here by
+# multiplying by 1e-6.
+
+# Chemical complex binding (aTc to TetR)
+binding	chemical_complex	kb	2.00	/uM/sec	SK07, Table 1, R6
+binding	chemical_complex	ku	0.001	/sec	SK07, Table 1, R8
+
+# Protein-DNA binding (TetR2 to DNA)
+binding	dna_protein	kb	2.86	/uM/sec	SK07, Table 1, R23
+binding	dna_protein	ku	5.11e-4	/sec	SK07, Table 1, R24
+
+# Default cooperativity
+binding		cooperativity	2		number of binding modules to bind simultaneously
+
+# Two step cooperative binding:
+#   R1 (oligimerization): 2TetR --> TetR2)
+#   R2 (DNA binding): TetR2 to DNA)
+two_step_cooperative_binding		kb1	1.0e3	/uM/sec	SK07, Table 1, Reaction 2
+two_step_cooperative_binding		ku1	10	/sec	SK07, Table 1, Reaction 3
+two_step_cooperative_binding	chemical_complex	kb2	2.00	/uM/sec	SK07, Table 1, Reaction 6
+two_step_cooperative_binding	chemical_complex	ku2	0.001	/sec	SK07, Table 1, Reaction 8
+two_step_cooperative_binding	dna_protein	kb2	2.86	/uM/sec	SK07, Table 1, Reaction 23
+two_step_cooperative_binding	dna_protein	ku2	5.11e-4	/sec	SK07, Table 1, Reaction 24

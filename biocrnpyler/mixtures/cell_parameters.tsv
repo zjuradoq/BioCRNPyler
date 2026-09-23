@@ -1,0 +1,50 @@
+# cell_parameters.tsv - default parameters for dilution mixtures (cells)
+#
+# This file contains default parameters use by mixtures.cell classes. The
+# parameters are chosen to match the gene expression rates in E. coli
+# under exponential growth.
+#
+mechanism	part_id	param_name	value	units	comments
+
+# Concentration using BioNumbers for E. coli, assuming volume of 1 um^3
+initial concentration	e_coli	RNAP	5	uM	~3,000 RNAP molecules (BioNumbers 106199)
+initial concentration	e_coli	Ribo	100	uM	~65,000 Ribosomes per cell (BioNumbers 108604)
+initial concentration	e_coli	RNase	2.5	uM	~1,500 RNase molecules (BioNumbers 111532)
+
+# Transcription and translation rates per unit of "activated" DNA
+transcription		ktx	0.05	/sec	50 nt/s and transcript length of 1000 nt
+translation		ktl	0.05	/sec	15 aa/s and protein length of 300 aa
+
+# Dilution and degradation, based on E. coli (Singhal et al, 20xx, Table S2)
+dilution		kdil	5.78E-4	/sec	half life of ~20 minutes (E. coli doubling time)
+
+# RNA degradation, based on E. coli
+rna_degradation_mm		kdeg	1.3E-4	/sec	degradation rate of bound RNAase (half life of 2 min)
+rna_degradation_mm		kb	1	/sec/uM	binding of RNAase to RNA (fast)
+rna_degradation_mm		ku	1.25E-06	/sec	unbinding of RNAase to RNA (slow)
+
+# "Background" usage of resources
+#
+# The 'cellular_processes' parameter is used to reflect the utilization of
+# resources by endogenous DNA in E. coli.  The `TxTlDilutionMixture`
+# implements this by creating a DNA assembly called 'cellular_processes',
+# whose initial concentration reflects the number of expressing genes in the
+# cell.  The rates of transcription and translation are hard coded into the
+# mixture (and probably need to be changed at some point).
+# 
+initial concentration	e_coli	cellular_processes	5	uM	~3000 genes in E. coli assuming weak loading on all of them
+
+# For simplified gene expression model, we assume that DNA goes directly to
+# protein and so 'kexpress' captures the steady state production rate:
+#
+# TODO: CHECK!! (see extract_parameters.tsv)
+#
+# d[RNA]/dt = ktx * [DNA] - kdeg * [RNA] * [RNAse] - kdil * [RNA]
+# => [RNA]_ss = (ktx / (kdeg * [RNAse] + kdil)) * [DNA]
+#
+# d[protein]/dt = ktl * [RNA] - kdil * [protein]
+#               = kexpress * [DNA] - kdil * [protein]
+#
+# kexpress = ktx * ktl / (kdeg * [RNAse] + kdil)
+# 
+gene_expression		kexpress	1.89	/sec

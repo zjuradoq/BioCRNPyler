@@ -5,13 +5,14 @@
 # See LICENSE file in the project root directory for details.
 
 import logging
-import warnings
 from random import randint
 from typing import List
 from warnings import warn
-from .general import parameter_to_value
-from ..utils.units import create_new_unit_definition
+
 import libsbml  # type: ignore
+
+from ..utils.units import create_new_unit_definition, normalize_unit_id
+from .general import parameter_to_value
 
 # Reaction ID number (global)
 reaction_id = 0
@@ -20,39 +21,48 @@ logger = logging.getLogger(__name__)
 
 
 def create_sbml_model(
-    compartment_id="default",
-    time_units="second",
-    extent_units="mole",
-    substance_units="mole",
-    length_units="metre",
-    area_units="square_metre",
-    volume_units="litre",
+    compartment_id='default',
+    time_units='second',
+    extent_units='mole',
+    substance_units='mole',
+    length_units='metre',
+    area_units='square_metre',
+    volume_units='litre',
     volume=1e-6,
     model_id=None,
     **kwargs,
 ):
-    """Creates an SBML Level 3 Version 2 model with some fixed standard settings.
+    """Creates SBML Level 3 Version 2 model with some fixed standard settings.
+
     Refer to python-libsbml for more information on SBML API.
-    :param compartment_id:
-    :param time_units:
-    :param extent_units:
-    :param substance_units:
-    :param length_units:
-    :param area_units:
-    :param volume_units:
-    :param volume:
-    :param model_id:
-    :return:  the SBMLDocument and the Model object as a tuple
+
+    Parameters
+    ----------
+    compartment_id : str
+    time_units : str
+    extent_units : str
+    substance_units : str
+    length_units : str
+    area_units : str
+    volume_units : str
+    volume : float
+    model_id : str
+
+    Returns
+    -------
+    tuple
+        The SBMLDocument and the Model object as a tuple.
+
     """
     document = libsbml.SBMLDocument(3, 2)
     model = document.createModel()
     if model_id is None:
-        model_id = "biocrnpyler_" + str(randint(1, int(1e6)))
+        model_id = 'biocrnpyler_' + str(randint(1, int(1e6)))
     model.setId(model_id)
     model.setName(model_id)
     # Define units for area (not used, but keeps COPASI from complaining)
     unitdef = model.createUnitDefinition()
-    unitdef.setId("square_metre")
+    unitdef.setId('square_metre')
     unit = unitdef.createUnit()
     unit.setKind(libsbml.UNIT_KIND_METRE)
     unit.setExponent(2)
@@ -60,10 +70,17 @@ def create_sbml_model(
     unit.setMultiplier(1)
 
     # Set up required units and containers
+    time_units = _validate_sbml_unit_def(model, time_units)
+    extent_units = _validate_sbml_unit_def(model, extent_units)
+    substance_units = _validate_sbml_unit_def(model, substance_units)
+    length_units = _validate_sbml_unit_def(model, length_units)
+    area_units = _validate_sbml_unit_def(model, area_units)
+    volume_units = _validate_sbml_unit_def(model, volume_units)
+
     model.setTimeUnits(time_units)  # set model-wide time units
     model.setExtentUnits(extent_units)  # set model units of extent
     model.setSubstanceUnits(substance_units)  # set model substance units
-    model.setLengthUnits(length_units)  # area units (never used?)
+    model.setLengthUnits(length_units)  # length units (never used?)
     model.setAreaUnits(area_units)  # area units (never used?)
     model.setVolumeUnits(volume_units)  # default volume unit
 
@@ -82,16 +99,26 @@ def valid_sbml_id(given_id, document=None):
 
 
 def add_all_species(
-    model, species: List, initial_condition_dictionary: dict, compartment=None, **kwargs
+    model,
+    species: List,
+    initial_condition_dictionary: dict,
+    compartment=None,
+    **kwargs,
 ):
-    """adds a list of Species to the SBML model.
-    :param model: valid SBML model
-    :param species: list of species to be added to the SBML model
-    :param compartment: compartment id, if empty species go to the first compartment
-    :param initial_concentration_dict: a dictionary s --> initial_concentration
-    :return: None
-    """
+    """Adds a list of Species to the SBML model.
 
+    Parameters
+    ----------
+    model : libsbml.Model
+        Valid SBML model.
+    species : list
+        List of species to be added to the SBML model.
+    initial_condition_dictionary : dict
+        A dictionary s --> initial_concentration.
+    compartment : str, optional
+        Compartment id, if empty species go to the first compartment.
+
+    """
     elementlist = model.getSBMLDocument().getListOfAllElements()
 
     all_ids = getAllIds(elementlist)
@@ -99,39 +126,67 @@ def add_all_species(
     trans = SetIdFromNames(all_ids)
 
     all_ids = [str(s) for s in species]
-    all_sbml_ids = [trans.getValidIdForName(species_id) for species_id in all_ids]
+    all_sbml_ids = [
+        trans.getValidIdForName(species_id) for species_id in all_ids
+    ]
 
     for s_ind, s in enumerate(species):
         s_id = all_sbml_ids[s_ind]
         if compartment is None or s.compartment is not None:
-            # If no compartment was passed in or if species (s) has its own compartment set:
+            # If no compartment was passed in or if species (s) has
+            # its own compartment set:
             compartment = get_compartment_by_name(model, s.compartment.name)
             if compartment is None:
                 compartment = add_compartment(model, s.compartment)
+
+        # add unit support for ic:
+        initial_concentration = 0
+        ic_unit = None
         if s in initial_condition_dictionary:
-            initial_concentration = parameter_to_value(initial_condition_dictionary[s])
-        else:
-            initial_concentration = 0
+            val_ic = initial_condition_dictionary[s]
+            initial_concentration = parameter_to_value(val_ic)
+            if hasattr(val_ic, 'unit') and val_ic.unit != '':
+                ic_unit = val_ic.unit
+
         add_species(
             model=model,
             compartment=compartment,
             species_name=str(s),
             species_id=s_id,
             initial_concentration=initial_concentration,
+            ic_unit=ic_unit,
         )
 
 
 def add_species(
-    model, compartment, species_name, species_id, initial_concentration=None, **kwargs
+    model,
+    compartment,
+    species_name,
+    species_id,
+    initial_concentration=None,
+    ic_unit=None,
+    **kwargs,
 ):
     """Helper function to add a species to the sbml model.
-    :param model:
-    :param compartment: a compartment in the SBML model
-    :param species: must be chemical_reaction_network.species objects
-    :param initial_concentration: initial concentration of the species in the SBML model
-    :return: SBML species object
-    """
 
+    Parameters
+    ----------
+    model : libsbml.Model
+    compartment : libsbml.Compartment
+        A compartment in the SBML model.
+    species_name : str
+    species_id : str
+    initial_concentration : float, optional
+        Initial concentration of the species in the SBML model.
+    ic_unit : str, optional
+        Unit of the initial concentration.
+
+    Returns
+    -------
+    libsbml.Species
+        SBML species object.
+
+    """
     # Construct the species ID
 
     logger.debug(f"Adding species: {species_name}, id: {species_id}")
@@ -141,8 +196,26 @@ def add_species(
     sbml_species.setCompartment(compartment.getId())
     sbml_species.setConstant(False)
     sbml_species.setBoundaryCondition(False)
+
     sbml_species.setHasOnlySubstanceUnits(False)
-    sbml_species.setSubstanceUnits("mole")
+
+    # set init conc unit and compartment unit
+    if ic_unit is None:
+        ic_unit = 'uM'
+
+    compartment_unit = compartment.getUnits()
+    if compartment_unit == '':
+        compartment_unit = model.getVolumeUnits()
+
+    # instead of setting amount units to be mole always,
+    # set it correctly:
+    amount_unit = _calculate_amount_unit(
+        ic_unit,
+        compartment_unit,
+    )
+    amount_unit = _validate_sbml_unit_def(model, amount_unit)
+    sbml_species.setSubstanceUnits(amount_unit)
+
     if initial_concentration is None:
         initial_concentration = 0
     sbml_species.setInitialConcentration(initial_concentration)
@@ -150,21 +223,36 @@ def add_species(
     return sbml_species
 
 
-def add_all_compartments(model, compartments: List, **keywords):
-    """Adds the list of Compartment objects to the SBML model
-    :param model: valid SBML model
-    :param compartments: list of compartments to be added to the SBML model
-    :return: None
+def add_all_compartments(model, compartments: List, **kwargs):
+    """Adds the list of Compartment objects to the SBML model.
+
+    Parameters
+    ----------
+    model : libsbml.Model
+        Valid SBML model.
+    compartments : list
+        List of compartments to be added to the SBML model.
+
     """
     for compartment in compartments:
-        add_compartment(model=model, compartment=compartment, **keywords)
+        add_compartment(model=model, compartment=compartment, **kwargs)
 
 
-def add_compartment(model, compartment, **keywords):
+def add_compartment(model, compartment, **kwargs):
     """Helper function to add a compartment to the SBML model.
-    :param model: a valid SBML model
-    :param compartment: a Compartment object
-    :return: SBML compartment object
+
+    Parameters
+    ----------
+    model : libsbml.Model
+        A valid SBML model.
+    compartment : bcp.Compartment
+        A Compartment object.
+
+    Returns
+    -------
+    libsbml.Compartment
+        SBML compartment object.
+
     """
     sbml_compartment = model.createCompartment()
     compartment_id = compartment.name
@@ -175,22 +263,19 @@ def add_compartment(model, compartment, **keywords):
     sbml_compartment.setSpatialDimensions(compartment.spatial_dimensions)
     sbml_compartment.setSize(compartment.size)  # For example, 1e-6 liter
     if compartment.unit is not None:
-        sbml_compartment.setUnits(compartment.unit)
+        comp_unit = _validate_sbml_unit_def(model, compartment.unit)
+        sbml_compartment.setUnits(comp_unit)
     return sbml_compartment
 
 
 def get_compartment_by_name(model, compartment_name):
-    """Helper function to find the SBML compartment object
-    given the compartment name in the SBML file
-    """
+    """Find SBML compartment object from name in SBML file."""
     for compartment in model.getListOfCompartments():
         if compartment.getName() == compartment_name:
             return compartment
 
 
 # Helper function to add a parameter to the model
-
-
 def add_parameter(mixture, name, value=0, debug=False):
     model = mixture.model  # Get the model where we will store results
 
@@ -216,28 +301,34 @@ def find_parameter(mixture, id):
 
 
 def add_all_reactions(model, reactions: List, stochastic=False, **kwargs):
-    """adds a list of reactions to the SBML model.
-    :param model: an sbml model created by create_sbml_model()
-    :param reactions: list of Reactions
-    :param stochastic: binary flag for stochastic models
-    :return: None
-    """
+    """Adds a list of reactions to the SBML model.
 
+    Parameters
+    ----------
+    model : libsbml.Model
+        An sbml model created by create_sbml_model().
+    reactions : list
+        List of Reactions.
+    stochastic : bool
+        Binary flag for stochastic models.
+
+    """
     elementlist = model.getSBMLDocument().getListOfAllElements()
 
     all_ids = getAllIds(elementlist)
 
     trans = SetIdFromNames(all_ids)
 
-    all_ids = [f"r{i}" for i in range(len(reactions))]
-    all_ids_rev = [f"r{i}rev" for i in range(len(reactions))]
-    all_sbml_ids = [trans.getValidIdForName(reaction_id) for reaction_id in all_ids]
+    all_ids = [f'r{i}' for i in range(len(reactions))]
+    all_ids_rev = [f'r{i}rev' for i in range(len(reactions))]
+    all_sbml_ids = [
+        trans.getValidIdForName(reaction_id) for reaction_id in all_ids
+    ]
     all_sbml_ids_rev = [
         trans.getValidIdForName(reaction_id) for reaction_id in all_ids_rev
     ]
 
     for rxn_count, r in enumerate(reactions):
-
         add_reaction(
             model=model,
             crn_reaction=r,
@@ -245,7 +336,8 @@ def add_all_reactions(model, reactions: List, stochastic=False, **kwargs):
             stochastic=stochastic,
             **kwargs,
         )
-        # Reversible reactions are always seperated into two seperate reactions
+        # Reversible reactions are always seperated into two seperate
+        # reactions
         if r.is_reversible:
             add_reaction(
                 model=model,
@@ -265,35 +357,56 @@ def add_reaction(
     reverse_reaction: bool = False,
     **kwargs,
 ):
-    """adds a sbml_reaction to an sbml model.
-    :param model: an sbml model created by create_sbml_model()
-    :param crn_reaction: must be a chemical_reaction_network.reaction object
-    :param reaction_id: unique id of the reaction
-    :param stochastic: stochastic model flag
-    :param reverse_reaction:
-    :return: SBML Reaction object
+    """Adds a sbml_reaction to an sbml model.
+
+    Parameters
+    ----------
+    model : libsbml.Model
+        An sbml model created by create_sbml_model().
+    crn_reaction : bcp.Reaction
+        Must be a chemical_reaction_network.reaction object.
+    reaction_id : str
+        Unique id of the reaction.
+    stochastic : bool
+        Stochastic model flag.
+    reverse_reaction : bool
+
+    Returns
+    -------
+    libsbml.Reaction
+        SBML Reaction object.
+
     """
     # Create the sbml_reaction in SBML
     sbml_reaction = model.createReaction()
 
     sbml_reaction.setId(reaction_id)
     sbml_reaction.setName(sbml_reaction.getId())
-    # all reactions are set to be non-reversible in BioCRNpyler because this is correct in deterministic and stochastic simulation.
+    # all reactions are set to be non-reversible in BioCRNpyler because this
+    # is correct in deterministic and stochastic simulation.
     sbml_reaction.setReversible(False)
     # Create the reactants and products for the sbml_reaction
     if not reverse_reaction:
         _create_reactants(
-            reactant_list=crn_reaction.inputs, sbml_reaction=sbml_reaction, model=model
+            reactant_list=crn_reaction.inputs,
+            sbml_reaction=sbml_reaction,
+            model=model,
         )
         _create_products(
-            product_list=crn_reaction.outputs, sbml_reaction=sbml_reaction, model=model
+            product_list=crn_reaction.outputs,
+            sbml_reaction=sbml_reaction,
+            model=model,
         )
     else:
         _create_reactants(
-            reactant_list=crn_reaction.outputs, sbml_reaction=sbml_reaction, model=model
+            reactant_list=crn_reaction.outputs,
+            sbml_reaction=sbml_reaction,
+            model=model,
         )
         _create_products(
-            product_list=crn_reaction.inputs, sbml_reaction=sbml_reaction, model=model
+            product_list=crn_reaction.inputs,
+            sbml_reaction=sbml_reaction,
+            model=model,
         )
 
     # Create the kinetic law and corresponding local propensity parameters
@@ -306,8 +419,8 @@ def add_reaction(
         **kwargs,
     )
 
-    # Create SpeciesModifierReference in SBML for species that are referred by the
-    # KineticLaw but not in reactants or products
+    # Create SpeciesModifierReference in SBML for species that are referred by
+    # the KineticLaw but not in reactants or products
     _create_modifiers(
         crn_reaction=crn_reaction, sbml_reaction=sbml_reaction, model=model
     )
@@ -337,11 +450,17 @@ def _create_modifiers(crn_reaction, sbml_reaction, model):
     reactants_list = [str(i.species) for i in crn_reaction.inputs]
     products_list = [str(i.species) for i in crn_reaction.outputs]
     modifier_species = [
-        str(i) for i in crn_reaction.propensity_type.propensity_dict["species"].values()
+        str(i)
+        for i in crn_reaction.propensity_type.propensity_dict[
+            'species'
+        ].values()
     ]
     for modifier_id in modifier_species:
         modifier_id = str(modifier_id)
-        if modifier_id not in reactants_list and modifier_id not in products_list:
+        if (
+            modifier_id not in reactants_list
+            and modifier_id not in products_list
+        ):
             modifier = sbml_reaction.createModifier()
             modifier.setSpecies(modifier_id)
 
@@ -363,14 +482,10 @@ def _create_local_parameter(ratelaw, name, value, constant=True):
 def _create_global_parameter(model, name, value, p_unit=None, constant=True):
     if p_unit is not None:
         if not isinstance(p_unit, str):
-            raise ValueError("Units for a parameter must be passed as strings.")
-        unit_added = False
-        for unit_definition in model.getListOfUnitDefinitions():
-            if unit_definition.getId() == p_unit:
-                unit_added = True
-        if not unit_added:
-            unit_created = create_new_unit_definition(model, p_unit)
-            model.addUnitDefinition(unit_created)
+            raise ValueError(
+                "Units for a parameter must be passed as strings."
+            )
+        p_unit = _validate_sbml_unit_def(model, p_unit)
 
     if model.getParameter(name) is None:
         param = model.createParameter()
@@ -442,16 +557,20 @@ class SetIdFromNames(libsbml.IdentifierTransformer):
         # remember existing ids ...
         self.existingIds = ids
 
-        # The function actually doing the transforming. This function is called
+        # The function actually doing the transforming. This function is
+        # called
 
     # once for each SBase element in the model.
     def transform(self, element):
         # return in case we don't have a valid element
-        if element is None or element.getTypeCode() == libsbml.SBML_LOCAL_PARAMETER:
+        if (
+            element is None
+            or element.getTypeCode() == libsbml.SBML_LOCAL_PARAMETER
+        ):
             return libsbml.LIBSBML_OPERATION_SUCCESS
 
             # or if there is nothing to do
-        if element.isSetName() == False or element.getId() == element.getName():
+        if not element.isSetName() or element.getId() == element.getName():
             return libsbml.LIBSBML_OPERATION_SUCCESS
 
             # find the new id
@@ -470,25 +589,26 @@ class SetIdFromNames(libsbml.IdentifierTransformer):
         count = 0
         end = len(name)
 
-        if "0" <= name[count] and name[count] <= "9":
-            IdStream.append("x_")
-        if "*" in name:
-            IdStream.append("xx")
+        if '0' <= name[count] and name[count] <= '9':
+            IdStream.append('x_')
+        if '*' in name:
+            IdStream.append('xx')
         for count in range(0, end):
             if (
-                ("0" <= name[count] and name[count] <= "9")
-                or ("a" <= name[count] and name[count] <= "z")
-                or ("A" <= name[count] and name[count] <= "Z")
+                ('0' <= name[count] and name[count] <= '9')
+                or ('a' <= name[count] and name[count] <= 'z')
+                or ('A' <= name[count] and name[count] <= 'Z')
             ):
                 IdStream.append(name[count])
             else:
-                IdStream.append("_")
-        Id = "".join(IdStream)
-        if Id[len(Id) - 1] != "_":
+                IdStream.append('_')
+        Id = ''.join(IdStream)
+        if Id[len(Id) - 1] != '_':
             return Id
 
         return Id
-        # return Id[:-1] #this code was removing underscores at the end of ComplexSpecies needed for imbedded ComplexSpecies.
+        # return Id[:-1] #this code was removing underscores at the end of
+        # ComplexSpecies needed for imbedded ComplexSpecies.
 
     #
     # Generates the id out of the name, and ensures it is unique.
@@ -499,7 +619,7 @@ class SetIdFromNames(libsbml.IdentifierTransformer):
         id = baseString
         count = 1
         while self.existingIds.count(id) != 0:
-            id = "{0}_{1}".format(baseString, count)
+            id = '{0}_{1}'.format(baseString, count)
             count = count + 1
         return id
 
@@ -515,23 +635,29 @@ def getAllIds(allElements):
 
     for i in range(0, allElements.getSize()):
         current = allElements.get(i)
-        if current.isSetId() and current.getTypeCode() != libsbml.SBML_LOCAL_PARAMETER:
+        if (
+            current.isSetId()
+            and current.getTypeCode() != libsbml.SBML_LOCAL_PARAMETER
+        ):
             result.append(current.getId())
     return result
 
 
-def getSpeciesByName(model, name, compartment=""):
+def getSpeciesByName(model, name, compartment=''):
+    """Returns a list of species in the Model with the given name.
+
+    Parameters
+    ----------
+    compartment : str, optional
+        Compartment name in which to look for the species.
+
     """
-    Returns a list of species in the Model with the given name
-    compartment : (Optional) argument to specify the compartment name in which
-    to look for the species.
-    """
-    if type(name) is not str:
-        raise ValueError(f'"name" must be a string. Received {name}.')
+    if not isinstance(name, str):
+        raise ValueError(f"'name' must be a string. Received {name}.")
     species_found = []
     for species in model.getListOfSpecies():
         if species.getName() == name:
-            if compartment != "":
+            if compartment != '':
                 comp_elem = species.getCompartment()
                 comp_name = model.getElementBySId(comp_elem).getName()
                 if comp_name == compartment:
@@ -546,29 +672,30 @@ def getSpeciesByName(model, name, compartment=""):
     elif not species_found:
         raise ValueError("The species " + name + " not found.")
     else:
-        warn("Multiple species with name " + name + " found. Returning a list")
+        warn(
+            "Multiple species with name " + name + " found. Returning a list."
+        )
         return species_found
 
 
 # Validate SBML
-
-
 class validateSBML(object):
-    """
-    libSBML class to validate the generated SBML models
-    ## @brief   Validates SBMLDocument
-    ## @author  Akiya Jouraku (translated from libSBML C++ examples)
-    ## @author  Ben Bornstein
-    ## @author  Michael Hucka
-    """
+    """Class to validate the generated SBML models."""
 
     def __init__(self, ucheck):
         self.reader = libsbml.SBMLReader()
         self.ucheck = ucheck
 
     def validate(self, sbml_document, print_results=False):
-        """sbml_document: libSBML SBMLDocument object.
-        print_results: Print toggle for validation warnings.
+        """Validate an SBML document.
+
+        Parameters
+        ----------
+        sbml_document : libsbml.SBMLDocument
+            libSBML SBMLDocument object.
+        print_results : bool
+            Print toggle for validation warnings.
+
         """
         sbmlDoc = sbml_document
         errors = sbmlDoc.getNumErrors()
@@ -582,7 +709,7 @@ class validateSBML(object):
 
         numReadErr = 0
         numReadWarn = 0
-        errMsgRead = ""
+        errMsgRead = ''
 
         if errors > 0:
             for i in range(errors):
@@ -597,15 +724,17 @@ class validateSBML(object):
             errMsgRead = sbmlDoc.getErrorLog().toString()
 
         # If serious errors are encountered while reading an SBML document, it
-        # does not make sense to go on and do full consistency checking because
-        # the model may be nonsense in the first place.
+        # does not make sense to go on and do full consistency checking
+        # because the model may be nonsense in the first place.
 
         numCCErr = 0
         numCCWarn = 0
-        errMsgCC = ""
+        errMsgCC = ''
 
         if seriousErrors:
-            errMsgRead += "Further consistency checking and validation aborted."
+            errMsgRead += (
+                'Further consistency checking and validation aborted.'
+            )
         else:
             sbmlDoc.setConsistencyChecks(
                 libsbml.LIBSBML_CAT_UNITS_CONSISTENCY, self.ucheck
@@ -627,25 +756,79 @@ class validateSBML(object):
         if errMsgRead or errMsgCC:
             if print_results:
                 print()
-                print("===== validation error/warning messages =====\n")
+                print('===== validation error/warning messages =====\n')
             if errMsgRead:
                 if print_results:
                     print(errMsgRead)
             if errMsgCC:
                 if print_results:
-                    print("*** consistency check ***\n")
+                    print('*** consistency check ***\n')
                     print(errMsgCC)
         if not (numReadErr + numCCErr):
-            print("Successful!")
+            print('Successful!')
         return numReadErr + numCCErr
 
 
 def validate_sbml(sbml_document, enable_unit_check=False, print_results=True):
-    """Validates the generated SBML model by using libSBML SBML validation code."""
+    """Validates SBML model using libSBML SBML validation code."""
     validator = validateSBML(enable_unit_check)
-    validation_result = validator.validate(sbml_document, print_results=print_results)
+    validation_result = validator.validate(
+        sbml_document, print_results=print_results
+    )
     if validation_result > 0:
         warn(
-            "SBML model invalid. Run with print_results = False to hide print statements"
+            "SBML model invalid. Run with print_results=False to hide "
+            "print statements."
         )
     return validation_result
+
+
+def _validate_sbml_unit_def(model, unit_id):
+    if unit_id is None or unit_id == '':
+        return unit_id
+
+    unit_id = normalize_unit_id(unit_id)
+
+    if libsbml.UnitKind_forName(unit_id) != libsbml.UNIT_KIND_INVALID:
+        return unit_id
+
+    for unit_definition in model.getListOfUnitDefinitions():
+        if unit_definition.getId() == unit_id:
+            return unit_id
+
+    unit_created = create_new_unit_definition(model, unit_id)
+    if unit_created is None:
+        raise ValueError(f"Unsupported SBML unit '{unit_id}'")
+    return unit_id
+
+
+def _calculate_amount_unit(concentration_unit, volume_unit):
+    concentration_unit = normalize_unit_id(concentration_unit)
+    volume_unit = normalize_unit_id(volume_unit)
+    if volume_unit == 'litre':
+        volume_unit = 'L'
+
+    mapping = {
+        ('nM', 'nL'): 'amol',
+        ('nM', 'uL'): 'fmol',
+        ('nM', 'mL'): 'pmol',
+        ('nM', 'L'): 'nmol',
+        ('uM', 'nL'): 'fmol',
+        ('uM', 'uL'): 'pmol',
+        ('uM', 'mL'): 'nmol',
+        ('uM', 'L'): 'umol',
+        ('mM', 'nL'): 'pmol',
+        ('mM', 'uL'): 'nmol',
+        ('mM', 'mL'): 'umol',
+        ('mM', 'L'): 'mmol',
+        ('M', 'nL'): 'nmol',
+        ('M', 'uL'): 'umol',
+        ('M', 'mL'): 'mmol',
+        ('M', 'L'): 'mole',
+    }
+    key = (concentration_unit, volume_unit)
+    if key not in mapping:
+        raise ValueError(
+            f"Unsupported concentration/volume unit combination: {key}"
+        )
+    return mapping[key]

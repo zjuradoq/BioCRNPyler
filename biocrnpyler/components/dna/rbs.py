@@ -1,79 +1,248 @@
-
 #  Copyright (c) 2020, Build-A-Cell. All rights reserved.
 #  See LICENSE file in the project root directory for details.
 
 import copy
 
-from .construct import DNA_part
 from ...core.species import Species
 from ..basic import DNA, RNA
+from .construct import DNA_part
+
 
 class RBS(DNA_part):
-    """
-    A simple RBS class with no regulation. Must be included in a DNAconstruct or DNAassembly to do anything.
-    """
-    def __init__(self, name: str, assembly=None,
-                 transcript=None, protein=None, length=0,
-                 mechanisms=None, parameters=None, **keywords):
-        self.assembly = assembly
-        self.length = length
+    """Ribosome binding site component for translation control.
 
-        DNA_part.__init__(self, name = name, mechanisms = mechanisms,
-                           parameters = parameters, **keywords)
+    An RBS (ribosome binding site) represents a regulatory element that
+    controls translation of a protein from an RNA transcript. The component
+    uses the 'translation' mechanism to generate species and reactions for
+    ribosome binding and protein production. The RBS must be included in a
+    `DNAassembly` or `DNA_construct` to function properly during CRN
+    compilation.
+
+    Parameters
+    ----------
+    name : str
+        Name of the RBS.
+    assembly : DNAassembly, optional
+        The DNA assembly containing this RBS. If provided, the assembly's
+        name is used to generate default transcript and protein species.
+    transcript : RNA, str, or None, optional
+        The RNA transcript containing this RBS. If None and `assembly` is
+        provided, creates an RNA species using the assembly's name.
+    protein : Protein, str, or None, optional
+        The protein product of translation. If None and `assembly` is
+        provided, creates a Protein species using the assembly's name.
+    length : int, default=0
+        Length of the RBS sequence in base pairs.
+    mechanisms : dict or list, optional
+        Custom mechanisms for this RBS, overriding mixture defaults.
+    parameters : dict, optional
+        Parameter values specific to this RBS.
+    **kwargs
+        Additional keyword arguments passed to the parent `DNA_part` class.
+
+    Attributes
+    ----------
+    transcript : Species or None
+        The RNA transcript containing the RBS.
+    protein : Species or None
+        The protein product of translation.
+    assembly : DNAassembly or None
+        The DNA assembly containing this RBS.
+    length : int
+        Length of the RBS in base pairs.
+
+    See Also
+    --------
+    Promoter : Component for transcription control.
+    DNAassembly : Container for RBS and genetic constructs.
+    DNA_part : Base class for DNA component parts.
+
+    Notes
+    -----
+    The RBS cannot have initial concentrations set directly. Initial
+    conditions must be set on the containing `DNAassembly` or `DNA_construct`.
+
+    The translation mechanism generates reactions for ribosome binding to
+    the transcript and subsequent protein production.
+
+    Examples
+    --------
+    Create a basic RBS:
+
+    >>> rbs = bcp.RBS(
+    ...     name='rbs1',
+    ...     transcript='mRNA_gfp',
+    ...     protein='protein_gfp'
+    ... )
+
+    Create an RBS within an assembly:
+
+    >>> assembly = bcp.DNAassembly(name='gene_x')
+    >>> rbs = bcp.RBS(
+    ...     name='rbs_strong',
+    ...     assembly=assembly
+    ... )
+
+    """
+
+    def __init__(
+        self,
+        name: str,
+        assembly=None,
+        transcript=None,
+        protein=None,
+        length=0,
+        mechanisms=None,
+        parameters=None,
+        **kwargs,
+    ):
+        self.length = length
+        DNA_part.__init__(
+            self,
+            name=name,
+            mechanisms=mechanisms,
+            parameters=parameters,
+            assembly=assembly,
+            **kwargs,
+        )
 
         if transcript is None and assembly is None:
             self.transcript = None
         elif transcript is None:
-            self.transcript = Species(assembly.name, material_type = "rna")
+            self.transcript = Species(assembly.name, material_type='rna')
         else:
-            self.transcript = self.set_species(transcript, material_type = "rna")
-        
+            self.transcript = self.set_species(
+                transcript, material_type='rna'
+            )
+
         if protein is None and assembly is not None:
-            self.protein = Species(assembly.name, material_type = "protein")
+            self.protein = Species(assembly.name, material_type='protein')
         elif protein is None and assembly is None:
             self.protein = None
         else:
-            self.protein = self.set_species(protein, material_type = "protein")
+            self.protein = self.set_species(protein, material_type='protein')
 
     def update_species(self):
+        """Use the 'translation' mechanism to generate translation species.
+
+        Uses the 'translation' mechanism to generate species for ribosome
+        binding and protein production from the RNA transcript.
+
+        Returns
+        -------
+        list of Species
+            List of species generated by the translation mechanism,
+            including ribosome-RNA complexes and protein products.
+
+        """
         mech_tl = self.get_mechanism('translation')
         species = []
-        species += mech_tl.update_species(transcript = self.transcript, protein = self.protein, component = self, part_id = self.name)
+        species += mech_tl.update_species(
+            transcript=self.transcript,
+            protein=self.protein,
+            component=self,
+            part_id=self.name,
+        )
         return species
 
     def update_reactions(self):
+        """Use the 'translation' mechanism to generate translation reactions.
+
+        Uses the 'translation' mechanism to generate reactions for ribosome
+        binding to the transcript and protein production.
+
+        Returns
+        -------
+        list of Reaction
+            List of translation reactions including ribosome binding and
+            protein synthesis. Returns empty list if protein is None.
+
+        """
         mech_tl = self.get_mechanism('translation')
         reactions = []
 
         if self.protein is not None:
-            reactions += mech_tl.update_reactions(transcript = self.transcript, protein = self.protein, component = self, part_id = self.name)
+            reactions += mech_tl.update_reactions(
+                transcript=self.transcript,
+                protein=self.protein,
+                component=self,
+                part_id=self.name,
+            )
         return reactions
-    def update_component(self,internal_species=None,**keywords):
-        """returns a copy of this component, except with the proper fields updated"""
-        if(isinstance(self.parent,DNA)):
+
+    def update_component(self, internal_species=None, **kwargs):
+        """Create a copy of the RBS with updated transcript reference.
+
+        Used for component enumeration when RBS is part of larger constructs
+        that need to be duplicated with different species.
+
+        Parameters
+        ----------
+        internal_species : Species, optional
+            The new transcript species to use for this RBS copy.
+        **kwargs
+            Additional keyword arguments (currently unused).
+
+        Returns
+        -------
+        RBS or None
+            A shallow copy of this RBS with the updated `transcript`
+            attribute if parent is RNA and direction is 'forward'. Returns
+            None otherwise.
+
+        Raises
+        ------
+        AttributeError
+            If direction attribute has an unknown value.
+
+        """
+        if isinstance(self.parent, DNA):
             return None
-        elif(isinstance(self.parent,RNA)):
-            if(self.direction=="forward"):
+        elif isinstance(self.parent, RNA):
+            if self.direction == 'forward':
                 out_component = copy.copy(self)
                 out_component.transcript = internal_species
                 return out_component
-            elif(self.direction=="reverse"):
+            elif self.direction == 'reverse':
                 return None
             else:
-                raise AttributeError(f"Unknown direction {self.direction} encountered in {self}")
+                raise AttributeError(
+                    f"Unknown direction {self.direction} encountered in "
+                    f"{self}"
+                )
         else:
             return None
         return out_component
 
     @classmethod
     def from_rbs(cls, name, assembly, transcript, protein):
-        """Helper function to initialize a rbs instance from another rbs or str.
+        """Create an RBS instance from another RBS or string.
 
-        :param name: either string or an other rbs instance
-        :param assembly:
-        :param transcript:
-        :param protein:
-        :return: RBS instance
+        Factory method for creating RBS objects from various input types.
+
+        Parameters
+        ----------
+        name : RBS or str
+            Either a string name for a new RBS, or an existing RBS object
+            to copy.
+        assembly : DNAassembly
+            The assembly containing this RBS.
+        transcript : RNA or str
+            The RNA transcript containing the RBS.
+        protein : Protein or str
+            The protein product of translation.
+
+        Returns
+        -------
+        RBS
+            A new RBS instance. If `name` is an RBS, returns a deep copy
+            with updated assembly, transcript, and protein attributes.
+
+        Raises
+        ------
+        TypeError
+            If `name` is neither a string nor an RBS.
+
         """
         if isinstance(name, RBS):
             rbs_instance = copy.deepcopy(name)
@@ -81,8 +250,15 @@ class RBS(DNA_part):
             rbs_instance.transcript = transcript
             rbs_instance.protein = protein
         elif isinstance(name, str):
-            rbs_instance = cls(name=name, assembly=assembly,
-                               transcript=transcript, protein=protein)
+            rbs_instance = cls(
+                name=name,
+                assembly=assembly,
+                transcript=transcript,
+                protein=protein,
+            )
         else:
-            raise TypeError(f'RBS can be initialized from string or another RBS! We got {type(name)}')
-        return  rbs_instance
+            raise TypeError(
+                "RBS can be initialized from string or another RBS! We got "
+                f"{type(name)}"
+            )
+        return rbs_instance

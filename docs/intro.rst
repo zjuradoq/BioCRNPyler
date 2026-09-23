@@ -1,3 +1,5 @@
+.. currentmodule:: biocrnpyler
+
 ************
 Introduction
 ************
@@ -28,9 +30,9 @@ For example, even though synthetic biologists have taken a module and
 part-driven approach to their laboratory work [BS05]_, models are
 still typically built by hand on a case-by-case basis.
 
-The BioCRNpyler [1]_ package is a software framework and library designed
+The BioCRNpyler package is a software framework and library designed
 to aid in the rapid construction of models from common motifs, such as
-molecular components, biochemical mechanisms and parameter sets.  These
+molecular components, biochemical mechanisms, and parameter sets.  These
 parts can be reused and recombined to rapidly generate CRN models in
 diverse chemical contexts at varying levels of model complexity.  Some
 similar tools exist including [Mye+09]_,
@@ -41,20 +43,22 @@ framework written in Python which allows complete control over model
 compilation by developers as well as a large library of easy-to-use
 parts and models relevant to synthetic biologists and
 bio-engineers.  The BioCRNpyler package is available on `GitHub
-<https://github.com/BuildACell/BioCRNPyler>`_ [BCP-GH]_.
+<https://github.com/BuildACell/BioCRNpyler>`_ [BCP-GH]_.
 
 The BioCRNpyler Framework
 =========================
 
-BioCRNpyler is an open-source Python framework (:ref:`Figure 1.1
-<fig-overview>`) that compiles high-level specifications into detailed
-CRN models saved as SBML [Huc+23]_.  Specifications may
-include: biomolecular Components, modeling assumptions (Mechanisms),
-biochemical context (Mixtures), and Parameters.  BioCRNpyler is
-written in Python with a flexible object-oriented design, extensive
-documentation, and detailed examples to allow for easy model
-construction by modelers as well as customization and extension by
-developers.
+BioCRNpyler is an open-source Python framework that compiles
+high-level specifications into detailed CRN models saved as SBML
+[Huc+23]_.  Specifications may include: biomolecular components,
+modeling assumptions (Mechanisms), biochemical context (mixtures), and
+Parameters.  BioCRNpyler is written in Python with a flexible
+object-oriented design, extensive documentation, and detailed examples
+to allow for easy model construction by modelers as well as
+customization and extension by developers.
+
+:ref:`Figure 1.1 <fig-overview>` shows the primary elements of the
+framework and how they relate to teach other:
 
 .. _fig-overview:
 
@@ -67,23 +71,23 @@ developers.
 
 **Species and Reactions** make up a CRN and are the output of
 BioCRNpyler compilation.  Many sub-classes exist such as
-``ComplexSpecies`` and reactions with different kinds of rate function
-(e.g.  mass-action, Hill functions, etc).
+:class:`~core.ComplexSpecies` and reactions with different
+kinds of rate function (e.g.  mass-action, Hill functions, etc).
 
 **Mechanisms** are reaction schemas, which can be thought of as
 abstract functions that produce CRN Species and Reactions.  They
 represent a particular molecular process, such as transcription or
-translation.  During compilation, Mechanisms are called by
-Components.  **Global Mechanisms** are called at the end of compilation
+translation.  During compilation, mechanisms are called by
+Components.  **Global mechanisms** are called at the end of compilation
 in order to affect all species of a given type or with given
 attributes — for example, dilution of all protein Species.
 
-**Components** are reusable parts; they know what kinds of Mechanisms
+**Components** are reusable parts; they know what kinds of mechanisms
 affect them but are agnostic to the underlying schema.  For example, a
-promoter is a Component which will call a transcription Mechanism;
-similarly, a Ribosome Binding Site (RBS) is a Component which will
-call a translation Mechanism.  However, the same Promoter and RBS can
-use many different transcription and translation Mechanisms depending
+promoter is a component which will call a transcription mechanism;
+similarly, a Ribosome Binding Site (RBS) is a component which will
+call a translation mechanism.  However, the same Promoter and RBS can
+use many different transcription and translation mechanisms depending
 on the modeling context and detail desired.
 
 .. _fig-simulations:
@@ -97,7 +101,7 @@ on the modeling context and detail desired.
    repressilator paper [Elo+00]_ and [Cer+15]_, [Mil+15]_.
    Simulations were carried out with Bioscrape [Swa+19]_.
 
-**Mixtures** are sets of default Mechanisms and Components that
+*Mixtures* are sets of default mechanisms and components that
 represent different molecular and modeling contexts.  As an example of
 molecular context, a cell-extract model requires reactions to consume
 a finite supply of fuel, while a steady-state model of living cells
@@ -107,21 +111,22 @@ catalytically create a protein product, while a more complex model
 might include cellular machinery such as RNA polymerase and ribosomes
 with Michaelis-Menten kinetics.
 
-**Parameters** are designed for flexibility; they can default to
+*Parameters* are designed for flexibility; they can default to
 biophysically plausible values (such as a default binding rate), be
-shared between Components and Mechanisms, or have specific values for
+shared between components and mechanisms, or have specific values for
 Component-Mechanism combinations.  This system is designed so that
 models can be produced quickly without full knowledge of all
 parameters and then refined with detailed parameter files later.
 
-**Compartments** are optional in BioCRNpyler. The default compartment 
-for all species in BioCRNpyler is called "default". Component Compartments
-can be set using setter functions for each component. Membrane components 
-in BioCRNpyler in `biocrnpyler/core/components/membrane/`` usually create
-an "Internal" and an "External" compartment. To replace the "default"
-compartment during compilation of a CRN with `compile_crn`, a 
-keyword argument `compartment=new_compartment` can be passed.
-Refer to the `examples/Specialized Tutorials/` for example use cases.
+*Compartments* are optional in BioCRNpyler. The default compartment
+for all species in BioCRNpyler is called "default". Component
+compartments can be set using setter functions for each
+component. Membrane components in BioCRNpyler in
+`biocrnpyler/core/components/membrane/`` usually create an "Internal"
+and an "External" compartment. To replace the "default" compartment
+during compilation of a CRN with `compile_crn`, a keyword argument
+`compartment=new_compartment` can be passed.  Refer to the
+`examples/Specialized Tutorials/` for example use cases.
 
 .. _fig-code:
 
@@ -133,26 +138,90 @@ Refer to the `examples/Specialized Tutorials/` for example use cases.
 
 The BioCRNpyler Library
 ========================
-The BioCRNpyler library contains a growing collection of Mechanisms,
-Components, and Mixtures as well as extensive Jupyter
+The BioCRNpyler library contains a growing collection of mechanisms,
+Components, and mixtures as well as extensive Jupyter
 notebooks.  Currently, this library is geared towards synthetic
-biological applications with numerous Mechanisms for transcription,
+biological applications with numerous mechanisms for transcription,
 translation, gene regulation, catalysis, molecular binding and many
-more.  Components include common synthetic biological parts such as
+more.  components include common synthetic biological parts such as
 Promoters, RBSs which can be combined into DNA-assemblies to produce
 RNA and Proteins, as well as more specific parts such as dCas9.
 
 Mixtures include both models of cell-like systems growing at steady
 state and extract-like systems with finite resources.  Importantly,
-for different modeling contexts, BioCRNpyler includes `Mixtures` with
+for different modeling contexts, BioCRNpyler includes mixtures with
 different default levels of complexity.  The ease in generating
 increasingly complex models is illustrated in :ref:`Figure 1.3
 <fig-code>`, which shows code to compile a repressilator from a few
-common Components into multiple CRNs of very different levels of
+common components into multiple CRNs of very different levels of
 complexity.  Simulations from these models are shown in :ref:`Figure
 1.2 <fig-simulations>`.
 
-The latest list of items in the biocrnpyler library can be found on the `library page <https://biocrnpyler.readthedocs.io/en/latest/library.html>`_.
+The latest list of items in the biocrnpyler library can be found on
+the `library page
+<https://biocrnpyler.readthedocs.io/en/latest/library.html>`_.
+
+Documentation Conventions
+=========================
+
+This documentation has a number of notional conventions and functionality:
+
+* The left panel displays the table of contents and is divided into
+  two main sections: the User Guide, which contains a narrative
+  description of the package along with examples, and the Reference
+  Manual, which contains documentation for all functions, classes,
+  configurable default parameters, and other detailed information.
+
+* Classes, functions, and methods with additional documentation appear
+  in a bold, code font that links to the Reference Manual. Example:
+  `~core.Species`.
+
+* Links to other sections appear in blue. Example: :ref:`mechanisms_ref`.
+
+* Parameters appear in a (non-bold) code font, as do code fragments.
+  Example: `mechanism_type`.
+
+* Example code is contained in code blocks that can be copied using
+  the copy icon in the top right corner of the code block.  Code
+  blocks are of three primary types: summary descriptions, code
+  listings, and executed commands.
+
+  Summary descriptions show the calling structure of commands but are
+  not directly executable.  Example::
+
+    rxn = bcp.Reaction(inputs=[s1, s2, ...], outputs=[s3])
+
+  Code listings consist of executable code that can be copied and
+  pasted into a Python execution environment.  In most cases the
+  objects required by the code block will be present earlier in the
+  file or, occasionally, in a different section or chapter (with a
+  reference near the code block).  All code listings assume that the
+  NumPy package is available using the prefix `np` and the BioCRNpyler
+  package is imported using prefix `bcp`.  Example:
+
+  .. testcode::
+
+     import biocrnpyler as bcp
+
+     A = bcp.Species('A')
+     B = bcp.Species('B')
+     rxn = bcp.Reaction(
+         inputs=[A], outputs=[B],
+         propensity_type=bcp.MassAction(1e-2)
+     )
+
+  Executed commands show commands preceded by a prompt string of the
+  form ">>> " and also show the output that is obtained when executing
+  that code.  The copy functionality for these blocks is configured to
+  only copy the commands and not the prompt string or outputs.  Example:
+
+  .. doctest::
+
+     >>> print(rxn.pretty_print())
+     A --> B
+      Kf=k_forward * A
+       k_forward=0.01
+     <BLANKLINE>
 
 References
 ==========
@@ -187,7 +256,7 @@ References
     l, L. Xu, P. Mendes, U. Kummer, COPASI—a COmplex PAthway
     SImulator, *Bioinformatics*.  22(24):3067–3074, 2006.
     https://doi.org/10.1093/bioinformatics/btl485
-    
+
 .. [Huc+23] Hucka M, et al.  The systems biology markup
    language (SBML): a medium for representation and exchange of
    biochemical network models.  Bioinformatics.  2003;19(4):524–531.
@@ -230,8 +299,3 @@ References
    rapid prototyping of circuits in a biomolecular “breadboard”
    system.  In: 52nd IEEE Conference on Decision and
    Control; 2013.  p.  1404–1410.
-
-
-.. rubric:: Footnotes
-
-.. [1] Pronounced as bio-compiler

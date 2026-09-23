@@ -1,253 +1,1050 @@
-
 # Copyright (c) 2020, Build-A-Cell. All rights reserved.
 # See LICENSE file in the project root directory for details.
 
 import copy
 from warnings import warn
 
-from .construct import DNA_part
-from ...mechanisms.binding import One_Step_Cooperative_Binding
-from ...core.species import Species, ComplexSpecies, Complex
-from ...mechanisms.integrase import BasicIntegration
 from ...core.component import Component
+from ...core.species import Complex, ComplexSpecies
+from ...mechanisms.binding import One_Step_Cooperative_Binding
+from ...mechanisms.integrase import BasicIntegration
 from ..basic import DNA
+from .construct import DNA_part
 
-integrase_sites = ["attB","attP","attL","attR","FLP","CRE"]
+integrase_sites = ['attB', 'attP', 'attL', 'attR', 'FLP', 'CRE']
+
+
 class DNABindingSite(DNA_part):
-    def __init__(self,name,binders,no_stop_codons=None,assembly = None,**keywords):
-        """an integrase attachment site binds to integrase"""
+    """DNA binding site component for protein-DNA interactions.
 
-        if(isinstance(binders,list)):
+    A DNABindingSite represents a specific DNA sequence where proteins can
+    bind. This class models protein-DNA binding interactions using the
+    'binding' mechanism to generate species and reactions during CRN
+    compilation. The binding site can accommodate multiple different binding
+    proteins, each creating separate binding equilibria.
+
+    Parameters
+    ----------
+    name : str
+        Name of the DNA binding site.
+    binders : Species, str, or list
+        Protein species that can bind to this site. Can be a single binder
+        or a list of multiple binders.
+    no_stop_codons : bool, optional
+        If True, indicates the sequence has no stop codons (relevant for
+        coding sequences).
+    assembly : DNAassembly, optional
+        The DNA assembly containing this binding site.
+    binding_type : str, default='dna_protein'
+        Part type for binding reaction parameters.
+    **kwargs
+        Additional keyword arguments passed to the parent `DNA_part` class.
+
+    Attributes
+    ----------
+    binders : list of Species
+        List of protein species that can bind to this site.
+    dna_to_bind : Species or None
+        The DNA species that contains this binding site.
+    mechanisms : dict
+        Dictionary containing the binding mechanism (defaults to
+        `One_Step_Cooperative_Binding`).
+
+    See Also
+    --------
+    IntegraseSite : Specialized binding site for integrase proteins.
+    DNA_part : Base class for DNA component parts.
+    One_Step_Cooperative_Binding : Default binding mechanism used.
+
+    Notes
+    -----
+    The DNABindingSite uses the 'binding' mechanism to generate binding
+    reactions for each protein in the `binders` list. Each binder creates
+    an independent binding equilibrium with the DNA.
+
+    The `dna_to_bind` attribute is set during component enumeration and
+    represents the actual DNA species containing this binding site.
+
+    Examples
+    --------
+    Create a binding site for a transcription factor:
+
+    >>> binding_site = bcp.DNABindingSite(
+    ...     name='operator_lac',
+    ...     binders='protein_LacI'
+    ... )
+
+    Create a binding site with multiple binders:
+
+    >>> binding_site = bcp.DNABindingSite(
+    ...     name='enhancer',
+    ...     binders=['protein_TF1', 'protein_TF2', 'protein_TF3']
+    ... )
+
+    """
+
+    def __init__(
+        self,
+        name,
+        binders,
+        no_stop_codons=None,
+        assembly=None,
+        binding_type='dna_protein',
+        **kwargs,
+    ):
+        # An integrase attachment site binds to integrase.
+        if isinstance(binders, list):
             self.binders = [self.set_species(a) for a in binders]
         else:
             self.binders = [binders]
-        self.mechanisms = {"binding":One_Step_Cooperative_Binding()}
-        DNA_part.__init__(self,name,no_stop_codons=no_stop_codons,mechanisms = self.mechanisms,assembly = assembly,**keywords)
+        self.mechanisms = {'binding': One_Step_Cooperative_Binding()}
+        DNA_part.__init__(
+            self,
+            name,
+            no_stop_codons=no_stop_codons,
+            mechanisms=self.mechanisms,
+            assembly=assembly,
+            **kwargs,
+        )
         self.name = name
         self.dna_to_bind = None
-        #self.assembly = None
-        
+        self.binding_type = binding_type
+        # self.assembly = None
+
     def __repr__(self):
+        """Return string representation of the binding site.
+
+        Returns
+        -------
+        str
+            The name of the binding site.
+
+        """
         myname = self.name
         return myname
+
     def update_species(self):
+        """Use 'binding' mechanism to generate protein-DNA species.
+
+        Uses the 'binding' mechanism to generate species for each protein
+        binder and their DNA-protein complexes when bound to the DNA
+        containing this binding site.
+
+        Returns
+        -------
+        list of Species
+            List containing all binder proteins and DNA-protein complexes
+            generated by the binding mechanism. Returns only the binders
+            if `dna_to_bind` is None.
+
+        Notes
+        -----
+        This method is called during CRN compilation by
+        `Mixture.compile_crn`. If `dna_to_bind` is not set (None), only
+        the binder species are returned without generating complexes.
+
+        Each binder generates its own set of binding species with unique
+        part_id identifiers based on the binder's name.
+
+        """
         spec = []
         spec += self.binders
-        if(self.dna_to_bind is not None):
-            mech_b = self.mechanisms["binding"]
+        if self.dna_to_bind is not None:
+            mech_b = self.mechanisms['binding']
             for binder in self.binders:
-                spec += mech_b.update_species(binder,self.dna_to_bind,component=self,part_id = binder.name)
-                #TODO: different proteins probably have different affinity to bind this sequence
+                spec += mech_b.update_species(
+                    binder,
+                    self.dna_to_bind,
+                    component=self,
+                    part_id=binder.name,
+                )
+                # TODO: different proteins probably have different
+                # affinity to bind this sequence
         return spec
+
     def update_reactions(self):
+        """Use 'binding' mechanism to generate protein-DNA reactions.
+
+        Uses the 'binding' mechanism to generate binding and unbinding
+        reactions for each protein binder with the DNA containing this binding
+        site.
+
+        Returns
+        -------
+        list of Reaction
+            List of binding/unbinding reactions for all binders. Returns
+            empty list if `dna_to_bind` is None.
+
+        Notes
+        -----
+        This method is called during CRN compilation by
+        `Mixture.compile_crn`. Each binder generates its own binding
+        equilibrium with unique kinetic parameters identified by part_id.
+
+        """
         rxns = []
-        if(self.dna_to_bind is not None):
-            mech_b = self.mechanisms["binding"]
+        if self.dna_to_bind is not None:
+            mech_b = self.mechanisms['binding']
             for binder in self.binders:
-                rxns += mech_b.update_reactions(binder,self.dna_to_bind,component=self,part_id = binder.name)
+                rxns += mech_b.update_reactions(
+                    binder,
+                    self.dna_to_bind,
+                    component=self,
+                    part_id=[binder.name, self.binding_type],
+                )
         return rxns
-    def update_component(self,internal_species=None,**keywords):
-        """returns a copy of this component, except with the proper fields updated"""
-        if(isinstance(self.parent,DNA)):
+
+    def update_component(self, internal_species=None, **kwargs):
+        """Create a copy of the binding site with updated DNA reference.
+
+        Used for component enumeration when binding sites are part of larger
+        DNA constructs that need to be duplicated with different species.
+
+        Parameters
+        ----------
+        internal_species : Species, optional
+            The new DNA species to bind to.
+        **kwargs
+            Additional keyword arguments (currently unused).
+
+        Returns
+        -------
+        DNABindingSite or None
+            A shallow copy of this binding site with updated `dna_to_bind`
+            attribute if parent is DNA. Returns None if parent is not DNA.
+
+        Notes
+        -----
+        This method is called during component enumeration to create copies
+        of binding sites with updated DNA references when DNA constructs
+        are enumerated into their constituent parts.
+
+        """
+        if isinstance(self.parent, DNA):
             out_component = copy.copy(self)
             out_component.dna_to_bind = internal_species
             return out_component
         else:
             return None
+
+
 class IntegraseSite(DNABindingSite):
-    def __init__(self,name, site_type = "attB",integrase = "int1", dinucleotide = 1,no_stop_codons=None,integrase_binding=True,**keywords):
+    """Integrase attachment site for site-specific recombination.
+
+    An IntegraseSite represents a specialized DNA binding site where integrase
+    proteins can bind and catalyze site-specific recombination.  This
+    component uses the 'binding' mechanism to model integrase-DNA binding and
+    the 'integration' mechanism to generate recombination reactions. The class
+    handles both intramolecular (same DNA molecule) and intermolecular
+    (different DNA molecules) recombination events between compatible
+    attachment sites (attB/attP producing attL/attR, or similar).
+
+    Parameters
+    ----------
+    name : str
+        Name of the integrase site.
+    site_type : str, default='attB'
+        Type of attachment site. Common types include 'attB', 'attP',
+        'attL', 'attR', 'FLP', 'CRE'. Determines recombination compatibility.
+    integrase : str or Species, default='int1'
+        The integrase protein that recognizes this site. Can be a string
+        name or Species object.
+    dinucleotide : int, default=1
+        Specific dinucleotide variant of the attachment site. Different
+        dinucleotides allow orthogonal recombination systems.
+    no_stop_codons : bool, optional
+        If True, indicates the sequence has no stop codons.
+    integrase_binding : bool, default=True
+        If True, integrase must bind before recombination. If False,
+        recombination occurs without explicit binding (simplified model).
+    binding_type : str, default='dna_protein'
+        Part type for binding reaction parameters.
+    **kwargs
+        Additional keyword arguments passed to parent class.
+
+    Attributes
+    ----------
+    integrase : Species
+        The integrase protein species that catalyzes recombination.
+    dinucleotide : int
+        The dinucleotide variant identifier.
+    site_type : str
+        The type of attachment site (attB, attP, etc.).
+    other_dna : Species or None
+        Reference to DNA from another molecule (for intermolecular events).
+    linked_sites : dict
+        Dictionary tracking connected recombination partner sites.
+    complexed_version : Species or None
+        The integrase-bound version of this site.
+    integrase_binding : bool
+        Whether explicit integrase binding is modeled.
+
+    See Also
+    --------
+    DNABindingSite : Parent class for general DNA binding sites.
+    BasicIntegration : Mechanism for integrase-mediated recombination.
+    One_Step_Cooperative_Binding : Mechanism for integrase binding.
+
+    Notes
+    -----
+    Integrase sites follow specific recombination rules:
+
+    - attB + attP --> attL + attR (integration)
+    - attL + attR --> attB + attP (excision)
+    - Compatible sites must have matching integrases and dinucleotides
+
+    The `linked_sites` dictionary maintains connections between compatible
+    recombination partners, enabling the generation of appropriate
+    recombination reactions during CRN compilation.
+
+    Recombination can be intramolecular (creating loops or deletions) or
+    intermolecular (joining or exchanging DNA segments between molecules).
+
+    Examples
+    --------
+    Create a basic attB site for phage integration:
+
+    >>> attB = bcp.IntegraseSite(
+    ...     name='attB',
+    ...     site_type='attB',
+    ...     integrase='int_phiC31'
+    ... )
+
+    Create orthogonal integration sites with different dinucleotides:
+
+    >>> site1 = bcp.IntegraseSite(
+    ...     name='att1',
+    ...     site_type='attB',
+    ...     dinucleotide=1,
+    ...     integrase='int1'
+    ... )
+    >>> site2 = bcp.IntegraseSite(
+    ...     name='att2',
+    ...     site_type='attB',
+    ...     dinucleotide=2,
+    ...     integrase='int1'
+    ... )
+
+    """
+
+    def __init__(
+        self,
+        name,
+        site_type='attB',
+        integrase='int1',
+        dinucleotide=1,
+        no_stop_codons=None,
+        integrase_binding=True,
+        binding_type='dna_protein',
+        **kwargs,
+    ):
         self.update_integrase(integrase)
-        #self.integrase = integrase
+        # self.integrase = integrase
         self.dinucleotide = dinucleotide
         self.site_type = site_type
         self.other_dna = None
         self.linked_sites = {}
         self.complexed_version = None
-        self.integrase_binding=integrase_binding
-        DNABindingSite.__init__(self,name,self.integrase,no_stop_codons=no_stop_codons,**keywords)
+        self.integrase_binding = integrase_binding
+        DNABindingSite.__init__(
+            self,
+            name,
+            self.integrase,
+            no_stop_codons=no_stop_codons,
+            **kwargs,
+        )
         self.add_mechanism(BasicIntegration(self.integrase.name))
+
     def __repr__(self):
+        """Return detailed string representation of the integrase site.
+
+        Returns
+        -------
+        str
+            Formatted string including site name, integrase name,
+            dinucleotide (if not 1), position, and direction.
+
+        Warns
+        -----
+        UserWarning
+            If site_type is not in the recognized list of integrase sites.
+
+        Notes
+        -----
+        The representation format is:
+        'name_integrase[_dinucleotide][_position][_direction]'
+        where optional components are included only if set.
+
+        """
         myname = self.name
-        if(self.site_type in integrase_sites):
-            myname += "_" + self.integrase.name
-            if(self.dinucleotide != 1):
-                myname += "_"+str(self.dinucleotide) 
+        if self.site_type in integrase_sites:
+            myname += '_' + self.integrase.name
+            if self.dinucleotide != 1:
+                myname += '_' + str(self.dinucleotide)
         else:
-            warn("warning! site {} has site_type {} which is not recognized".format(self.name,self.site_type))
-        if(self.position is not None):
-            myname+="_"+str(self.position)
-        if(self.direction is not None):
-            myname+="_"+str(self.direction[0])
+            warn(
+                f"warning! site {self.name} has site_type {self.site_type} "
+                "which is not recognized"
+            )
+        if self.position is not None:
+            myname += '_' + str(self.position)
+        if self.direction is not None:
+            myname += '_' + str(self.direction[0])
         return myname
-    def update_integrase(self,int_name):
-        self.integrase = Component.set_species(int_name,material_type='protein')
+
+    def update_integrase(self, int_name):
+        """Set or update the integrase protein for this site.
+
+        Parameters
+        ----------
+        int_name : str or Species
+            Name of the integrase protein or a Species object.
+
+        Notes
+        -----
+        Converts the input to a protein Species object and stores it in
+        the `integrase` attribute.
+
+        """
+        self.integrase = Component.set_species(
+            int_name, material_type='protein'
+        )
+
     def __hash__(self):
+        """Return hash value for the integrase site.
+
+        Returns
+        -------
+        int
+            Combined hash of the parent DNABindingSite and the dna_to_bind
+            species.
+
+        Notes
+        -----
+        The hash combines the parent class hash with the dna_to_bind hash
+        to ensure unique identification of sites bound to specific DNA.
+
+        """
         sumhash = DNABindingSite.__hash__(self) + self.dna_to_bind.__hash__()
         return sumhash
-    def get_complexed_species(self,dna):
-        recomp = Complex([dna,self.integrase,self.integrase])
+
+    def get_complexed_species(self, dna):
+        """Create the integrase-bound complex for this site.
+
+        Parameters
+        ----------
+        dna : Species
+            The DNA species containing this integrase site.
+
+        Returns
+        -------
+        Complex
+            A complex containing the DNA bound by two integrase molecules
+            (dimeric binding typical of integrases).
+
+        Notes
+        -----
+        Most integrases bind as dimers to catalyze recombination, hence
+        the complex contains two integrase molecules.
+
+        """
+        recomp = Complex([dna, self.integrase, self.integrase])
         return recomp
-    def update_component(self,internal_species=None,**keywords):
-        """returns a copy of this component, except with the proper fields updated"""
-        newcomp = DNABindingSite.update_component(self,internal_species=internal_species)
-        #above is updating the component to take into account integrase binding (the default feature of DNABindingSite)
-        if(newcomp is None):
-            #if nothing binds, then nothing else happens. Since, integrase must be bound in order for integrase sites to do anything
+
+    def update_component(self, internal_species=None, **kwargs):
+        """Create a copy of the integrase site with updated DNA reference.
+
+        This method handles the complex task of copying integrase sites
+        during component enumeration, maintaining proper linkages between
+        recombination partner sites.
+
+        Parameters
+        ----------
+        internal_species : Species, optional
+            The new DNA species containing this integrase site.
+        **kwargs
+            Additional keyword arguments. If 'practice_run' is True, performs
+            special handling to preserve initial site linkage configuration.
+
+        Returns
+        -------
+        IntegraseSite or None
+            A copy of this integrase site with updated `dna_to_bind` and
+            properly managed linked site references. Returns None if the
+            parent DNABindingSite.update_component returns None.
+
+        Notes
+        -----
+        This method manages the complex bookkeeping required for integrase
+        site recombination:
+
+        Practice Run Mode ('practice_run'=True): During combinatorial
+        enumeration's practice run, the method preserves the initial
+        configuration of linked sites by updating references in
+        partner sites to point to the newly created copy.
+
+        Normal Mode ('practice_run'=False or not specified):
+
+        - For intramolecular reactions: Only populates linked sites if both
+          recombination partners are bound by integrase (or both unbound if
+          integrase_binding is False)
+        - For intermolecular reactions: Always populates linked sites to
+          enable proper reaction generation
+
+        The method ensures that only one site of a recombination pair
+        generates the reaction, preventing duplicate reactions in the CRN.
+
+        """
+        newcomp = DNABindingSite.update_component(
+            self, internal_species=internal_species
+        )
+        # above is updating the component to take into account
+        # integrase binding (the default feature of DNABindingSite)
+        if newcomp is None:
+            # if nothing binds, then nothing else happens. Since,
+            # integrase must be bound in order for integrase sites to
+            # do anything
             return None
-        elif("practice_run" in keywords and keywords["practice_run"]):
-            #combinatorial enumeration calls update_component twice.
-            #an integrase site must inform all the sites it is linked to that it has been
-            #updated. In certain cases the status of whether a site has been updated is informative
-            #intramolecular sites only output reactions if they haven't been updated
-            #intermolecular sites only output reactions if they have been updated
-            #a site can be both types, it depends on the contents of self.linked_sites[site]
-            
-            #however, during the practice run we are trying to preserve the "initial" configuration
-            #that the sites get after they are first created.
-            #schematic:
-            #site1 <===> site2
-            #  ||        /\
-            #update      /
-            #  ||       /
-            # \../     /
-            #copy(site1) 
-            # 
-            #this site is linked to site2 but site2 is not linked to the copy
-            #this is what we are trying to fix here
+        elif 'practice_run' in kwargs and kwargs['practice_run']:
+            # combinatorial enumeration calls update_component twice.  an
+            # integrase site must inform all the sites it is linked to that it
+            # has been updated. In certain cases the status of whether a site
+            # has been updated is informative intramolecular sites only output
+            # reactions if they haven't been updated intermolecular sites only
+            # output reactions if they have been updated a site can be both
+            # types, it depends on the contents of self.linked_sites[site]
+
+            # however, during the practice run we are trying to preserve the
+            # "initial" configuration that the sites get after they are first
+            # created.  schematic: site1 <===> site2 || /\ update / || / \../
+            # / copy(site1)
+            #
+            # this site is linked to site2 but site2 is not linked to the copy
+            # this is what we are trying to fix here
             for othersite_tpl in self.linked_sites:
                 othersite = othersite_tpl[0]
                 intermolecular = othersite_tpl[1]
-                #what we are doing here is swapping out the link to this site with
-                #a link to the returned component (the copied site)
-                self_tuple = (self,intermolecular)
+                # what we are doing here is swapping out the link to
+                # this site with a link to the returned component (the
+                # copied site)
+                self_tuple = (self, intermolecular)
                 mystuff = copy.copy(othersite.linked_sites[self_tuple])
                 del othersite.linked_sites[self_tuple]
-                othersite.linked_sites[(newcomp,intermolecular)] = mystuff
+                othersite.linked_sites[(newcomp, intermolecular)] = mystuff
             return newcomp
         else:
             for othersite_tpl in self.linked_sites:
                 othersite = othersite_tpl[0]
                 intermolecular = othersite_tpl[1]
-                populate = True #by default, add the appropriate data members to the other site
-                if(not intermolecular):
-                    #the reaction with the site in question is intramolecular
-                    #that means we should only populate the other site if our internal_species
-                    #has the proper location bound by integrase
-                    #if the reaction is intramolecular, that means that this component knows everything in order to decide
-                    #create the reaction.
-                    #the linked site is populated because then the linked site knows not to create the reaction.
-                    #after all, there is one reaction per two sites
-                    
-                    if(self.integrase_binding):
-                        otherisbound = othersite.integrase in internal_species.parent[othersite.position]
+                populate = True  # by default, add the appropriate
+                # data members to the other site
+                if not intermolecular:
+                    # the reaction with the site in question is intramolecular
+                    # that means we should only populate the other site if our
+                    # internal_species has the proper location bound by
+                    # integrase if the reaction is intramolecular, that means
+                    # that this component knows everything in order to decide
+                    # create the reaction.  the linked site is populated
+                    # because then the linked site knows not to create the
+                    # reaction.  after all, there is one reaction per two
+                    # sites
+
+                    if self.integrase_binding:
+                        otherisbound = (
+                            othersite.integrase
+                            in internal_species.parent[othersite.position]
+                        )
                     else:
-                        otherisbound = not isinstance(internal_species.parent[othersite.position],ComplexSpecies)
-                    if(not otherisbound):
+                        otherisbound = not isinstance(
+                            internal_species.parent[othersite.position],
+                            ComplexSpecies,
+                        )
+                    if not otherisbound:
                         populate = False
-                if(populate):
-                    #if the reaction is intermolecular then the linked site is populated.
-                    #this means only a fully populated site would have all the information to create the reaction
-                    #once again this results in one out of two sites that actually outputs a "reaction" object, as required
-                    mystuff = copy.copy(othersite.linked_sites[(self,intermolecular)])
-                    del othersite.linked_sites[(self,intermolecular)]
-                    othersite.linked_sites[(newcomp,intermolecular)]=mystuff
-                    assert((othersite,intermolecular) in newcomp.linked_sites)
+                if populate:
+                    # if the reaction is intermolecular then the linked site
+                    # is populated.  this means only a fully populated site
+                    # would have all the information to create the reaction
+                    # once again this results in one out of two sites that
+                    # actually outputs a "reaction" object, as required
+                    mystuff = copy.copy(
+                        othersite.linked_sites[(self, intermolecular)]
+                    )
+                    del othersite.linked_sites[(self, intermolecular)]
+                    othersite.linked_sites[(newcomp, intermolecular)] = (
+                        mystuff
+                    )
+                    assert (othersite, intermolecular) in newcomp.linked_sites
             return newcomp
+
     def update_species(self):
-        if(self.integrase_binding):
+        """Generate species associated with binding and integration.
+
+        Generate the list of species associated with the binding site,
+        including integrase-DNA complexes generated by the parent DNA binding
+        site if `integrase_binding` is True.
+
+        Returns
+        -------
+        list of Species
+            If `integrase_binding` is True, returns species from parent
+            DNABindingSite including integrase-DNA complexes. If False,
+            returns only the binder proteins without generating complexes.
+
+        Notes
+        -----
+        When `integrase_binding` is False, the model assumes simplified
+        recombination without explicit binding steps, useful for simplified
+        models where binding kinetics are not important.
+
+        """
+        if self.integrase_binding:
             return DNABindingSite.update_species(self)
         else:
             return self.binders
+
     def update_reactions(self):
-        if(self.integrase_binding):
+        """Use 'binding' and 'integration' mechanisms to generate reactions.
+
+        Creates binding reactions (if `integrase_binding` is True) and
+        recombination reactions with linked partner sites. Handles both
+        intramolecular (same DNA) and intermolecular (different DNA)
+        recombination events.
+
+        Returns
+        -------
+        list of Reaction
+            List containing:
+
+            - Integrase binding reactions (if `integrase_binding` is True)
+            - Recombination reactions with each linked partner site
+
+            Returns empty list if no linked sites exist.
+
+        Notes
+        -----
+        For each linked partner site, the method determines whether to
+        generate a recombination reaction based on:
+
+        1. Intramolecular reactions (same DNA molecule):
+
+           - Only generates reaction if both sites are properly bound (or
+             unbound if integrase_binding is False)
+           - Prevents duplicate reactions by checking if complex_parent is
+             already in the linked sites data
+           - Creates DNA loops, deletions, or inversions
+
+        2. Intermolecular reactions (different DNA molecules):
+
+           - Generates reactions for all DNA molecules listed in
+             linked_sites
+           - These DNAs are added by partner sites that were processed
+             earlier
+           - Creates DNA joining, exchange, or integration events
+
+        The method uses the 'integration' mechanism to generate the actual
+        recombination reactions with appropriate kinetic parameters
+        identified by the integrase name as part_id.
+
+        Each site pair generates only one reaction (not two) to avoid
+        duplicates, with the reaction generation responsibility determined
+        by the update order and population status of linked sites.
+
+        """
+        if self.integrase_binding:
             reactions = DNABindingSite.update_reactions(self)
         else:
             reactions = []
-        if(self.linked_sites == {}):
+        if self.linked_sites == {}:
             return reactions
         complex_parent = self.get_complexed_species(self.dna_to_bind).parent
-        if(not self.integrase_binding):
+        if not self.integrase_binding:
             complex_parent = self.dna_to_bind.parent
         int_mech = self.get_mechanism('integration')
 
-        #this next part generates integrase reactions
+        # this next part generates integrase reactions
         for site_tpl in self.linked_sites:
             site = site_tpl[0]
             intermolecular = site_tpl[1]
-            if(site.dna_to_bind is None or site.dna_to_bind.parent is None):
-                #skip sites which do not know who they bind to
+            if site.dna_to_bind is None or site.dna_to_bind.parent is None:
+                # skip sites which do not know who they bind to
                 continue
             integrated_dnas = []
-            #each integrase reaction will have an entry here
-            
-            #now we must know if the site pair got processed. If it did,
-            #then generate the reaction. If it didn't then update the pair
+            # each integrase reaction will have an entry here
 
-            #however, if we are dealing with an intramolecular reaction, then
-            #only return the reaction if the pair HASN'T been processed
+            # now we must know if the site pair got processed. If it did,
+            # then generate the reaction. If it didn't then update the pair
+
+            # however, if we are dealing with an intramolecular reaction, then
+            # only return the reaction if the pair HASN'T been processed
             populate = True
-            if(not intermolecular):
-                #this is an intramolecular reaction so we don't care about the other site's DNAs
+            if not intermolecular:
+                # this is an intramolecular reaction so we don't care about
+                # the other site's DNAs
                 integrated_dnas = []
-                site_is_bound = site.integrase in complex_parent[site.position] #site is bound by integrase
-                site_isnt_bound = not isinstance(complex_parent[site.position],ComplexSpecies) #site isnt bound by anything
-                if(( (self.integrase_binding and site_is_bound) or (not self.integrase_binding and site_isnt_bound)) 
-                                                                    and complex_parent in self.linked_sites[site_tpl][1]):
-                    #make sure that both this site and the other site are bound, or not depending on the value of "integrase_binding"
+                site_is_bound = (
+                    site.integrase in complex_parent[site.position]
+                )  # site is bound by integrase
+                site_isnt_bound = not isinstance(
+                    complex_parent[site.position], ComplexSpecies
+                )  # site isnt bound by anything
+                if (
+                    (self.integrase_binding and site_is_bound)
+                    or (not self.integrase_binding and site_isnt_bound)
+                ) and complex_parent in self.linked_sites[site_tpl][1]:
+                    # make sure that both this site and the other site are
+                    # bound, or not depending on the value of
+                    # "integrase_binding"
                     for integrase_function in self.linked_sites[site_tpl][0]:
-                        integr = integrase_function.create_polymer([complex_parent])
+                        integr = integrase_function.create_polymer(
+                            [complex_parent]
+                        )
                         integrated_dnas += [integr]
-                    reactions += int_mech.update_reactions([complex_parent],integrated_dnas,component=self,part_id = self.integrase.name)
+                    reactions += int_mech.update_reactions(
+                        [complex_parent],
+                        integrated_dnas,
+                        component=self,
+                        part_id=[self.integrase.name, self.binding_type],
+                    )
                     populate = False
             else:
-                #this is for intermolecular reactions. now "other_dna" is possible
-                #go through all possible "other" dnas then calculate for each RNA
+                # this is for intermolecular reactions. now "other_dna" is
+                # possible go through all possible "other" dnas then calculate
+                # for each RNA
                 for other_dna in self.linked_sites[site_tpl][1]:
-                    #other_dna are placed there by other sites that already got evaluated
+                    # other_dna are placed there by other sites that already
+                    # got evaluated
                     integrated_dnas = []
                     for integrase_function in self.linked_sites[site_tpl][0]:
-                        #for every result that we could get, generate it
-                        #the next line generates the OrderedPolymerSpecies which results from recombination
-                        integrated_dnas += [integrase_function.create_polymer([complex_parent,other_dna])]
-                    
-                    reactions += int_mech.update_reactions([complex_parent,other_dna],integrated_dnas,component=self,part_id = self.integrase.name)
-            #next part updates the linked site
-            if(populate and (complex_parent is not None) and (self,intermolecular) in site.linked_sites and\
-                 (complex_parent not in site.linked_sites[(self,intermolecular)][1])):
-                site.linked_sites[(self,intermolecular)][1] += [complex_parent]
+                        # for every result that we could get, generate it the
+                        # next line generates the OrderedPolymerSpecies which
+                        # results from recombination
+                        integrated_dnas += [
+                            integrase_function.create_polymer(
+                                [complex_parent, other_dna]
+                            )
+                        ]
+
+                    reactions += int_mech.update_reactions(
+                        [complex_parent, other_dna],
+                        integrated_dnas,
+                        component=self,
+                        part_id=self.integrase.name,
+                    )
+            # next part updates the linked site
+            if (
+                populate
+                and (complex_parent is not None)
+                and (self, intermolecular) in site.linked_sites
+                and (
+                    complex_parent
+                    not in site.linked_sites[(self, intermolecular)][1]
+                )
+            ):
+                site.linked_sites[(self, intermolecular)][1] += [
+                    complex_parent
+                ]
         return reactions
 
+
 class UserDefined(DNA_part):
-    def __init__(self,name,dpl_type=None, **keywords):
-        """a user defined part is a part that doesn't do anything, 
-        just exists as a label basically"""
-        DNA_part.__init__(self,name, **keywords)
+    """User-defined DNA part with no intrinsic functionality.
+
+    A UserDefined part serves as a placeholder or label in DNA constructs.
+    It represents a DNA sequence that exists in the construct but does not
+    use any mechanisms and therefore does not generate any species or
+    reactions during CRN compilation. This is useful for marking regions of
+    DNA that are important for visualization, documentation, or future
+    extension but do not participate in the modeled biochemical processes.
+
+    Parameters
+    ----------
+    name : str
+        Name of the user-defined part.
+    dpl_type : str, optional
+        Type identifier for DNA Parts Library compatibility. Can be used
+        to specify the category or function of this part for external
+        tools or databases.
+    **kwargs
+        Additional keyword arguments passed to the parent `DNA_part` class.
+
+    Attributes
+    ----------
+    name : str
+        Name of the part.
+    dpl_type : str or None
+        DNA Parts Library type identifier.
+
+    See Also
+    --------
+    DNA_part : Base class for DNA component parts.
+    Origin : Specialized placeholder for origins of replication.
+    Operator : Specialized placeholder for operator sequences.
+
+    Notes
+    -----
+    UserDefined parts do not use any mechanisms and do not generate any
+    species or reactions during CRN compilation - both `update_species`
+    and `update_reactions` return empty lists.
+
+    This component is particularly useful for:
+
+    - Marking spacer sequences or linkers
+    - Placeholder for parts not yet modeled
+    - Annotation regions for construct visualization
+    - Future extension points in genetic designs
+
+    Examples
+    --------
+    Create a spacer sequence:
+
+    >>> spacer = bcp.UserDefined(
+    ...     name='spacer_50bp',
+    ...     dpl_type='spacer'
+    ... )
+
+    Create a placeholder for an unmodeled part:
+
+    >>> unknown = bcp.UserDefined(
+    ...     name='unknown_region',
+    ...     dpl_type='uncharacterized'
+    ... )
+
+    """
+
+    def __init__(self, name, dpl_type=None, **kwargs):
+        # User-defined part.
+        #
+        # A user defined part is a part that doesn't do anything, just exists
+        # as a label basically.
+        DNA_part.__init__(self, name, **kwargs)
         self.dpl_type = dpl_type
         self.name = name
+
     def update_species(self):
-        return []
-    def update_reactions(self):
+        """Generate species for the user-defined part.
+
+        Returns
+        -------
+        list
+            Empty list, as user-defined parts have no associated mechanism.
+
+        """
         return []
 
+    def update_reactions(self):
+        """Generate reactions for the user-defined part.
+
+        Returns
+        -------
+        list
+            Empty list, as user-defined parts have no associated mechanism.
+
+        """
+        return []
+
+
 class Origin(DNA_part):
-    def __init__(self,name, **keywords):
-        """an origin does nothing except look right when plotted"""
-        DNA_part.__init__(self,name, **keywords)
+    """Origin of replication component for visualization.
+
+    An Origin represents an origin of replication (ORI) in a DNA construct.
+    Like UserDefined parts, it serves primarily as a visual marker and does
+    not use any mechanisms, therefore it does not generate any species or
+    reactions during CRN compilation. This component is useful for marking
+    replication origins in plasmids or other DNA constructs for documentation
+    and visualization purposes.
+
+    Parameters
+    ----------
+    name : str
+        Name of the origin of replication.
+    **kwargs
+        Additional keyword arguments passed to the parent `DNA_part` class.
+
+    Attributes
+    ----------
+    name : str
+        Name of the origin.
+
+    See Also
+    --------
+    DNA_part : Base class for DNA component parts.
+    UserDefined : General placeholder for non-functional parts.
+    Operator : Placeholder for operator sequences.
+
+    Notes
+    -----
+    Origins do not use any mechanisms and do not generate any species or
+    reactions - both `update_species` and `update_reactions` return
+    empty lists.
+
+    While real origins of replication are essential for plasmid maintenance,
+    their function is typically not modeled in gene expression CRNs, hence
+    this component serves as a placeholder for construct annotation.
+
+    Examples
+    --------
+    Create a standard E. coli origin:
+
+    >>> ori = bcp.Origin(name='pUC_ori')
+
+    Create a low-copy origin:
+
+    >>> p15a_ori = bcp.Origin(name='p15A_ori')
+
+    """
+
+    def __init__(self, name, **kwargs):
+        # An origin does nothing except look right when plotted.
+        DNA_part.__init__(self, name, **kwargs)
         self.name = name
+
     def update_species(self):
+        """Generate species for the origin of replication.
+
+        Returns
+        -------
+        list
+            Empty list, as origins have no associated mechanism.
+
+        """
         return []
+
     def update_reactions(self):
+        """Generate reactions for the origin of replication.
+
+        Returns
+        -------
+        list
+            Empty list, as origins have no associated mechanism.
+
+        """
         return []
+
+
 class Operator(DNA_part):
-    def __init__(self,name,binder=None, **keywords):
-        """an operator does nothing except look right when plotted"""
-        DNA_part.__init__(self,name, **keywords)
-        self.binder = []
-        if(binder is not None):
-            for bind in binder:
-                self.binder += [Component.set_species(bind)]
+    """Operator sequence component for visualization.
+
+    An Operator represents an operator DNA sequence (a regulatory element
+    where repressor proteins typically bind) in a genetic construct. Like
+    Origin and UserDefined parts, it primarily serves as a visual marker
+    and does not use any mechanisms, therefore it does not generate species
+    or reactions during CRN compilation. While the component can store
+    references to binding proteins, it does not model the actual binding
+    interactions.
+
+    Parameters
+    ----------
+    name : str
+        Name of the operator sequence.
+    binders : Species, str, list, or None, optional
+        Protein(s) that bind to this operator. Can be a single binder,
+        a list of binders, or None. This is stored for reference but
+        does not generate binding reactions.
+    **kwargs
+        Additional keyword arguments passed to the parent `DNA_part` class.
+
+    Attributes
+    ----------
+    name : str
+        Name of the operator.
+    binders : list of Species
+        List of protein species that can bind this operator (for reference
+        only).
+
+    See Also
+    --------
+    DNA_part : Base class for DNA component parts.
+    DNABindingSite : Functional binding site that generates reactions.
+    RegulatedPromoter : Promoter with functional operator-like behavior.
+
+    Notes
+    -----
+    Operators do not use any mechanisms and do not generate any species or
+    reactions - both `update_species` and `update_reactions` return
+    empty lists.
+
+    For functional operator behavior with actual binding reactions, use
+    `DNABindingSite` or include operators within `RegulatedPromoter`
+    components, which do use binding mechanisms to generate reactions.
+
+    The `binder` attribute stores potential binding proteins for
+    documentation purposes but does not create binding interactions in
+    the model.
+
+    Examples
+    --------
+    Create a lac operator:
+
+    >>> lac_op = bcp.Operator(
+    ...     name='lacO',
+    ...     binders='protein_LacI'
+    ... )
+
+    Create an operator with multiple potential binders:
+
+    >>> multi_op = bcp.Operator(
+    ...     name='operator_1',
+    ...     binders=['protein_RepA', 'protein_RepB']
+    ... )
+
+    Create an operator without specifying binders:
+
+    >>> generic_op = bcp.Operator(name='op1')
+
+    """
+
+    def __init__(self, name, binders=None, **kwargs):
+        # Legacy keyword processing
+        if kwargs.get('binder', None):
+            warn("'binder' is deprecated; use 'binders'")
+            if binders is not None:
+                raise TypeError("'binder' and 'binders' specified; pick one")
+            binders = kwargs.pop('binder')
+
+        # An operator does nothing except look right when plotted.
+        DNA_part.__init__(self, name, **kwargs)
+        self.binders = []
+        if binders is not None:
+            if not isinstance(binders, list):
+                binders = [binders]
+            for bind in binders:
+                self.binders += [Component.set_species(bind)]
         self.name = name
+
     def update_species(self):
+        """Generate species for the operator.
+
+        Returns
+        -------
+        list
+            Empty list, as operators have no associated mechanism.
+
+        Notes
+        -----
+        For functional operator behavior with species generation, use
+        `DNABindingSite` instead.
+
+        """
         return []
+
     def update_reactions(self):
+        """Generate reactions for the operator.
+
+        Returns
+        -------
+        list
+            Empty list, as operators have no associated mechanism.
+
+        Notes
+        -----
+        For functional operator behavior with binding reactions, use
+        `DNABindingSite` or `RegulatedPromoter` instead.
+
+        """
         return []
+
+    @property
+    def binder(self):
+        # Legacy attribute
+        return self.binders

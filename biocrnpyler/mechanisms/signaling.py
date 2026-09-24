@@ -394,9 +394,12 @@ class Sensor_TwoComponentSystem(Mechanism):
         ku_activeRP = component.get_parameter(
             'ku_activeRP', part_id=part_id, mechanism=self
         )
-        kb_activeRP = component.get_parameter(
-                    'kb_activeRP', part_id=part_id, mechanism=self
-                )
+        kb_dimerRP = component.get_parameter(
+            'kb_dimerRP', part_id=part_id, mechanism=self
+        )
+        ku_dimerRP = component.get_parameter(
+            'ku_dimerRP', part_id=part_id, mechanism=self
+        )
         ku_dephos = component.get_parameter(
             'ku_dephos', part_id=part_id, mechanism=self
         )
@@ -499,11 +502,12 @@ class Sensor_TwoComponentSystem(Mechanism):
             ],
             k_forward=ku_activeRP,
         )
-        # Product formation: 2 RP:Pi --> Product
+        # Product formation: 2 RP:Pi <--> Product
         binding_rxn6 = Reaction.from_massaction(
             inputs=[2*[complex_dict['Activated_RP']]],
             outputs=[product],
-            k_forward=kb_activeRP,
+            k_forward=kb_dimerRP,
+            k_reverse=ku_dimerRP,
         )
         # Dephosphorylation: RP:Pi--> RP + Pi
         unbinding_rxn6 = Reaction.from_massaction(

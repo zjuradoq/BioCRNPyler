@@ -220,7 +220,7 @@ class Integration_MembraneProtein(Mechanism):
 
     Parameters
     ----------
-    name : str, default='integration_membraneprotein'
+    name : str, default='integration_membrane_protein'
         Name identifier for this mechanism instance.
     mechanism_type : str, default='membrane_integration'
         Type classification of this mechanism.
